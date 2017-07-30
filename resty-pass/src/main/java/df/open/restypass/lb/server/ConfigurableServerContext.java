@@ -1,17 +1,63 @@
 package df.open.restypass.lb.server;
 
-import df.open.restypass.lb.LoadBalancer;
+import org.yaml.snakeyaml.Yaml;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Properties;
 
 /**
+ * 配置化
+ * 服务容器
  * Created by darrenfu on 17-6-28.
  */
 public class ConfigurableServerContext implements ServerContext {
 
-    private static ConcurrentHashMap<LoadBalancer, Boolean> needUpdateServerMap = new ConcurrentHashMap<>();
+    {
+        InputStream inputStream = parseYamlFile("resty-server.properties", true);
+        Yaml yaml = new Yaml();
+        yaml.loadAs(inputStream, ServerInstance.class);
+    }
+
+    private InputStream parseYamlFile(String file, boolean required) {
+
+        List<ClassLoader> cls = new ArrayList<>();
+
+        ClassLoader cl = Thread.currentThread().getContextClassLoader();
+        if (cl != null) {
+            cls.add(cl);
+        }
+        cl = getClass().getClassLoader();
+        if (cl != null) {
+            cls.add(cl);
+        }
+        cl = ClassLoader.getSystemClassLoader();
+        if (cl != null) {
+            cls.add(cl);
+        }
+
+        InputStream is = null;
+        for (ClassLoader classLoader : cls) {
+            is = classLoader.getResourceAsStream(file);
+            if (is != null) {
+                break;
+            }
+        }
+
+        if (is != null) {
+            return is;
+        } else if (required) {
+            throw new IllegalArgumentException("Can't locate config file " + file);
+        }
+        return null;
+    }
+
+    @Override
+    public List<String> getAllServiceName() {
+        return null;
+    }
 
     @Override
     public List<ServerInstance> getAllServerList() {
@@ -23,6 +69,15 @@ public class ConfigurableServerContext implements ServerContext {
         return getServer(serviceName);
     }
 
+    @Override
+    public void refreshServerList() {
+
+    }
+
+    @Override
+    public void refreshServerList(String serviceName) {
+
+    }
 
     private List<ServerInstance> getServer(String serviceName) {
         List<ServerInstance> list = new ArrayList<>();
@@ -31,26 +86,5 @@ public class ConfigurableServerContext implements ServerContext {
         return list;
     }
 
-    @Override
-    public void updateServerList() {
 
-    }
-
-    @Override
-    public void updateServerList(String serviceName) {
-        for (LoadBalancer loadBalancer : needUpdateServerMap.keySet()) {
-            needUpdateServerMap.put(loadBalancer, true);
-        }
-    }
-
-    @Override
-    public boolean hasServerUpdated(LoadBalancer loadBalancer) {
-        Boolean needUpdate = needUpdateServerMap.getOrDefault(loadBalancer, true);
-        if (needUpdate) {
-            needUpdateServerMap.put(loadBalancer, false);
-            return true;
-        }
-
-        return false;
-    }
 }

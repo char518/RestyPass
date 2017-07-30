@@ -15,6 +15,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 /**
  * Created by darrenfu on 17-7-29.
  */
+@SuppressWarnings("SpringJavaAutowiringInspection")
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = RestyRequestTest.Application.class)
 //@WebAppConfiguration
@@ -22,19 +23,14 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @TestPropertySource(properties = {"test.expire.cache=test"})
 public class RestyRequestTest {
 
-
     @SpringBootApplication
 //    @ComponentScan(basePackages = {"df.open"})
     @EnableRestyProxy(basePackages = {"df.open.restypass.test"})
     public static class Application {
-
         public static void main(String[] args) {
             SpringApplication.run(Application.class, args);
         }
-
-
     }
-
 
 
     @Autowired
