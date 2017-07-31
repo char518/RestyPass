@@ -1,8 +1,8 @@
 package df.open.restypass.starter;
 
-import df.open.restypass.base.DefaultRestyProxyFactory;
-import df.open.restypass.base.RestyProxyFactory;
-import df.open.restypass.starter.proxy.RestyProxyRegister;
+import df.open.restypass.base.DefaultRestyPassFactory;
+import df.open.restypass.base.RestyPassFactory;
+import df.open.restypass.proxy.RestyProxyRegister;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;
@@ -29,7 +29,7 @@ public @interface EnableRestyProxy {
 
     String value() default "";
 
-    Class<? extends RestyProxyFactory> factory() default DefaultRestyProxyFactory.class;
+    Class<? extends RestyPassFactory> factory() default DefaultRestyPassFactory.class;
 
     String[] basePackages() default {};
 

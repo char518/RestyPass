@@ -136,7 +136,7 @@ public class DefaultRestyCommand implements RestyCommand {
     @Override
     public Uri getUri(ServerInstance serverInstance) {
         if (uri == null) {
-            uri = new Uri(serverInstance.isHttps() ? HTTPS : HTTP,
+            uri = new Uri(serverInstance.getIsHttps() ? HTTPS : HTTP,
                     null,
                     serverInstance.getHost(),
                     serverInstance.getPort(),

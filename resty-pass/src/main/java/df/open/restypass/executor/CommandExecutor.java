@@ -2,6 +2,7 @@ package df.open.restypass.executor;
 
 import df.open.restypass.command.RestyCommand;
 import df.open.restypass.lb.LoadBalancer;
+import df.open.restypass.lb.server.ServerContext;
 
 /**
  * 执行器
@@ -26,4 +27,12 @@ public interface CommandExecutor {
      * @return the t
      */
     Object execute(LoadBalancer lb, RestyCommand restyCommand);
+
+
+    /**
+     * Sets server context.
+     *
+     * @param serverContext the server context
+     */
+    void setServerContext(ServerContext serverContext);
 }

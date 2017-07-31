@@ -11,6 +11,7 @@ import df.open.restypass.http.converter.ResponseConverterContext;
 import df.open.restypass.lb.LoadBalancer;
 import df.open.restypass.lb.server.ServerContext;
 import df.open.restypass.lb.server.ServerInstance;
+import lombok.Setter;
 import org.asynchttpclient.Response;
 
 import java.util.Collections;
@@ -31,8 +32,12 @@ public class RestyCommandExecutor implements CommandExecutor {
     /**
      * 服务实例上下文
      */
+    @Setter
     private ServerContext serverContext;
 
+    public RestyCommandExecutor(RestyCommandContext context) {
+        this.context = context;
+    }
 
     public RestyCommandExecutor(RestyCommandContext context, ServerContext serverContext) {
         this.context = context;

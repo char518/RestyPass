@@ -1,4 +1,4 @@
-package df.open.restypass.starter.proxy;
+package df.open.restypass.proxy;
 
 import df.open.restypass.annotation.RestyService;
 import df.open.restypass.command.RestyCommandContext;
@@ -90,6 +90,10 @@ public class RestyProxyRegister implements ImportBeanDefinitionRegistrar,
                     }
                 }
             }
+            BeanDefinitionBuilder beanDefinitionBuilder = BeanDefinitionBuilder.genericBeanDefinition(RestyCommandContext.class);
+            beanDefinitionBuilder.setFactoryMethod("getInstance");
+            beanDefinitionBuilder.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_BY_TYPE);
+            registry.registerBeanDefinition(RestyCommandContext.class.getName(), beanDefinitionBuilder.getBeanDefinition());
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }

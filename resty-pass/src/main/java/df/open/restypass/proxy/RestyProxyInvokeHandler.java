@@ -1,4 +1,4 @@
-package df.open.restypass.starter.proxy;
+package df.open.restypass.proxy;
 
 import df.open.restypass.command.DefaultRestyCommand;
 import df.open.restypass.command.RestyCommand;
@@ -11,7 +11,6 @@ import df.open.restypass.executor.RestyFallbackExecutor;
 import df.open.restypass.lb.LoadBalanceBuilder;
 import df.open.restypass.lb.LoadBalancer;
 import df.open.restypass.lb.server.ServerContext;
-import df.open.restypass.lb.server.ServerContextBuilder;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.InvocationHandler;
@@ -36,12 +35,16 @@ public class RestyProxyInvokeHandler implements InvocationHandler {
 
     private FallbackExecutor fallbackExecutor;
 
+    private ServerContext serverContext;
+
     public RestyProxyInvokeHandler(RestyCommandContext restyCommandContext,
                                    CommandExecutor commandExecutor,
-                                   FallbackExecutor fallbackExecutor) {
+                                   FallbackExecutor fallbackExecutor,
+                                   ServerContext serverContext) {
         this.restyCommandContext = restyCommandContext;
         this.commandExecutor = commandExecutor;
         this.fallbackExecutor = fallbackExecutor;
+        this.serverContext = serverContext;
     }
 
 
@@ -59,10 +62,13 @@ public class RestyProxyInvokeHandler implements InvocationHandler {
                 args,
                 restyCommandContext);
 
-        ServerContext serverContext = ServerContextBuilder.createConfigurableServerContext();
+//        ServerContext serverContext = ServerContextBuilder.createConfigurableServerContext();
         LoadBalancer loadBalancer = LoadBalanceBuilder.createRandomLoadBalancer();
-        CommandExecutor commandExecutor = new RestyCommandExecutor(restyCommandContext, serverContext);
-        RestyFallbackExecutor restyFallbackExecutor = new RestyFallbackExecutor();
+
+//        CommandExecutor commandExecutor = new RestyCommandExecutor(restyCommandContext);
+        commandExecutor.setServerContext(serverContext);
+
+//        RestyFallbackExecutor restyFallbackExecutor = new RestyFallbackExecutor();
         System.out.println("######################Invoker");
         try {
             if (commandExecutor.executable(restyCommand)) {
@@ -72,8 +78,8 @@ public class RestyProxyInvokeHandler implements InvocationHandler {
             }
         } catch (RestyException ex) {
             log.error("请求发生异常:", ex);
-            if (restyFallbackExecutor.executable(restyCommand)) {
-                result = restyFallbackExecutor.execute(restyCommand);
+            if (fallbackExecutor.executable(restyCommand)) {
+                result = fallbackExecutor.execute(restyCommand);
             } else {
                 throw ex;
             }

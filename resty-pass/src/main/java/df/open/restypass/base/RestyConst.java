@@ -8,6 +8,10 @@ package df.open.restypass.base;
 public class RestyConst {
 
     /**
+     * 默认服务名称
+     */
+    public static final String SERVICE_DEFAULT = "DefaultService";
+    /**
      * 默认机房名称
      */
     public static final String ROOM_DEFAULT = "room";
