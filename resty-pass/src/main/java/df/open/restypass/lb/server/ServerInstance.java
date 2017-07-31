@@ -65,7 +65,7 @@ public class ServerInstance {
     /**
      * 其它属性
      */
-    private Map<String, String> props;
+    private Map<String, Object> props;
 
 
     public ServerInstance init() {
@@ -93,28 +93,15 @@ public class ServerInstance {
         return this;
     }
 
+    public <T> T getPropValue(String propKey, T defaultValue) {
+        if (props == null || props.size() == 0) {
+            return defaultValue;
+        }
+        Object propVal = props.get(propKey);
 
-    public static ServerInstance buildInstance(String serviceName, String host, Integer port) {
-        ServerInstance instance = new ServerInstance();
-
-        instance.setServiceName(serviceName);
-        instance.setHost(host);
-        instance.setPort(port);
-        instance.setStartTime(new Date());
-        instance.setIsAlive(true);
-        instance.setRoom(RestyConst.ROOM_DEFAULT);
-        instance.setIsHttps(false);
-
-        StringBuilder sb = StringBuilderFactory.DEFAULT.stringBuilder();
-        sb.append(serviceName);
-        sb.append("@");
-        sb.append(host);
-        sb.append(":");
-        sb.append(port);
-
-        instance.setInstanceId(sb.toString());
-        return instance;
+        if (propVal == null) {
+            return defaultValue;
+        }
+        return (T) propVal;
     }
-
-
 }

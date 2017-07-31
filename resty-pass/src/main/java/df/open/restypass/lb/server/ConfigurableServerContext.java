@@ -108,11 +108,7 @@ public class ConfigurableServerContext implements ServerContext {
     }
 
     private List<ServerInstance> getServer(String serviceName) {
-        List<ServerInstance> list = new ArrayList<>();
 
-
-        list.add(ServerInstance.buildInstance(serviceName, "localhost", 9201));
-        list.add(ServerInstance.buildInstance(serviceName, "localhost", 9202));
         return instanceMap.get(serviceName);
     }
 

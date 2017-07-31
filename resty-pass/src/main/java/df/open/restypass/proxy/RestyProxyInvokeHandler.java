@@ -62,14 +62,8 @@ public class RestyProxyInvokeHandler implements InvocationHandler {
                 args,
                 restyCommandContext);
 
-//        ServerContext serverContext = ServerContextBuilder.createConfigurableServerContext();
         LoadBalancer loadBalancer = LoadBalanceBuilder.createRandomLoadBalancer();
-
-//        CommandExecutor commandExecutor = new RestyCommandExecutor(restyCommandContext);
         commandExecutor.setServerContext(serverContext);
-
-//        RestyFallbackExecutor restyFallbackExecutor = new RestyFallbackExecutor();
-        System.out.println("######################Invoker");
         try {
             if (commandExecutor.executable(restyCommand)) {
                 result = commandExecutor.execute(loadBalancer, restyCommand);
