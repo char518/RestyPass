@@ -61,8 +61,10 @@ public class RestyProxyInvokeHandler implements InvocationHandler {
                 method.getGenericReturnType(),
                 args,
                 restyCommandContext);
+        
+        LoadBalancer loadBalancer = LoadBalanceBuilder.createLoadBalancerForService(restyCommand.getServiceName(),
+                restyCommand.getRestyCommandConfig().getLoadBalancer());
 
-        LoadBalancer loadBalancer = LoadBalanceBuilder.createRandomLoadBalancer();
         commandExecutor.setServerContext(serverContext);
         try {
             if (commandExecutor.executable(restyCommand)) {

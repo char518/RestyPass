@@ -35,4 +35,36 @@ public class ClassTools {
         return null;
     }
 
+
+    /**
+     * Has class boolean.
+     *
+     * @param clz the clz
+     * @return the boolean
+     */
+    public static boolean hasClass(String clz) {
+        try {
+            Class.forName(clz);
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
+        return true;
+    }
+
+
+    /**
+     * Gets class.
+     *
+     * @param clz the clz
+     * @return the class
+     */
+    public static Class<?> getClass(String clz) {
+        try {
+            return Class.forName(clz);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }

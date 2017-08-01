@@ -16,6 +16,8 @@ import java.util.Set;
  */
 public class RandomLoadBalancer extends AbstractLoadBalancer {
 
+    public static final String NAME="random";
+
     private final Random random = new Random();
 
     @Override

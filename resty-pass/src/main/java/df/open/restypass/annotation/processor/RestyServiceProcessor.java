@@ -29,6 +29,8 @@ public class RestyServiceProcessor implements RestyAnnotationProcessor {
             setFallback(restyService, properties);
             //设置是否打开断路器
             setCircuitBreak(restyService, properties);
+            //设置负载均衡器
+            setLoadBalancer(restyService, properties);
         }
         return properties;
     }
@@ -96,5 +98,9 @@ public class RestyServiceProcessor implements RestyAnnotationProcessor {
         } else {
             properties.setForceBreakEnabled(false);
         }
+    }
+
+    protected void setLoadBalancer(RestyService restyService, RestyCommandConfig properties) {
+        properties.setLoadBalancer(restyService.loadBalancer());
     }
 }

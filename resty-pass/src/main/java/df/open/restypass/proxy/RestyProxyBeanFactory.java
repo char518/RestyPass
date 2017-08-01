@@ -4,12 +4,15 @@ import df.open.restypass.base.DefaultRestyPassFactory;
 import df.open.restypass.command.RestyCommandContext;
 import df.open.restypass.executor.CommandExecutor;
 import df.open.restypass.executor.FallbackExecutor;
+import df.open.restypass.lb.server.CloudDiscoveryServerContext;
 import df.open.restypass.lb.server.ServerContext;
+import df.open.restypass.util.ClassTools;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.util.Assert;
@@ -70,6 +73,10 @@ public class RestyProxyBeanFactory implements FactoryBean<Object>, InitializingB
             this.serverContext = getBean(ServerContext.class);
             this.commandExecutor = getBean(CommandExecutor.class);
             this.fallbackExecutor = getBean(FallbackExecutor.class);
+            if (serverContext instanceof ApplicationContextAware) {
+                ApplicationContextAware contextAware = (ApplicationContextAware) serverContext;
+                contextAware.setApplicationContext(this.applicationContext);
+            }
         }
         Object proxy = null;
         try {
@@ -104,9 +111,11 @@ public class RestyProxyBeanFactory implements FactoryBean<Object>, InitializingB
                 t = DefaultRestyPassFactory.getDefaultBean(clz);
             } else {
                 log.info("{}使用Spring注入", clz);
-
             }
-        } catch (Exception ex) {
+            if (t == null) {
+                throw new RuntimeException("无法获取Bean:" + clz);
+            }
+        } catch (BeansException ex) {
             log.info("{}使用默认配置,ex:{}", clz, ex.getMessage());
             t = DefaultRestyPassFactory.getDefaultBean(clz);
         }

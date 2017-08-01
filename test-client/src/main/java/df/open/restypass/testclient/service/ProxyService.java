@@ -2,6 +2,7 @@ package df.open.restypass.testclient.service;
 
 import df.open.restypass.annotation.RestyMethod;
 import df.open.restypass.annotation.RestyService;
+import df.open.restypass.lb.RandomLoadBalancer;
 import df.open.restypass.testclient.entity.Response;
 import df.open.restypass.testclient.entity.User;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,7 +25,7 @@ import java.util.List;
  * @contact 13914793391
  * @date 2016/11/22
  */
-@RestyService(serviceName = "resty",
+@RestyService(serviceName = "server",
         fallbackClass = ProxyServiceImpl.class,
         retry = 1,
         forceBreakEnabled = false

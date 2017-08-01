@@ -74,6 +74,13 @@ public interface RestyCommandConfig extends Updater<UpdateCommandConfig> {
     int getRetry();
 
     /**
+     * Gets load balancer.
+     *
+     * @return the load balancer
+     */
+    String getLoadBalancer();
+
+    /**
      * Sets async enabled.
      *
      * @param asyncEnabled the async enabled
@@ -124,6 +131,13 @@ public interface RestyCommandConfig extends Updater<UpdateCommandConfig> {
 
 
     /**
+     * Sets load balancer.
+     *
+     * @param loadBalancer the load balancer
+     */
+    void setLoadBalancer(String loadBalancer);
+
+    /**
      * The type Default resty command config.
      */
     class DefaultRestyCommandConfig implements RestyCommandConfig {
@@ -143,6 +157,8 @@ public interface RestyCommandConfig extends Updater<UpdateCommandConfig> {
         private String fallbackBean;
 
         private int retry = 1;
+
+        private String loadBalancer;
 
         public String getServiceName() {
             return serviceName;
@@ -211,6 +227,14 @@ public interface RestyCommandConfig extends Updater<UpdateCommandConfig> {
             this.forceBreakEnabled = forceBreakEnabled;
         }
 
+
+        public String getLoadBalancer() {
+            return loadBalancer;
+        }
+
+        public void setLoadBalancer(String loadBalancer) {
+            this.loadBalancer = loadBalancer;
+        }
 
         @Override
         public boolean refresh(UpdateCommandConfig updateCommandConfig) {

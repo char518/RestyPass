@@ -1,7 +1,7 @@
 servers:
-  - serviceName: resty
+  - serviceName: server
     instances:
       - host: localhost
         port: 9201
       - host: localhost
-        port: 9201
+        port: 9202

@@ -7,8 +7,10 @@ import df.open.restypass.executor.RestyCommandExecutor;
 import df.open.restypass.executor.RestyFallbackExecutor;
 import df.open.restypass.lb.LoadBalancer;
 import df.open.restypass.lb.RandomLoadBalancer;
+import df.open.restypass.lb.server.CloudDiscoveryServerContext;
 import df.open.restypass.lb.server.ConfigurableServerContext;
 import df.open.restypass.lb.server.ServerContext;
+import df.open.restypass.util.ClassTools;
 
 /**
  * 默认工厂类
@@ -24,7 +26,15 @@ public class DefaultRestyPassFactory implements RestyPassFactory {
 
     @Override
     public ServerContext getServerContext() {
-        return new ConfigurableServerContext();
+
+        boolean hasClass = ClassTools.hasClass("org.springframework.cloud.client.discovery.DiscoveryClient");
+
+        if (hasClass) {
+            return new CloudDiscoveryServerContext();
+
+        } else {
+            return new ConfigurableServerContext();
+        }
     }
 
     @Override
@@ -37,9 +47,6 @@ public class DefaultRestyPassFactory implements RestyPassFactory {
         return new RestyFallbackExecutor();
     }
 
-    public LoadBalancer getDefaultLoadBalancer() {
-        return new RandomLoadBalancer();
-    }
 
     public static <T> T getDefaultBean(Class<T> clz) {
         if (clz.equals(ServerContext.class)) {
@@ -47,6 +54,7 @@ public class DefaultRestyPassFactory implements RestyPassFactory {
         } else if (clz.equals(CommandExecutor.class)) {
             return (T) INSTANCE.getCommandExecutor();
         } else if (clz.equals(LoadBalancer.class)) {
+            // loadbalancer使用注解单独配置
 //            return (T) INSTANCE.getDefaultLoadBalancer();
         } else if (clz.equals(FallbackExecutor.class)) {
             return (T) INSTANCE.getFallbackExecutor();

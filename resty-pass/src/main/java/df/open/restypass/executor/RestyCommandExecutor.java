@@ -70,7 +70,7 @@ public class RestyCommandExecutor implements CommandExecutor {
             try {
                 // 负载均衡器 选择可用服务实例
                 serverInstance = lb.choose(serverContext, restyCommand, excludeInstanceIdList);
-
+                System.out.println("use instance:" + serverInstance);
                 boolean shouldPass = circuitBreaker.shouldPass(restyCommand, serverInstance);
 
                 if (!shouldPass) {

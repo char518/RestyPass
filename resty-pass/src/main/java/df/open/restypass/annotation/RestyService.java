@@ -1,5 +1,7 @@
 package df.open.restypass.annotation;
 
+import df.open.restypass.lb.RoundRobinLoadBalancer;
+
 import java.lang.annotation.*;
 
 /**
@@ -52,6 +54,14 @@ public @interface RestyService {
      * 默认false
      */
     boolean forceBreakEnabled() default false;
+
+
+    /**
+     * 负载均衡器
+     * 1.预定义的负载均衡器的Name
+     * 2.自定义负载均衡器的Class全名
+     */
+    String loadBalancer() default RoundRobinLoadBalancer.NAME;
 
     /**
      * 啥也不干的类

@@ -10,7 +10,17 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>test-server</artifactId>
-
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>Camden.SR7</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
     <dependencies>
         <dependency>
             <groupId>df.open</groupId>
@@ -27,7 +37,15 @@
             <artifactId>spring-boot-starter-web</artifactId>
             <version>${springboot_version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-consul-discovery</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-actuator</artifactId>
+            <version>${springboot_version}</version>
+        </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
@@ -55,7 +73,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>df.open.restypass.testserver.TestServerApplication</mainClass>
+                    <mainClass>df.open.restypass.testserver.TestServerApplication9201</mainClass>
                 </configuration>
                 <executions>
                     <execution>
