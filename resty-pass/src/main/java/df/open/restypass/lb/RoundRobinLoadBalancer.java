@@ -7,7 +7,6 @@ import df.open.restypass.util.AtomicPositiveInteger;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -22,7 +21,7 @@ public class RoundRobinLoadBalancer extends AbstractLoadBalancer {
     private final ConcurrentHashMap<String, AtomicPositiveInteger> sequences = new ConcurrentHashMap<>();
 
     @Override
-    protected ServerInstance doChoose(List<ServerInstance> instanceList, RestyCommand command, Set<String> excludeInstanceIdSet) {
+    protected ServerInstance doChoose(List<ServerInstance> instanceList, RestyCommand command) {
         String key = command.getServiceName() + "." + command.getPath();
         int length = instanceList.size(); // 总个数
         int maxWeight = 0; // 最大权重

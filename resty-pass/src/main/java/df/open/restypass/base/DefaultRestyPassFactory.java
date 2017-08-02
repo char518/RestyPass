@@ -6,7 +6,6 @@ import df.open.restypass.executor.FallbackExecutor;
 import df.open.restypass.executor.RestyCommandExecutor;
 import df.open.restypass.executor.RestyFallbackExecutor;
 import df.open.restypass.lb.LoadBalancer;
-import df.open.restypass.lb.RandomLoadBalancer;
 import df.open.restypass.lb.server.CloudDiscoveryServerContext;
 import df.open.restypass.lb.server.ConfigurableServerContext;
 import df.open.restypass.lb.server.ServerContext;

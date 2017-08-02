@@ -23,6 +23,7 @@ import java.util.concurrent.atomic.LongAdder;
  * 异步Resty请求执行器
  * Created by darrenfu on 17-7-1.
  */
+@SuppressWarnings("unused")
 public class RestyCommandExecutor implements CommandExecutor {
 
     public static LongAdder time = new LongAdder();
@@ -61,7 +62,7 @@ public class RestyCommandExecutor implements CommandExecutor {
         int retry = restyCommand.getRestyCommandConfig().getRetry();
 
         Object result = null;
-        CircuitBreaker circuitBreaker = CircuitBreakerFactory.defaultCircuitBreaker(restyCommand.getServiceName());
+        CircuitBreaker circuitBreaker = CircuitBreakerFactory.createDefaultCircuitBreaker(restyCommand.getServiceName());
         ServerInstance serverInstance = null;
 
         // 排除 彻底断路的server， 尝试过的server
@@ -80,7 +81,6 @@ public class RestyCommandExecutor implements CommandExecutor {
                 boolean shouldPass = circuitBreaker.shouldPass(restyCommand, serverInstance);
 
                 if (!shouldPass) {
-                    System.out.println("##should not pass!!!!");
                     // fallback or exception
                     throw new CircuitBreakException("circuit break is working");
                 }

@@ -1,8 +1,8 @@
-package df.open.restypass.proxy;
+package df.open.restypass.spring.proxy;
 
 import df.open.restypass.annotation.RestyService;
 import df.open.restypass.command.RestyCommandContext;
-import df.open.restypass.starter.EnableRestyProxy;
+import df.open.restypass.spring.EnableRestyPass;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -56,7 +56,7 @@ public class RestyProxyRegister implements ImportBeanDefinitionRegistrar,
     public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
         try {
             RestyCommandContext commandContext = RestyCommandContext.getInstance();
-            Map<String, Object> attrs = importingClassMetadata.getAnnotationAttributes(EnableRestyProxy.class.getName());
+            Map<String, Object> attrs = importingClassMetadata.getAnnotationAttributes(EnableRestyPass.class.getName());
 
             // TODO 处理类注解
             System.out.println(attrs.get("value"));
@@ -115,7 +115,7 @@ public class RestyProxyRegister implements ImportBeanDefinitionRegistrar,
      */
     protected Set<String> getBasePackages(AnnotationMetadata importingClassMetadata) {
         Map<String, Object> attributes = importingClassMetadata
-                .getAnnotationAttributes(EnableRestyProxy.class.getCanonicalName());
+                .getAnnotationAttributes(EnableRestyPass.class.getCanonicalName());
 
         Set<String> basePackages = new HashSet<>();
         if (StringUtils.hasText((String) attributes.get("value"))) {

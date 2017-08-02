@@ -1,7 +1,5 @@
 package df.open.restypass.annotation;
 
-import df.open.restypass.base.DefaultRestyPassFactory;
-import df.open.restypass.base.RestyPassFactory;
 import df.open.restypass.lb.RoundRobinLoadBalancer;
 
 import java.lang.annotation.*;
@@ -64,6 +62,17 @@ public @interface RestyService {
      * 2.自定义负载均衡器的Class全名
      */
     String loadBalancer() default RoundRobinLoadBalancer.NAME;
+
+
+    /**
+     * 连接超时时间
+     */
+    int connectTimeout() default 5000;
+
+    /**
+     * 响应请求超时时间
+     */
+    int requestTimeout() default 10000;
 
 
 //    Class<? extends RestyPassFactory> factory() default DefaultRestyPassFactory.class;

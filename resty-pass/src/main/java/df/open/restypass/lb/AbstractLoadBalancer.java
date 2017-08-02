@@ -36,7 +36,11 @@ public abstract class AbstractLoadBalancer implements LoadBalancer {
             return serverList.get(0);
         }
 
-        return doChoose(serverList, command, excludeInstanceIdSet);
+        if (excludeInstanceIdSet != null && excludeInstanceIdSet.size() > 0) {
+            serverList.removeIf(v -> excludeInstanceIdSet.contains(v.getInstanceId()));
+        }
+
+        return doChoose(serverList, command);
     }
 
 
@@ -45,10 +49,9 @@ public abstract class AbstractLoadBalancer implements LoadBalancer {
      *
      * @param instanceList         the instance list
      * @param command              the command
-     * @param excludeInstanceIdSet the exclude instance id set
      * @return the server instance
      */
-    protected abstract ServerInstance doChoose(List<ServerInstance> instanceList, RestyCommand command, Set<String> excludeInstanceIdSet);
+    protected abstract ServerInstance doChoose(List<ServerInstance> instanceList, RestyCommand command);
 
     /**
      * copy from dubbo

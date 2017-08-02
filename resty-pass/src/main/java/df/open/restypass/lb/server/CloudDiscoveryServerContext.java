@@ -62,11 +62,6 @@ public class CloudDiscoveryServerContext implements ServerContext, ApplicationCo
     @Override
     public List<ServerInstance> getServerList(String serviceName) {
         checkStatus();
-        List<ServerInstance> instances = instancesMap.get(serviceName);
-        if (instancesMap == null || instancesMap.size() == 0) {
-            System.out.println("instancesMap:" + instancesMap);
-        }
-
         return instancesMap.getOrDefault(serviceName, Collections.EMPTY_LIST);
     }
 

@@ -14,10 +14,10 @@ public class AsyncHttpConfigFactory {
      *
      * @return the config
      */
-    public static AsyncHttpClientConfig getConfig() {
+    public static AsyncHttpClientConfig createConfig(int connectTimeout, int requestTimeout) {
         return new DefaultAsyncHttpClientConfig.Builder()
-                .setConnectTimeout(5000)
-                .setRequestTimeout(10000)
+                .setConnectTimeout(connectTimeout)
+                .setRequestTimeout(requestTimeout)
                 .setMaxConnectionsPerHost(10000)
                 .setValidateResponseHeaders(false)
                 .setMaxRequestRetry(0)

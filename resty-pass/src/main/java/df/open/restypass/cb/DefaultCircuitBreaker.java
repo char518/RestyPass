@@ -16,7 +16,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
@@ -111,8 +110,6 @@ public class DefaultCircuitBreaker implements CircuitBreaker {
         if (!started) {
 
             startLock.lock();
-
-//            System.out.println("INIT...");
             try {
                 if (!started) {
                     this.eventKey = KEY_PREFIX + UUID.randomUUID().toString().replace("-", "").toLowerCase();
@@ -142,10 +139,15 @@ public class DefaultCircuitBreaker implements CircuitBreaker {
         if (!started) {
             return true;
         }
+        String metricsKey = getMetricsKey(restyCommand.getPath(), serverInstance.getInstanceId());
 
         // 强制短路
         if (restyCommand.getRestyCommandConfig().isForceBreakEnabled()) {
+            statusMap.put(metricsKey, CircuitBreakerStatus.FORCE_BREAK);
             return false;
+        } else if (CircuitBreakerStatus.FORCE_BREAK == statusMap.get(metricsKey)) {
+            // 强制短路关闭后，OPEN
+            statusMap.put(metricsKey, CircuitBreakerStatus.OPEN);
         }
 
         // 断路器未启用
@@ -153,7 +155,6 @@ public class DefaultCircuitBreaker implements CircuitBreaker {
             return true;
         }
 
-        String metricsKey = getMetricsKey(restyCommand.getPath(), serverInstance.getInstanceId());
         // 获取统计段
         Metrics metrics = getCommandMetrics(metricsKey);
         if (metrics == null) {
@@ -164,7 +165,9 @@ public class DefaultCircuitBreaker implements CircuitBreaker {
         // 获取计数器
         Metrics.SegmentMetrics segmentMetrics = metrics.getMetrics();
         // 计数器中失败数量和比例超过阀值，则触发短路判断
-        if (segmentMetrics.failCount() >= breakFailCount && segmentMetrics.failPercentage() >= breakFailPercentage) {
+        if (!segmentMetrics.isOverTime() //计数器未过期
+                && segmentMetrics.failCount() >= breakFailCount //失败数量达到阀值
+                && segmentMetrics.failPercentage() >= breakFailPercentage) { //失败比例达到阀值
             CircuitBreakerStatus breakerStatus = statusMap.get(metricsKey);
             shouldPass = false;
             if (breakerStatus == null || breakerStatus == CircuitBreakerStatus.OPEN) {
@@ -201,6 +204,11 @@ public class DefaultCircuitBreaker implements CircuitBreaker {
     @Override
     public Set<String> getBrokenServer() {
         return Collections.EMPTY_SET;
+    }
+
+    @Override
+    public void setStatus(RestyCommand restyCommand, CircuitBreakerStatus status) {
+
     }
 
     /**
@@ -266,7 +274,7 @@ public class DefaultCircuitBreaker implements CircuitBreaker {
                         }
                         metrics.store(isSuccess, forceUseNewMetrics);
                     }
-                    log.debug("处理完成, 处理个数:{}，剩余:{}个", commandList.size(), commandQueue.size());
+                    log.info("处理完成, 处理个数:{}，剩余:{}个", commandList.size(), commandQueue.size());
 
                 } catch (Exception ex) {
                     log.error("断路器RestyCommand处理失败:{}", ex);

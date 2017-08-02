@@ -1,4 +1,4 @@
-package df.open.restypass.wrapper.spring.pojo;
+package df.open.restypass.spring.pojo;
 
 import lombok.Data;
 

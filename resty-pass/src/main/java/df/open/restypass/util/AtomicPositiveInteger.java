@@ -5,7 +5,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * AtomicPositiveInteger
- * copy from dubo
+ * copy from dubbo
  *
  * @author william.liangf
  * @author ding.lid

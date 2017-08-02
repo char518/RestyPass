@@ -17,7 +17,7 @@ public class CircuitBreakerFactory {
      * @param serviceName the service name
      * @return the circuit breaker
      */
-    public static CircuitBreaker defaultCircuitBreaker(String serviceName) {
+    public static CircuitBreaker createDefaultCircuitBreaker(String serviceName) {
         CircuitBreaker circuitBreaker = breakerMap.get(serviceName);
         if (circuitBreaker == null) {
             CircuitBreaker newCircuitBreaker = new DefaultCircuitBreaker();

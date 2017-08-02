@@ -1,4 +1,4 @@
-package df.open.restypass.proxy;
+package df.open.restypass.spring.proxy;
 
 import df.open.restypass.command.DefaultRestyCommand;
 import df.open.restypass.command.RestyCommand;
@@ -6,9 +6,7 @@ import df.open.restypass.command.RestyCommandContext;
 import df.open.restypass.exception.RestyException;
 import df.open.restypass.executor.CommandExecutor;
 import df.open.restypass.executor.FallbackExecutor;
-import df.open.restypass.executor.RestyCommandExecutor;
-import df.open.restypass.executor.RestyFallbackExecutor;
-import df.open.restypass.lb.LoadBalanceBuilder;
+import df.open.restypass.lb.LoadBalanceFactory;
 import df.open.restypass.lb.LoadBalancer;
 import df.open.restypass.lb.server.ServerContext;
 import lombok.extern.slf4j.Slf4j;
@@ -66,7 +64,7 @@ public class RestyProxyInvokeHandler implements InvocationHandler {
                 args,
                 restyCommandContext);
 
-        LoadBalancer loadBalancer = LoadBalanceBuilder.createLoadBalancerForService(restyCommand.getServiceName(),
+        LoadBalancer loadBalancer = LoadBalanceFactory.createLoadBalancerForService(restyCommand.getServiceName(),
                 restyCommand.getRestyCommandConfig().getLoadBalancer());
 
         commandExecutor.setServerContext(serverContext);

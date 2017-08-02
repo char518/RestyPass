@@ -1,26 +1,43 @@
 package df.open.restypass.lb.server;
 
+import df.open.restypass.util.StreamTools;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 /**
  * 配置化
  * 服务容器
  * Created by darrenfu on 17-6-28.
  */
+@Slf4j
 public class ConfigurableServerContext implements ServerContext {
+    public static final String CONFIG_FILE_NAME = "resty-server.yaml";
 
-    private ConcurrentHashMap<String, List<ServerInstance>> instanceMap;
+    private Map<String, List<ServerInstance>> instanceMap;
 
 
     public ConfigurableServerContext() {
         this.instanceMap = new ConcurrentHashMap<>();
-        List<YamlServerList> servers = loadServerFromConfigFile();
+        loadServerFromConfigFile();
+    }
+
+
+    private void loadServerFromConfigFile() {
+        InputStream inputStream = parseYamlFile(CONFIG_FILE_NAME, true);
+        Yaml yaml = new Yaml();
+        YamlServerConfig config = yaml.loadAs(inputStream, YamlServerConfig.class);
+
+        List<YamlServerList> servers = config.servers;
         for (YamlServerList server : servers) {
             for (ServerInstance instance : server.getInstances()) {
                 instance.setServiceName(server.getServiceName());
@@ -28,13 +45,7 @@ public class ConfigurableServerContext implements ServerContext {
             }
             instanceMap.put(server.getServiceName(), server.getInstances());
         }
-    }
-
-    private List<YamlServerList> loadServerFromConfigFile() {
-        InputStream inputStream = parseYamlFile("resty-server.yaml", true);
-        Yaml yaml = new Yaml();
-        YamlServerConfig config = yaml.loadAs(inputStream, YamlServerConfig.class);
-        return config.servers;
+        log.info("成功加载server的配置文件:{},Server:{}", CONFIG_FILE_NAME, instanceMap);
     }
 
 
@@ -73,7 +84,7 @@ public class ConfigurableServerContext implements ServerContext {
 
     @Override
     public List<String> getAllServiceName() {
-        return null;
+        return instanceMap.keySet().stream().collect(Collectors.toList());
     }
 
     @Override
@@ -86,30 +97,48 @@ public class ConfigurableServerContext implements ServerContext {
         return getServer(serviceName);
     }
 
+    private List<ServerInstance> getServer(String serviceName) {
+        List<ServerInstance> instances = new LinkedList<>();
+        if (StringUtils.isEmpty(serviceName)) {
+            instanceMap.forEach((k, v) -> instances.addAll(v));
+            return instances;
+        }
+        return instanceMap.get(serviceName);
+    }
+
     @Override
     public void refreshServerList() {
-
+        loadServerFromConfigFile();
     }
 
     @Override
     public void refreshServerList(String serviceName) {
-
+        loadServerFromConfigFile();
     }
 
     @Override
     public List<ServerInstance> setServerList(List<ServerInstance> instanceList) {
-        return null;
+        instanceList.forEach(ServerInstance::init);
+        this.instanceMap = StreamTools.groupBy(instanceList, ServerInstance::getServiceName);
+        return instanceList;
     }
 
     @Override
     public List<ServerInstance> addServerList(List<ServerInstance> instanceList) {
-        return null;
+
+        instanceList.forEach(ServerInstance::init);
+        Map<String, List<ServerInstance>> map = StreamTools.groupBy(instanceList, ServerInstance::getServiceName);
+
+
+        this.instanceMap.forEach((k, v) -> {
+            if (map.containsKey(k)) {
+                v.addAll(map.get(k));
+            }
+        });
+
+        return getAllServerList();
     }
 
-    private List<ServerInstance> getServer(String serviceName) {
-
-        return instanceMap.get(serviceName);
-    }
 
     @Data
     public static class YamlServerConfig {
@@ -120,8 +149,6 @@ public class ConfigurableServerContext implements ServerContext {
     public static class YamlServerList {
         private List<ServerInstance> instances;
         private String serviceName;
-
-
     }
 
 

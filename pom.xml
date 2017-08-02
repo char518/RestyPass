@@ -11,7 +11,7 @@
     <modules>
         <module>resty-pass</module>
         <module>test-server</module>
-        <module>test-client</module>
+        <module>demo</module>
     </modules>
     <properties>
         <spring_version>4.3.5.RELEASE</spring_version>

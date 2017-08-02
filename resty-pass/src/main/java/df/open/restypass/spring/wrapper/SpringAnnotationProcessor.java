@@ -1,6 +1,6 @@
-package df.open.restypass.wrapper.spring;
+package df.open.restypass.spring.wrapper;
 
-import df.open.restypass.base.RestyRequestTemplate;
+import df.open.restypass.command.RestyRequestTemplate;
 
 import java.lang.annotation.Annotation;
 

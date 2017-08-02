@@ -1,11 +1,12 @@
-package df.open.restypass.base;
+package df.open.restypass.command;
 
+import df.open.restypass.base.RestyConst;
+import df.open.restypass.spring.pojo.PathVariableData;
+import df.open.restypass.spring.pojo.RequestBodyData;
+import df.open.restypass.spring.pojo.RequestParamData;
 import df.open.restypass.util.CommonTools;
 import df.open.restypass.util.JsonTools;
 import df.open.restypass.util.StringBuilderFactory;
-import df.open.restypass.wrapper.spring.pojo.PathVariableData;
-import df.open.restypass.wrapper.spring.pojo.RequestBodyData;
-import df.open.restypass.wrapper.spring.pojo.RequestParamData;
 import lombok.Data;
 import org.apache.commons.lang3.ObjectUtils;
 

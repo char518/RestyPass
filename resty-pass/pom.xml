@@ -52,7 +52,7 @@
         </dependency>
         <!--<dependency>-->
         <!--<groupId>org.springframework.cloud</groupId>-->
-        <!--<artifactId>spring-cloud-commons</artifactId>-->
+        <!--<artifacwrapperring-cloud-commons</artifactId>-->
         <!--</dependency>-->
         <dependency>
             <groupId>org.asynchttpclient</groupId>

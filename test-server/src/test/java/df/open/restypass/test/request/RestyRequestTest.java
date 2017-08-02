@@ -1,6 +1,6 @@
 package df.open.restypass.test.request;
 
-import df.open.restypass.starter.EnableRestyProxy;
+import df.open.restypass.spring.EnableRestyPass;
 import df.open.restypass.test.service.ProxyService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,7 +25,7 @@ public class RestyRequestTest {
 
     @SpringBootApplication
 //    @ComponentScan(basePackages = {"df.open"})
-    @EnableRestyProxy(basePackages = {"df.open.restypass.test"})
+    @EnableRestyPass(basePackages = {"df.open.restypass.test"})
     public static class Application {
         public static void main(String[] args) {
             SpringApplication.run(Application.class, args);

@@ -1,8 +1,6 @@
-package df.open.restypass.starter;
+package df.open.restypass.spring;
 
-import df.open.restypass.base.DefaultRestyPassFactory;
-import df.open.restypass.base.RestyPassFactory;
-import df.open.restypass.proxy.RestyProxyRegister;
+import df.open.restypass.spring.proxy.RestyProxyRegister;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;
@@ -25,7 +23,7 @@ import java.lang.annotation.*;
 @Target(ElementType.TYPE)
 @Documented
 @Import(RestyProxyRegister.class)
-public @interface EnableRestyProxy {
+public @interface EnableRestyPass {
 
     String value() default "";
 

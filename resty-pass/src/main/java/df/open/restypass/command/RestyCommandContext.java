@@ -5,15 +5,15 @@ import df.open.restypass.annotation.RestyMethod;
 import df.open.restypass.annotation.RestyService;
 import df.open.restypass.annotation.processor.RestyMethodProcessor;
 import df.open.restypass.annotation.processor.RestyServiceProcessor;
-import df.open.restypass.base.RestyRequestTemplate;
 import df.open.restypass.command.update.UpdateCommandConfig;
 import df.open.restypass.command.update.Updater;
 import df.open.restypass.http.client.HttpClientHolder;
 import df.open.restypass.http.config.AsyncHttpConfigFactory;
-import df.open.restypass.wrapper.spring.SpringAnnotationWrapper;
+import df.open.restypass.spring.wrapper.SpringAnnotationWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.asynchttpclient.AsyncHttpClient;
+import org.asynchttpclient.AsyncHttpClientConfig;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -133,7 +133,8 @@ public class RestyCommandContext implements Updater<UpdateCommandConfig> {
 
         // class->@RestyService
         this.storeRestyService(serviceClz, restyService);
-        HttpClientHolder clientHolder = new HttpClientHolder(AsyncHttpConfigFactory.getConfig());
+        AsyncHttpClientConfig httpClientConfig = AsyncHttpConfigFactory.createConfig(restyService.connectTimeout(), restyService.requestTimeout());
+        HttpClientHolder clientHolder = new HttpClientHolder(httpClientConfig);
         httpClientPool.putIfAbsent(serviceName, clientHolder);
 
 
@@ -146,7 +147,7 @@ public class RestyCommandContext implements Updater<UpdateCommandConfig> {
 
             // 存储 httpMethod 和 requestTemplate
             RestyRequestTemplate restyRequestTemplate = wrapper.processAnnotation(serviceClz, method);
-            requestTemplateMap.put(method, restyRequestTemplate);
+            requestTemplateMap.putIfAbsent(method, restyRequestTemplate);
 
             serviceMethodTable.put(serviceName, restyRequestTemplate.getPath(), method);
         }

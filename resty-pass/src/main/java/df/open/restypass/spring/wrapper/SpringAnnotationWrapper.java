@@ -1,9 +1,9 @@
-package df.open.restypass.wrapper.spring;
+package df.open.restypass.spring.wrapper;
 
-import df.open.restypass.base.RestyRequestTemplate;
-import df.open.restypass.wrapper.spring.pojo.PathVariableData;
-import df.open.restypass.wrapper.spring.pojo.RequestBodyData;
-import df.open.restypass.wrapper.spring.pojo.RequestParamData;
+import df.open.restypass.command.RestyRequestTemplate;
+import df.open.restypass.spring.pojo.PathVariableData;
+import df.open.restypass.spring.pojo.RequestBodyData;
+import df.open.restypass.spring.pojo.RequestParamData;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.io.DefaultResourceLoader;
@@ -33,7 +33,7 @@ public class SpringAnnotationWrapper {
     private RequestMappingProcessor requestMappingProcessor = new RequestMappingProcessor();
 
     /**
-     * Instantiates a new Spring annotation wrapper.
+     * Instantiates a new Spring annotation spring.
      */
     public SpringAnnotationWrapper() {
     }

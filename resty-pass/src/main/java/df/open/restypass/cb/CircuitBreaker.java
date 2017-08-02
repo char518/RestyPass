@@ -1,6 +1,7 @@
 package df.open.restypass.cb;
 
 import df.open.restypass.command.RestyCommand;
+import df.open.restypass.enums.CircuitBreakerStatus;
 import df.open.restypass.event.EventConsumer;
 import df.open.restypass.lb.server.ServerInstance;
 
@@ -38,5 +39,13 @@ public interface CircuitBreaker extends EventConsumer {
      * @return the broken server
      */
     Set<String> getBrokenServer();
+
+    /**
+     * Sets status.
+     *
+     * @param restyCommand the resty command
+     * @param status       the status
+     */
+    void setStatus(RestyCommand restyCommand, CircuitBreakerStatus status);
 
 }

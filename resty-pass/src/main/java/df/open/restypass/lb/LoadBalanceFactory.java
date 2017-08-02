@@ -1,6 +1,5 @@
 package df.open.restypass.lb;
 
-import df.open.restypass.util.ClassTools;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -9,7 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Created by darrenfu on 17-6-28.
  */
 @Slf4j
-public class LoadBalanceBuilder {
+public class LoadBalanceFactory {
 
     private static final ConcurrentHashMap<String, LoadBalancer> serviceLoadBalancerMap = new ConcurrentHashMap<>();
 

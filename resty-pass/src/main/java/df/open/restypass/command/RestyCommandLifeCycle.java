@@ -45,18 +45,15 @@ public interface RestyCommandLifeCycle {
 
     /**
      * RestyCommand执行成功
-     *
-     * @return the resty command life cycle
      */
-    RestyCommandLifeCycle success();
+    void success();
 
     /**
      * RestyCommand执行失败
      *
      * @param RestyException the resty exception
-     * @return the resty command life cycle
      */
-    RestyCommandLifeCycle failed(RestyException RestyException);
+    void failed(RestyException RestyException);
 
 
     /**

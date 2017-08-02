@@ -20,6 +20,7 @@ import java.util.concurrent.atomic.LongAdder;
  * 异步获取RestyCommand的响应结果
  * Created by darrenfu on 17-7-20.
  */
+@SuppressWarnings({"unused", "WeakerAccess"})
 @Slf4j
 public class RestyFuture implements Future {
 
@@ -76,17 +77,9 @@ public class RestyFuture implements Future {
 
     @Override
     public Object get() throws InterruptedException, ExecutionException {
-        Response response = future.get();
-        return null;
+        return future.get();
     }
 
-//    public <T> T getResult() {
-//        T result = (T) converterContext.convertResponse(restyCommand, FutureTools.fetchResponse(future));
-//
-//        System.out.println(result);
-//        System.out.println(result.getClass());
-//        return result;
-//    }
 
     /**
      * Gets response.
@@ -110,10 +103,10 @@ public class RestyFuture implements Future {
     }
 
 
+    @SuppressWarnings("NullableProblems")
     @Override
     public Object get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
-        Response response = future.get(timeout, unit);
-        return response;
+        return future.get(timeout, unit);
     }
 
 

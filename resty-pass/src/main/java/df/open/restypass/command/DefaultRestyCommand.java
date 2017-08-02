@@ -1,6 +1,5 @@
 package df.open.restypass.command;
 
-import df.open.restypass.base.RestyRequestTemplate;
 import df.open.restypass.cb.CircuitBreaker;
 import df.open.restypass.enums.RestyCommandStatus;
 import df.open.restypass.exception.RestyException;
@@ -188,21 +187,19 @@ public class DefaultRestyCommand implements RestyCommand {
     }
 
     @Override
-    public RestyCommand success() {
+    public void success() {
         this.status = RestyCommandStatus.SUCCESS;
         if(circuitBreaker.getEventKey() == null){
             System.out.println("XXXX null");
         }
         this.emit(circuitBreaker.getEventKey(), this);
-        return this;
     }
 
     @Override
-    public RestyCommand failed(RestyException restyException) {
+    public void failed(RestyException restyException) {
         this.exception = restyException;
         this.status = RestyCommandStatus.FAILED;
         this.emit(circuitBreaker.getEventKey(), this);
-        return this;
     }
 
 

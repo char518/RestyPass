@@ -1,6 +1,5 @@
 package df.open.restypass.command;
 
-import df.open.restypass.base.RestyRequestTemplate;
 import df.open.restypass.event.EventEmit;
 import df.open.restypass.lb.server.ServerInstance;
 import org.asynchttpclient.uri.Uri;

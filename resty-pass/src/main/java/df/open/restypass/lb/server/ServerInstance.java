@@ -5,7 +5,6 @@ import df.open.restypass.util.StringBuilderFactory;
 import lombok.Data;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.asynchttpclient.uri.Uri;
 
 import java.util.Date;
 import java.util.Map;
@@ -69,7 +68,7 @@ public class ServerInstance {
 
 
     public ServerInstance init() {
-        if (this.port == 0 || StringUtils.isEmpty(this.host)) {
+        if (this.port <= 0 || StringUtils.isEmpty(this.host)) {
             throw new IllegalArgumentException("host/port of server instance can not be null");
         }
         this.setIsAlive(ObjectUtils.defaultIfNull(this.isAlive, true));

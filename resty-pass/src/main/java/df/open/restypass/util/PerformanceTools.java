@@ -2,12 +2,13 @@ package df.open.restypass.util;
 
 import df.open.restypass.command.RestyFuture;
 import df.open.restypass.executor.RestyCommandExecutor;
-import df.open.restypass.proxy.RestyProxyInvokeHandler;
+import df.open.restypass.spring.proxy.RestyProxyInvokeHandler;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * 测试工具
  * Created by darrenfu on 17-8-2.
  */
 public class PerformanceTools {

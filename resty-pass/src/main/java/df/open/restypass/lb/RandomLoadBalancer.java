@@ -1,12 +1,10 @@
 package df.open.restypass.lb;
 
 import df.open.restypass.command.RestyCommand;
-import df.open.restypass.lb.server.ServerContext;
 import df.open.restypass.lb.server.ServerInstance;
 
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 
 /**
  * 负载均衡
@@ -16,12 +14,12 @@ import java.util.Set;
  */
 public class RandomLoadBalancer extends AbstractLoadBalancer {
 
-    public static final String NAME="random";
+    public static final String NAME = "random";
 
     private final Random random = new Random();
 
     @Override
-    protected ServerInstance doChoose(List<ServerInstance> instanceList, RestyCommand command, Set<String> excludeInstanceIdSet) {
+    protected ServerInstance doChoose(List<ServerInstance> instanceList, RestyCommand command) {
 
 
         int length = instanceList.size(); // 总个数

@@ -94,7 +94,6 @@ public class Metrics {
         metricsDeque.addFirst(newMetrics);
         if (metricsDeque.size() > this.maxSegmentNumber) {
             metricsDeque.removeFirst();
-
         }
         return newMetrics;
     }

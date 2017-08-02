@@ -1,40 +1,27 @@
-package df.open.restypass.proxy;
+package df.open.restypass.spring.proxy;
 
 import df.open.restypass.base.DefaultRestyPassFactory;
 import df.open.restypass.base.RestyPassFactory;
 import df.open.restypass.command.RestyCommandContext;
 import df.open.restypass.executor.CommandExecutor;
 import df.open.restypass.executor.FallbackExecutor;
-import df.open.restypass.lb.server.CloudDiscoveryServerContext;
 import df.open.restypass.lb.server.ServerContext;
-import df.open.restypass.util.ClassTools;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.util.Assert;
 
 import java.lang.reflect.Proxy;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.LongAdder;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * 说明:
- * <p/>
- * Copyright: Copyright (c)
- * <p/>
- * Company:
- * <p/>
+ * RestyService代理工厂类
  *
  * @author darren-fu
- * @version 1.0.0
- * @contact 13914793391
- * @date 2016/11/22
  */
 @Data
 @Slf4j

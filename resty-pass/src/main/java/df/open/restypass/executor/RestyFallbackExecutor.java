@@ -22,7 +22,6 @@ public class RestyFallbackExecutor implements FallbackExecutor {
 
     private static ConcurrentHashMap<Class, Object> fallbackClassMap = new ConcurrentHashMap<>();
 
-
     @Override
     public boolean executable(RestyCommand restyCommand) {
         RestyCommandConfig commandConfig = restyCommand.getRestyCommandConfig();
@@ -41,7 +40,6 @@ public class RestyFallbackExecutor implements FallbackExecutor {
 
         if (fallbackClass != null && fallbackClass != RestyService.Noop.class) {
             Object fallbackObj = fallbackClassMap.get(fallbackClass);
-            // TODO 支持 fallbackBean
             if (fallbackObj == null) {
                 fallbackObj = ClassTools.instance(fallbackClass);
                 Object existObj = fallbackClassMap.putIfAbsent(fallbackClass, fallbackObj);
