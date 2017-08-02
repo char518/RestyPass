@@ -41,7 +41,7 @@ public class ConfigurableServerContext implements ServerContext {
         for (YamlServerList server : servers) {
             for (ServerInstance instance : server.getInstances()) {
                 instance.setServiceName(server.getServiceName());
-                instance.init();
+                instance.initProps();
             }
             instanceMap.put(server.getServiceName(), server.getInstances());
         }
@@ -118,7 +118,7 @@ public class ConfigurableServerContext implements ServerContext {
 
     @Override
     public List<ServerInstance> setServerList(List<ServerInstance> instanceList) {
-        instanceList.forEach(ServerInstance::init);
+        instanceList.forEach(ServerInstance::initProps);
         this.instanceMap = StreamTools.groupBy(instanceList, ServerInstance::getServiceName);
         return instanceList;
     }
@@ -126,7 +126,7 @@ public class ConfigurableServerContext implements ServerContext {
     @Override
     public List<ServerInstance> addServerList(List<ServerInstance> instanceList) {
 
-        instanceList.forEach(ServerInstance::init);
+        instanceList.forEach(ServerInstance::initProps);
         Map<String, List<ServerInstance>> map = StreamTools.groupBy(instanceList, ServerInstance::getServiceName);
 
 

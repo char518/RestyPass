@@ -126,7 +126,7 @@ public class CloudDiscoveryServerContext implements ServerContext, ApplicationCo
             metadata.forEach((k, v) -> props.put(k, v));
             instance.setProps(props);
         }
-        instance.init();
+        instance.initProps();
         return instance;
     }
 

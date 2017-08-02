@@ -4,7 +4,7 @@ import lombok.Data;
 
 
 /**
- * body
+ * @RequestBody content
  * Created by darrenfu on 17-7-28.
  */
 @Data

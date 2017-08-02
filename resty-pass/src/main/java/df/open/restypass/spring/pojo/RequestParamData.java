@@ -3,6 +3,7 @@ package df.open.restypass.spring.pojo;
 import lombok.Data;
 
 /**
+ * @RequestParam content
  * Created by darrenfu on 17-7-27.
  */
 @Data

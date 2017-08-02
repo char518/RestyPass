@@ -4,6 +4,7 @@ import org.asynchttpclient.AsyncHttpClientConfig;
 import org.asynchttpclient.DefaultAsyncHttpClientConfig;
 
 /**
+ * HttpClient config 工厂类
  * Created by darrenfu on 17-6-19.
  */
 public class AsyncHttpConfigFactory {

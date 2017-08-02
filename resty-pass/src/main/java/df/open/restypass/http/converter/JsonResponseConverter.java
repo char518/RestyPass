@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 
 /**
+ * Json类型响应解析类
  * Created by darrenfu on 17-7-19.
  */
 @Slf4j

@@ -13,7 +13,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 
 /**
- * .init command
+ * .initProps command
  * .build request
  * .choose server dest
  * .circuit break

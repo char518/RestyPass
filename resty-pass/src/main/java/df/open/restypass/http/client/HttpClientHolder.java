@@ -6,6 +6,7 @@ import org.asynchttpclient.AsyncHttpClientConfig;
 import org.asynchttpclient.DefaultAsyncHttpClient;
 
 /**
+ * Http Client Config 包装类
  * Created by darrenfu on 17-6-24.
  */
 @Data

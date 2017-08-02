@@ -41,7 +41,9 @@ public class RestyProxyBeanFactory implements FactoryBean<Object>, InitializingB
 
     private RestyPassFactory factory;
 
-
+    /**
+     * 是否完成初始化
+     */
     private boolean inited = false;
 
     private ReentrantLock initLock = new ReentrantLock();

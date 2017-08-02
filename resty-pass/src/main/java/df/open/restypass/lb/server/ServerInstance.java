@@ -67,7 +67,12 @@ public class ServerInstance {
     private Map<String, Object> props;
 
 
-    public ServerInstance init() {
+    /**
+     * Init server instance.
+     *
+     * @return server instance
+     */
+    public ServerInstance initProps() {
         if (this.port <= 0 || StringUtils.isEmpty(this.host)) {
             throw new IllegalArgumentException("host/port of server instance can not be null");
         }
@@ -92,6 +97,14 @@ public class ServerInstance {
         return this;
     }
 
+    /**
+     * Gets prop value.
+     *
+     * @param <T>          the type parameter
+     * @param propKey      the prop key
+     * @param defaultValue the default value
+     * @return the prop value
+     */
     public <T> T getPropValue(String propKey, T defaultValue) {
         if (props == null || props.size() == 0) {
             return defaultValue;
