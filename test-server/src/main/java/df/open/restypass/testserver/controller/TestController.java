@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class TestController {
     @RequestMapping(value = "/get_nothing", method = RequestMethod.GET)
     public void nothing() {
-        System.out.println("############nothing");
+//        System.out.println("############nothing");
     }
 
     @RequestMapping(value = "/get_status", method = RequestMethod.GET)

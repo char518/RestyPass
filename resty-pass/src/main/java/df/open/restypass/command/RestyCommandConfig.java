@@ -1,5 +1,6 @@
 package df.open.restypass.command;
 
+import df.open.restypass.base.RestyPassFactory;
 import df.open.restypass.command.update.UpdateCommandConfig;
 import df.open.restypass.command.update.Updater;
 
@@ -81,6 +82,13 @@ public interface RestyCommandConfig extends Updater<UpdateCommandConfig> {
     String getLoadBalancer();
 
     /**
+     * Gets factory.
+     *
+     * @return the factory
+     */
+    Class<? extends RestyPassFactory> getFactory();
+
+    /**
      * Sets async enabled.
      *
      * @param asyncEnabled the async enabled
@@ -138,6 +146,13 @@ public interface RestyCommandConfig extends Updater<UpdateCommandConfig> {
     void setLoadBalancer(String loadBalancer);
 
     /**
+     * Sets factory.
+     *
+     * @param factoryClz the factory clz
+     */
+    void setFactory(Class<? extends RestyPassFactory> factoryClz);
+
+    /**
      * The type Default resty command config.
      */
     class DefaultRestyCommandConfig implements RestyCommandConfig {
@@ -160,26 +175,34 @@ public interface RestyCommandConfig extends Updater<UpdateCommandConfig> {
 
         private String loadBalancer;
 
+        private Class<? extends RestyPassFactory> factory;
+
+        @Override
         public String getServiceName() {
             return serviceName;
         }
 
+        @Override
         public void setServiceName(String serviceName) {
             this.serviceName = serviceName;
         }
 
+        @Override
         public boolean isAsyncEnabled() {
             return asyncEnabled;
         }
 
+        @Override
         public boolean isCircuitBreakEnabled() {
             return circuitBreakEnabled;
         }
 
+        @Override
         public boolean isFallbackEnabled() {
             return fallbackEnabled;
         }
 
+        @Override
         public Class getFallbackClass() {
             return fallbackClass;
         }
@@ -189,22 +212,27 @@ public interface RestyCommandConfig extends Updater<UpdateCommandConfig> {
             return fallbackBean;
         }
 
+        @Override
         public int getRetry() {
             return retry;
         }
 
+        @Override
         public void setAsyncEnabled(boolean asyncEnabled) {
             this.asyncEnabled = asyncEnabled;
         }
 
+        @Override
         public void setCircuitBreakEnabled(boolean enableCircuitBreak) {
             this.circuitBreakEnabled = enableCircuitBreak;
         }
 
+        @Override
         public void setFallbackEnabled(boolean enableFallback) {
             this.fallbackEnabled = enableFallback;
         }
 
+        @Override
         public void setFallbackClass(Class fallbackClass) {
             this.fallbackClass = fallbackClass;
         }
@@ -214,26 +242,39 @@ public interface RestyCommandConfig extends Updater<UpdateCommandConfig> {
             this.fallbackBean = fallbackBean;
         }
 
+        @Override
         public void setRetry(int retry) {
             this.retry = retry;
         }
 
-
+        @Override
         public boolean isForceBreakEnabled() {
             return forceBreakEnabled;
         }
 
+        @Override
         public void setForceBreakEnabled(boolean forceBreakEnabled) {
             this.forceBreakEnabled = forceBreakEnabled;
         }
 
-
+        @Override
         public String getLoadBalancer() {
             return loadBalancer;
         }
 
+        @Override
         public void setLoadBalancer(String loadBalancer) {
             this.loadBalancer = loadBalancer;
+        }
+
+        @Override
+        public Class<? extends RestyPassFactory> getFactory() {
+            return factory;
+        }
+
+        @Override
+        public void setFactory(Class<? extends RestyPassFactory> factory) {
+            this.factory = factory;
         }
 
         @Override

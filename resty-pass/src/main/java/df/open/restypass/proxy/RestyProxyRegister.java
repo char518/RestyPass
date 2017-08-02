@@ -80,11 +80,6 @@ public class RestyProxyRegister implements ImportBeanDefinitionRegistrar,
 
                         beanDefinitionBuilder.addPropertyValue("type", beanClz);
                         beanDefinitionBuilder.addPropertyValue("restyCommandContext", commandContext);
-
-                        beanDefinitionBuilder.addPropertyValue("serverContext", null);
-                        beanDefinitionBuilder.addPropertyValue("commandExecutor", null);
-                        beanDefinitionBuilder.addPropertyValue("fallbackExecutor", null);
-
                         // 注册bean
                         registry.registerBeanDefinition(component.getBeanClassName(), beanDefinitionBuilder.getBeanDefinition());
                     }

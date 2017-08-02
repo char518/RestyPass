@@ -26,12 +26,9 @@ public class DefaultRestyPassFactory implements RestyPassFactory {
 
     @Override
     public ServerContext getServerContext() {
-
         boolean hasClass = ClassTools.hasClass("org.springframework.cloud.client.discovery.DiscoveryClient");
-
         if (hasClass) {
             return new CloudDiscoveryServerContext();
-
         } else {
             return new ConfigurableServerContext();
         }

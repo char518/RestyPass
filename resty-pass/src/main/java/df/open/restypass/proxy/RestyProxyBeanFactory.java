@@ -1,6 +1,7 @@
 package df.open.restypass.proxy;
 
 import df.open.restypass.base.DefaultRestyPassFactory;
+import df.open.restypass.base.RestyPassFactory;
 import df.open.restypass.command.RestyCommandContext;
 import df.open.restypass.executor.CommandExecutor;
 import df.open.restypass.executor.FallbackExecutor;
@@ -19,6 +20,8 @@ import org.springframework.util.Assert;
 
 import java.lang.reflect.Proxy;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.LongAdder;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * 说明:
@@ -49,8 +52,12 @@ public class RestyProxyBeanFactory implements FactoryBean<Object>, InitializingB
 
     private FallbackExecutor fallbackExecutor;
 
+    private RestyPassFactory factory;
 
-    private AtomicBoolean inited = new AtomicBoolean(false);
+
+    private boolean inited = false;
+
+    private ReentrantLock initLock = new ReentrantLock();
 
     @Override
     public Object getObject() throws Exception {
@@ -69,15 +76,24 @@ public class RestyProxyBeanFactory implements FactoryBean<Object>, InitializingB
 
     protected Object createProxy(Class type, RestyCommandContext restyCommandContext) {
 
-        if (!inited.get() && inited.compareAndSet(false, true)) {
-            this.serverContext = getBean(ServerContext.class);
-            this.commandExecutor = getBean(CommandExecutor.class);
-            this.fallbackExecutor = getBean(FallbackExecutor.class);
-            if (serverContext instanceof ApplicationContextAware) {
-                ApplicationContextAware contextAware = (ApplicationContextAware) serverContext;
-                contextAware.setApplicationContext(this.applicationContext);
+        if (!inited) {
+            initLock.lock();
+            try {
+                if (!inited) {
+                    this.serverContext = getBean(ServerContext.class);
+                    this.commandExecutor = getBean(CommandExecutor.class);
+                    this.fallbackExecutor = getBean(FallbackExecutor.class);
+                    if (serverContext instanceof ApplicationContextAware) {
+                        ApplicationContextAware contextAware = (ApplicationContextAware) serverContext;
+                        contextAware.setApplicationContext(this.applicationContext);
+                    }
+                    inited = true;
+                }
+            } finally {
+                initLock.unlock();
             }
         }
+
         Object proxy = null;
         try {
             RestyProxyInvokeHandler interfaceIvkHandler =
@@ -99,7 +115,6 @@ public class RestyProxyBeanFactory implements FactoryBean<Object>, InitializingB
         this.applicationContext = applicationContext;
     }
 
-
     private <T> T getBean(Class<T> clz) {
         T t = null;
         try {
@@ -116,7 +131,7 @@ public class RestyProxyBeanFactory implements FactoryBean<Object>, InitializingB
                 throw new RuntimeException("无法获取Bean:" + clz);
             }
         } catch (BeansException ex) {
-            log.info("{}使用默认配置,ex:{}", clz, ex.getMessage());
+            log.info("{}使用默认配置", clz);
             t = DefaultRestyPassFactory.getDefaultBean(clz);
         }
         return t;

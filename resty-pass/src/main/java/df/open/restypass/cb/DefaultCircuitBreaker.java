@@ -62,6 +62,10 @@ public class DefaultCircuitBreaker implements CircuitBreaker {
      * 半开状态使用的锁，保证只有一个请求通过
      */
     private ReentrantLock halfOpenLock;
+    /**
+     * 启动锁
+     */
+    private ReentrantLock startLock;
 
     /**
      * 统计结果缓冲区 metricsKey->Deque
@@ -86,13 +90,14 @@ public class DefaultCircuitBreaker implements CircuitBreaker {
     /**
      * 断路器是否启动
      */
-    private AtomicBoolean started;
+    private boolean started;
 
     /**
      * Init Method
      */
     public DefaultCircuitBreaker() {
-        this.started = new AtomicBoolean(false);
+        this.started = false;
+        this.startLock = new ReentrantLock();
     }
 
     @Override
@@ -103,27 +108,38 @@ public class DefaultCircuitBreaker implements CircuitBreaker {
 
     @Override
     public void start() {
-        if (started.compareAndSet(false, true)) {
-            this.eventKey = KEY_PREFIX + UUID.randomUUID().toString().replace("-", "").toLowerCase();
-            this.segmentMap = new ConcurrentHashMap<>();
-            this.statusMap = new ConcurrentHashMap<>();
-            this.brokenServerSet = new CopyOnWriteArraySet<>();
-            this.commandQueue = new LinkedBlockingQueue<>();
-            this.halfOpenLock = new ReentrantLock();
-            this.registerEvent();
-            this.startTask();
+        if (!started) {
+
+            startLock.lock();
+
+//            System.out.println("INIT...");
+            try {
+                if (!started) {
+                    this.eventKey = KEY_PREFIX + UUID.randomUUID().toString().replace("-", "").toLowerCase();
+                    this.segmentMap = new ConcurrentHashMap<>();
+                    this.statusMap = new ConcurrentHashMap<>();
+                    this.brokenServerSet = new CopyOnWriteArraySet<>();
+                    this.commandQueue = new LinkedBlockingQueue<>();
+                    this.halfOpenLock = new ReentrantLock();
+                    this.registerEvent();
+                    this.startTask();
+                    started = true;
+                }
+            } finally {
+                startLock.unlock();
+            }
         }
     }
 
     @Override
     public void end() {
-        started.compareAndSet(true, false);
+        started = false;
     }
 
     @Override
     public boolean shouldPass(RestyCommand restyCommand, ServerInstance serverInstance) {
         // 未启动
-        if (!started.get()) {
+        if (!started) {
             return true;
         }
 
@@ -302,15 +318,15 @@ public class DefaultCircuitBreaker implements CircuitBreaker {
      * @return 计数器
      */
     private Metrics getCommandMetrics(String metricsKey) {
+        if (segmentMap == null) {
+            System.out.println("NULL le ");
+        }
         Metrics metrics = segmentMap.get(metricsKey);
         if (metrics == null) {
             Metrics newMetrics = new Metrics();
             // putIfAbsent
-            metrics = segmentMap.putIfAbsent(metricsKey, newMetrics);
-            if (metrics == null) {
-                // put成功， 返回新生成的
-                return newMetrics;
-            }
+            segmentMap.putIfAbsent(metricsKey, newMetrics);
+            metrics = segmentMap.get(metricsKey);
         }
         return metrics;
     }

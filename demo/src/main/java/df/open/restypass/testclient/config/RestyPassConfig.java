@@ -22,15 +22,16 @@ public class RestyPassConfig {
         return new RestyFallbackExecutor();
     }
 
-//    @Bean
-//    public ServerContext serverContext() {
-//        return new ConfigurableServerContext();
-//    }
+    @Bean
+    public ServerContext serverContext() {
+        return new ConfigurableServerContext();
+    }
 
     @SuppressWarnings("SpringJavaAutowiringInspection")
     @Bean
     public CommandExecutor commandExecutor(RestyCommandContext commandContext) {
         return new RestyCommandExecutor(commandContext);
     }
+
 
 }

@@ -9,7 +9,7 @@ import java.lang.reflect.Type;
 public class VoidResponseConverter implements ResponseConverter<Void> {
     @Override
     public boolean support(Type type, String contentType) {
-        if (contentType == null && type.getTypeName().equals("void")) {
+        if (type.getTypeName().equals("void")) {
             return true;
         }
         return false;

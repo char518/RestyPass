@@ -29,7 +29,7 @@ public @interface EnableRestyProxy {
 
     String value() default "";
 
-    Class<? extends RestyPassFactory> factory() default DefaultRestyPassFactory.class;
+//    Class<? extends RestyPassFactory> factory() default DefaultRestyPassFactory.class;
 
     String[] basePackages() default {};
 

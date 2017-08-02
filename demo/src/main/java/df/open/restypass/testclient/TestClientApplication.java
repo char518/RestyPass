@@ -2,9 +2,12 @@ package df.open.restypass.testclient;
 
 import df.open.restypass.starter.EnableRestyProxy;
 import df.open.restypass.testclient.service.ProxyService;
+import df.open.restypass.util.PerformanceTools;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @SuppressWarnings("SpringJavaAutowiringInspection")
 @SpringBootApplication
-//@EnableDiscoveryClient
+@EnableDiscoveryClient
 @EnableRestyProxy(basePackages = {"df.open"})
 @RestController
 public class TestClientApplication {
@@ -35,5 +38,10 @@ public class TestClientApplication {
         proxyService.getNothing();
 //        System.out.println(discoveryClient.getServices());
         return "OK";
+    }
+
+    @RequestMapping(value = "/result")
+    public String result() {
+        return PerformanceTools.getPerformance().toString();
     }
 }

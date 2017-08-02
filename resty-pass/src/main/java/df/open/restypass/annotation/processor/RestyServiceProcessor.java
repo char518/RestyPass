@@ -31,6 +31,8 @@ public class RestyServiceProcessor implements RestyAnnotationProcessor {
             setCircuitBreak(restyService, properties);
             //设置负载均衡器
             setLoadBalancer(restyService, properties);
+            //设置工厂类
+            setFactory(restyService, properties);
         }
         return properties;
     }
@@ -102,5 +104,9 @@ public class RestyServiceProcessor implements RestyAnnotationProcessor {
 
     protected void setLoadBalancer(RestyService restyService, RestyCommandConfig properties) {
         properties.setLoadBalancer(restyService.loadBalancer());
+    }
+
+    protected void setFactory(RestyService restyService, RestyCommandConfig properties) {
+//        properties.setFactory(restyService.factory());
     }
 }

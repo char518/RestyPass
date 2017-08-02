@@ -17,12 +17,16 @@ import org.asynchttpclient.Response;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.atomic.LongAdder;
 
 /**
  * 异步Resty请求执行器
  * Created by darrenfu on 17-7-1.
  */
 public class RestyCommandExecutor implements CommandExecutor {
+
+    public static LongAdder time = new LongAdder();
+    public static LongAdder count = new LongAdder();
 
     /**
      * Resty请求上下文
@@ -51,6 +55,7 @@ public class RestyCommandExecutor implements CommandExecutor {
 
     @Override
     public Object execute(LoadBalancer lb, RestyCommand restyCommand) {
+        long start = System.currentTimeMillis();
 
         // 重试次数
         int retry = restyCommand.getRestyCommandConfig().getRetry();
@@ -62,7 +67,6 @@ public class RestyCommandExecutor implements CommandExecutor {
         // 排除 彻底断路的server， 尝试过的server
         // 1.判断command使用的serverInstanceList是否存在被熔断的server
         // 1.1 存在的话 server加入 loadBalance 的excludeServerList
-
         Set<String> excludeInstanceIdList = circuitBreaker.getBrokenServer();
 
         // 重试机制
@@ -70,7 +74,9 @@ public class RestyCommandExecutor implements CommandExecutor {
             try {
                 // 负载均衡器 选择可用服务实例
                 serverInstance = lb.choose(serverContext, restyCommand, excludeInstanceIdList);
-                System.out.println("use instance:" + serverInstance);
+                if (serverInstance == null) {
+                    throw new RuntimeException("no instances found:" + restyCommand.getServiceName() + ":" + serverContext.getServerList(restyCommand.getServiceName()));
+                }
                 boolean shouldPass = circuitBreaker.shouldPass(restyCommand, serverInstance);
 
                 if (!shouldPass) {
@@ -109,6 +115,9 @@ public class RestyCommandExecutor implements CommandExecutor {
                 }
             }
         }
+        long end = System.currentTimeMillis();
+        count.increment();
+        time.add(end - start);
         return result;
     }
 

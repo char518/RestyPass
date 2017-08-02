@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.concurrent.atomic.LongAdder;
 
 /**
  * 代理类执行器
@@ -27,6 +28,8 @@ import java.lang.reflect.Proxy;
  */
 @Slf4j
 public class RestyProxyInvokeHandler implements InvocationHandler {
+    public static LongAdder time = new LongAdder();
+    public static LongAdder count = new LongAdder();
 
 
     private RestyCommandContext restyCommandContext;
@@ -53,6 +56,7 @@ public class RestyProxyInvokeHandler implements InvocationHandler {
         if (isSpecialMethod(method)) {
             return handleSpecialMethod(proxy, method, args);
         }
+        long start = System.currentTimeMillis();
 
         Object result;
 
@@ -61,7 +65,7 @@ public class RestyProxyInvokeHandler implements InvocationHandler {
                 method.getGenericReturnType(),
                 args,
                 restyCommandContext);
-        
+
         LoadBalancer loadBalancer = LoadBalanceBuilder.createLoadBalancerForService(restyCommand.getServiceName(),
                 restyCommand.getRestyCommandConfig().getLoadBalancer());
 
@@ -80,6 +84,9 @@ public class RestyProxyInvokeHandler implements InvocationHandler {
                 throw ex;
             }
         }
+        long end = System.currentTimeMillis();
+        count.increment();
+        time.add(end - start);
         return result;
     }
 

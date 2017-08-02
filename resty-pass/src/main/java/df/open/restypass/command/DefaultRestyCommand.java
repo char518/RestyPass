@@ -190,6 +190,9 @@ public class DefaultRestyCommand implements RestyCommand {
     @Override
     public RestyCommand success() {
         this.status = RestyCommandStatus.SUCCESS;
+        if(circuitBreaker.getEventKey() == null){
+            System.out.println("XXXX null");
+        }
         this.emit(circuitBreaker.getEventKey(), this);
         return this;
     }

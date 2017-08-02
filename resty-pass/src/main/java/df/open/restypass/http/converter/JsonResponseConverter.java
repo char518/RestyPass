@@ -28,7 +28,7 @@ public class JsonResponseConverter implements ResponseConverter<Object> {
         if (contentType == null) {
             return false;
         }
-        if (contentType.startsWith(APPLICATION_JSON)) {
+        if (contentType.startsWith(APPLICATION_JSON) && !type.getTypeName().equals("void")) {
             return true;
         }
         return false;

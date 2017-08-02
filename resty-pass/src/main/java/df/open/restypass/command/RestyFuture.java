@@ -13,6 +13,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.LongAdder;
 
 /**
  * Resty Future
@@ -21,6 +22,9 @@ import java.util.concurrent.TimeoutException;
  */
 @Slf4j
 public class RestyFuture implements Future {
+
+    public static LongAdder time = new LongAdder();
+    public static LongAdder count = new LongAdder();
 
     private RestyCommand restyCommand;
 
@@ -90,12 +94,18 @@ public class RestyFuture implements Future {
      * @return the response
      */
     public Response getResponse() {
+        long start = System.currentTimeMillis();
+
         try {
             return future.get();
         } catch (InterruptedException | ExecutionException e) {
             future.abort(e);
             log.error("获取响应失败:{}", e.getMessage());
             return FailedResponse.create(new ConnectionException(e));
+        } finally {
+            long end = System.currentTimeMillis();
+            count.increment();
+            time.add(end - start);
         }
     }
 

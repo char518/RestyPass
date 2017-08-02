@@ -28,7 +28,6 @@ public class ConfigurableServerContext implements ServerContext {
             }
             instanceMap.put(server.getServiceName(), server.getInstances());
         }
-
     }
 
     private List<YamlServerList> loadServerFromConfigFile() {
