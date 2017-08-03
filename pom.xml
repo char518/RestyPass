@@ -10,7 +10,7 @@
     <version>1.0-SNAPSHOT</version>
     <modules>
         <module>resty-pass</module>
-        <module>test-server</module>
+        <module>demo-serverside</module>
         <module>demo</module>
     </modules>
     <properties>

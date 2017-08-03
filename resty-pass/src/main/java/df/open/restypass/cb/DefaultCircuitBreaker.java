@@ -108,7 +108,6 @@ public class DefaultCircuitBreaker implements CircuitBreaker {
     @Override
     public void start() {
         if (!started) {
-
             startLock.lock();
             try {
                 if (!started) {

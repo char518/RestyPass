@@ -7,7 +7,7 @@ import df.open.restypass.annotation.processor.RestyMethodProcessor;
 import df.open.restypass.annotation.processor.RestyServiceProcessor;
 import df.open.restypass.command.update.UpdateCommandConfig;
 import df.open.restypass.command.update.Updater;
-import df.open.restypass.http.client.HttpClientHolder;
+import df.open.restypass.http.client.HttpClientWrapper;
 import df.open.restypass.http.config.AsyncHttpConfigFactory;
 import df.open.restypass.spring.wrapper.SpringAnnotationWrapper;
 import lombok.extern.slf4j.Slf4j;
@@ -50,7 +50,7 @@ public class RestyCommandContext implements Updater<UpdateCommandConfig> {
     /**
      * serviceName -> HttpClient map
      */
-    private ConcurrentHashMap<String, HttpClientHolder> httpClientPool;
+    private ConcurrentHashMap<String, HttpClientWrapper> httpClientPool;
 
     /**
      * method -> requestTemplate
@@ -134,7 +134,7 @@ public class RestyCommandContext implements Updater<UpdateCommandConfig> {
         // class->@RestyService
         this.storeRestyService(serviceClz, restyService);
         AsyncHttpClientConfig httpClientConfig = AsyncHttpConfigFactory.createConfig(restyService.connectTimeout(), restyService.requestTimeout());
-        HttpClientHolder clientHolder = new HttpClientHolder(httpClientConfig);
+        HttpClientWrapper clientHolder = new HttpClientWrapper(httpClientConfig);
         httpClientPool.putIfAbsent(serviceName, clientHolder);
 
 
@@ -239,7 +239,7 @@ public class RestyCommandContext implements Updater<UpdateCommandConfig> {
      * @return the http client
      */
     public AsyncHttpClient getHttpClient(String serviceName) {
-        HttpClientHolder clientHolder = httpClientPool.get(serviceName);
+        HttpClientWrapper clientHolder = httpClientPool.get(serviceName);
         if (clientHolder == null) {
             throw new RuntimeException("获取http client失败");
         }

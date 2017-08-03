@@ -22,7 +22,7 @@ import java.util.concurrent.atomic.LongAdder;
  */
 @SuppressWarnings({"unused", "WeakerAccess"})
 @Slf4j
-public class RestyFuture implements Future {
+public class RestyFuture implements Future<Response> {
 
     public static LongAdder time = new LongAdder();
     public static LongAdder count = new LongAdder();
@@ -32,8 +32,6 @@ public class RestyFuture implements Future {
     private ListenableFuture<Response> future;
 
     private ResponseConverterContext converterContext;
-
-    private List<ResponseConverter> converterList;
 
     /**
      * Instantiates a new Resty future.
@@ -76,17 +74,7 @@ public class RestyFuture implements Future {
     }
 
     @Override
-    public Object get() throws InterruptedException, ExecutionException {
-        return future.get();
-    }
-
-
-    /**
-     * Gets response.
-     *
-     * @return the response
-     */
-    public Response getResponse() {
+    public Response get() {
         long start = System.currentTimeMillis();
 
         try {
@@ -105,8 +93,14 @@ public class RestyFuture implements Future {
 
     @SuppressWarnings("NullableProblems")
     @Override
-    public Object get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
-        return future.get(timeout, unit);
+    public Response get(long timeout, TimeUnit unit) {
+        try {
+            return future.get(timeout, unit);
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            future.abort(e);
+            log.error("获取响应失败:{}", e.getMessage());
+            return FailedResponse.create(new ConnectionException(e));
+        }
     }
 
 

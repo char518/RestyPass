@@ -8,7 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class CircuitBreakerFactory {
 
-    private static volatile ConcurrentHashMap<String, CircuitBreaker> breakerMap = new ConcurrentHashMap<>();
+    private static ConcurrentHashMap<String, CircuitBreaker> breakerMap = new ConcurrentHashMap<>();
 
 
     /**

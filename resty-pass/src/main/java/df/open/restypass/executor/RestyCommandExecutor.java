@@ -82,14 +82,14 @@ public class RestyCommandExecutor implements CommandExecutor {
 
                 if (!shouldPass) {
                     // fallback or exception
-                    throw new CircuitBreakException("circuit break is working");
+                    throw new CircuitBreakException("circuit breaker is working");
                 }
 
                 RestyFuture future = restyCommand.ready(circuitBreaker)
                         .start(serverInstance);
 
                 // 同步调用
-                Response response = future.getResponse();
+                Response response = future.get();
                 result = ResponseConverterContext.DEFAULT.convertResponse(restyCommand, response);
                 if (restyCommand.getStatus() == RestyCommandStatus.FAILED) {
                     throw restyCommand.getFailException();

@@ -28,7 +28,7 @@ import java.util.List;
 @RestyService(serviceName = "server",
         fallbackClass = ProxyServiceImpl.class,
         retry = 1,
-        forceBreakEnabled = false
+        fallbackEnabled = true
 )
 @RequestMapping(value = "/resty")
 public interface ProxyService extends ApplicationService {

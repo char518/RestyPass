@@ -10,18 +10,18 @@ import org.asynchttpclient.DefaultAsyncHttpClient;
  * Created by darrenfu on 17-6-24.
  */
 @Data
-public class HttpClientHolder {
+public class HttpClientWrapper {
 
     private AsyncHttpClient client;
 
     private AsyncHttpClientConfig config;
 
-    public HttpClientHolder(AsyncHttpClientConfig config) {
+    public HttpClientWrapper(AsyncHttpClientConfig config) {
         this.client = new DefaultAsyncHttpClient(config);
         this.config = config;
     }
 
-    public HttpClientHolder(AsyncHttpClient client, AsyncHttpClientConfig config) {
+    public HttpClientWrapper(AsyncHttpClient client, AsyncHttpClientConfig config) {
         this.client = client;
         this.config = config;
     }

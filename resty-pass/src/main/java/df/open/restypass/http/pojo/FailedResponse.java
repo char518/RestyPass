@@ -13,26 +13,46 @@ import java.nio.charset.Charset;
 import java.util.List;
 
 /**
+ * 失败的响应
  * Created by darrenfu on 17-7-25.
  */
 public class FailedResponse implements Response {
 
-
+    /**
+     * Resty异常
+     */
     private RestyException exception;
 
     private FailedResponse(RestyException exception) {
         this.exception = exception;
     }
 
+    /**
+     * Create failed response.
+     *
+     * @param ex the ex
+     * @return the failed response
+     */
     public static FailedResponse create(RestyException ex) {
         return new FailedResponse(ex);
     }
 
+    /**
+     * Is failed response boolean.
+     *
+     * @param response the response
+     * @return the boolean
+     */
     public static boolean isFailedResponse(Response response) {
         return response instanceof FailedResponse;
     }
 
 
+    /**
+     * Gets exception.
+     *
+     * @return the exception
+     */
     public RestyException getException() {
         return this.exception;
     }
