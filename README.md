@@ -6,7 +6,7 @@
 - 减少对象生成，Feign+Hystrix+Ribbon+ApacheHttpClient，多个库组合完成一个完整的http客户端调用请求，一个调用链中创建很多多余对象。
 - 减少线程切换，如Hystrix，ApacheHttpClient中都有自己的线程池，一个请求的完成往往要经过多次的线程切换，损耗性能。
 - 更易配置，RestyPass使用注解的方式配置各个接口请求;而使用Feign+Hystrix+Ribbon+ApacheHttpClient，则面临每个库都有自己的配置项，配置繁多而且容易发生冲突，亲身实践，想把这一套配置好是一件不容易的事情。
-- 实时更新配置，RestyPass支持实时更新部分配置，比如实时关闭/启用降级服务，实时熔断/恢复服务，且粒度可以精确到接口级Feign+Hystrix+Ribbon+ApacheHttpClient。
+- 实时更新配置，RestyPass支持实时更新部分配置，比如实时关闭/启用降级服务，实时熔断/恢复服务，且粒度可以精确到接口级。
 - 易开发，可自由开发大部分核心接口的自定义实现，并直接注入即可启用（Spring容器）。
 ## 示例（demo[调用方]+demo-serverside[服务端]）
 1. 客户端 
