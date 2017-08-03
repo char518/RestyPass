@@ -19,6 +19,7 @@
 //@EnableDiscoveryClient
 //启用spring cloud 服务发现则RestyPass自动使用spring的服务发现方式，
 // 否则默认读取resty-server.yaml来获取服务实例
+// 可自定义其它发现服务的方式，实现ServerContext接口并注入即可
 public class TestClientApplication {
     public static void main(String[] args) {
         SpringApplication.run(TestClientApplication.class, args);
@@ -36,6 +37,7 @@ public class TestClientApplication {
 
 
 //使用接口和注解定义并配置调用客户端
+//RestyService注解定义服务
 @RestyService(serviceName = "server",
         fallbackClass = ProxyServiceImpl.class,
         retry = 1,
@@ -43,8 +45,9 @@ public class TestClientApplication {
 )
 @RequestMapping(value = "/resty")
 public interface ProxyService extends ApplicationService {
-
-    @RestyMethod
+    
+    // RestyMethod注解定义服务接口
+    @RestyMethod(retry = 2)
     @RequestMapping(value = "/get_nothing", method = RequestMethod.GET, headers = "Client=RestyProxy", params = "Param1=val1")
     void getNothing();
 }
@@ -59,7 +62,7 @@ servers:
       - host: localhost
         port: 9201
       - host: localhost
-        port: 920
+        port: 9202
 ```
 2. 服务端 
 ```java

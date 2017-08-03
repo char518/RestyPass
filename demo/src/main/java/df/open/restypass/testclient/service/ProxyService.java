@@ -33,7 +33,7 @@ import java.util.List;
 @RequestMapping(value = "/resty")
 public interface ProxyService extends ApplicationService {
 
-    @RestyMethod
+    @RestyMethod(retry = 2)
     @RequestMapping(value = "/get_nothing", method = RequestMethod.GET, headers = "Client=RestyProxy", params = "Param1=val1")
     void getNothing();
 
