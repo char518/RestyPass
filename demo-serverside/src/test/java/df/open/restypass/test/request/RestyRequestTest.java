@@ -2,6 +2,7 @@ package df.open.restypass.test.request;
 
 import df.open.restypass.spring.EnableRestyPass;
 import df.open.restypass.test.service.ProxyService;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,7 @@ public class RestyRequestTest {
     private ProxyService proxyService;
 
     @Test
+    @Ignore
     public void testProxyGetNothing() {
 
         proxyService.getNothing();

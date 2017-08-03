@@ -74,3 +74,6 @@ public class TestController {
 ```
 
 
+# License
+
+Spring Boot is Open Source software released under the Apache 2.0 license.

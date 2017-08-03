@@ -1,7 +1,0 @@
-servers:
-  - serviceName: resty
-    instances:
-      - host: localhost
-        port: 9201
-      - host: localhost
-        port: 9201
