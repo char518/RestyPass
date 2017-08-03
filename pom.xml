@@ -3,6 +3,11 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <modules>
+        <module>resty-pass</module>
+        <module>demo-serverside</module>
+        <module>demo</module>
+    </modules>
 
     <groupId>df.open</groupId>
     <artifactId>RestyPass</artifactId>
@@ -22,8 +27,6 @@
         <developer>
             <name>darren fu</name>
             <email>tiger_kin@163.com</email>
-            <organization>shein.com</organization>
-            <organizationUrl>http://www.shein.com</organizationUrl>
         </developer>
     </developers>
     <issueManagement>
@@ -34,11 +37,7 @@
         <url>https://github.com/darren-fu/RestyPass</url>
         <connection>https://github.com/darren-fu/RestyPass.git</connection>
     </scm>
-    <modules>
-        <module>resty-pass</module>
-        <module>demo-serverside</module>
-        <module>demo</module>
-    </modules>
+
     <properties>
         <spring_version>4.3.5.RELEASE</spring_version>
         <springboot_version>1.5.3.RELEASE</springboot_version>

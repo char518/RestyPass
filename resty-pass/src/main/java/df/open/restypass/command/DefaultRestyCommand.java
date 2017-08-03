@@ -11,15 +11,11 @@ import org.asynchttpclient.uri.Uri;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.util.Arrays;
 
 /**
- * .initProps command
- * .build request
- * .choose server dest
- * .circuit break
- * .execute request
- * <p>
- * <p>
+ * 默认Resty请求命令
+ * 封装请求内容，实现请求过程
  * Created by darrenfu on 17-6-20.
  */
 @Data
@@ -173,7 +169,10 @@ public class DefaultRestyCommand implements RestyCommand {
         this.request = requestBuilder.build();
         ListenableFuture<Response> future = httpClient.executeRequest(request);
 
-        log.debug("Request:{}", request);
+        if (log.isDebugEnabled()) {
+            log.debug("Request:{}", request);
+        }
+
         return new RestyFuture(this, future);
     }
 
@@ -189,8 +188,8 @@ public class DefaultRestyCommand implements RestyCommand {
     @Override
     public void success() {
         this.status = RestyCommandStatus.SUCCESS;
-        if (circuitBreaker.getEventKey() == null) {
-            System.out.println("XXXX null");
+        if (log.isDebugEnabled()) {
+            log.debug("请求成功:{} @ {}", this.getPath(), this.instance);
         }
         this.emit(circuitBreaker.getEventKey(), this);
     }
@@ -199,6 +198,9 @@ public class DefaultRestyCommand implements RestyCommand {
     public void failed(RestyException restyException) {
         this.exception = restyException;
         this.status = RestyCommandStatus.FAILED;
+        if (log.isDebugEnabled()) {
+            log.debug("请求失败:{}@{}: {}", this.getPath(), this.instance, Arrays.toString(this.args));
+        }
         this.emit(circuitBreaker.getEventKey(), this);
     }
 

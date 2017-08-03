@@ -192,9 +192,12 @@ public class DefaultCircuitBreaker implements CircuitBreaker {
                 }
             }
             if (shouldPass) {
-                log.debug("尝试恢复短路服务:{}:{},metrics:{}", restyCommand.getServiceName(), restyCommand.getPath(), metrics);
-            } else {
+                if (log.isDebugEnabled()) {
+                    log.debug("尝试恢复短路服务:{}:{},metrics:{}", restyCommand.getServiceName(), restyCommand.getPath(), metrics);
+                }
+            } else if (log.isDebugEnabled()) {
                 log.debug("熔断服务:{}:{},metrics:{}", restyCommand.getServiceName(), restyCommand.getPath(), metrics);
+
             }
         }
         return shouldPass;
@@ -273,8 +276,9 @@ public class DefaultCircuitBreaker implements CircuitBreaker {
                         }
                         metrics.store(isSuccess, forceUseNewMetrics);
                     }
-                    log.info("处理完成, 处理个数:{}，剩余:{}个", commandList.size(), commandQueue.size());
-
+                    if (log.isTraceEnabled()) {
+                        log.trace("处理完成, 处理个数:{}，剩余:{}个", commandList.size(), commandQueue.size());
+                    }
                 } catch (Exception ex) {
                     log.error("断路器RestyCommand处理失败:{}", ex);
                 }
