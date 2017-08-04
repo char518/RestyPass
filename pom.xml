@@ -9,13 +9,13 @@
         <module>demo</module>
     </modules>
 
-    <groupId>df.open</groupId>
+    <groupId>com.github.df</groupId>
     <artifactId>RestyPass</artifactId>
     <packaging>pom</packaging>
     <version>1.1-SNAPSHOT</version>
 
     <name>RestyPass</name>
-    <description>High-Performance Restful Client library</description>
+    <description>High-Performance Restful Client Library</description>
     <url>https://github.com/darren-fu/RestyPass</url>
     <licenses>
         <license>

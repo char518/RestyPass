@@ -65,7 +65,8 @@ servers:
         port: 9202
 ```
 2. 服务端 
-```java
+```java 
+
 @RestController
 @RequestMapping("/resty")
 public class TestController {
