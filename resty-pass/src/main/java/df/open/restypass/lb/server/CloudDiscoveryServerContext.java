@@ -1,6 +1,9 @@
 package df.open.restypass.lb.server;
 
+import df.open.restypass.base.RestyConst;
+import df.open.restypass.util.DateFormatTools;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
@@ -123,7 +126,15 @@ public class CloudDiscoveryServerContext implements ServerContext, ApplicationCo
         Map<String, String> metadata = serviceInstance.getMetadata();
         if (metadata != null && metadata.size() > 0) {
             Map<String, Object> props = new HashMap();
-            metadata.forEach((k, v) -> props.put(k, v));
+
+            for (Map.Entry<String, String> entry : metadata.entrySet()) {
+                props.put(entry.getKey(), entry.getValue());
+                // 服务启动的时间
+                if (RestyConst.Instance.PROP_TIMESTAMP_KEY.equalsIgnoreCase(entry.getKey())
+                        && StringUtils.isNotEmpty(entry.getValue())) {
+                    instance.setStartTime(DateFormatTools.parseDate(entry.getValue()));
+                }
+            }
             instance.setProps(props);
         }
         instance.initProps();
@@ -169,16 +180,11 @@ public class CloudDiscoveryServerContext implements ServerContext, ApplicationCo
         }, 1 * 1000, 20 * 1000, TimeUnit.MILLISECONDS);
     }
 
-    boolean done = false;
 
     /**
      * 更新server
      */
     private void updateServer() {
-        if (done) {
-//            return;
-        }
-        done = true;
         List<String> services = getClient().getServices();
         this.updatedInstancesMap = new ConcurrentHashMap<>();
         for (String service : services) {

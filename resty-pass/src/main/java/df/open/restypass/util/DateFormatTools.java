@@ -75,6 +75,22 @@ public class DateFormatTools {
      */
     public static final FastDateFormat DEFAULT_ON_SECOND_FORMAT = FastDateFormat.getInstance(PATTERN_DEFAULT_ON_SECOND);
 
+
+    public static Date parseDate(String date) {
+        try {
+            long dateLong = Long.parseLong(date);
+            return new Date(dateLong);
+        } catch (Exception ex) {
+            try {
+                return DEFAULT_ON_SECOND_FORMAT.parse(date);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+
     /**
      * 分析日期字符串, 仅用于pattern不固定的情况.
      * <p>

@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * 说明:
+ * 说明: RestyService代理类注册器
  * <p/>
  * Copyright: Copyright (c)
  * <p/>

@@ -7,6 +7,7 @@ import df.open.restypass.lb.server.ServerInstance;
 
 /**
  * RestyCommand生命周期
+ * ready->start->success/fail
  * Created by darrenfu on 17-7-22.
  */
 public interface RestyCommandLifeCycle {

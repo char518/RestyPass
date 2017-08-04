@@ -26,9 +26,6 @@ import java.util.concurrent.atomic.LongAdder;
 @SuppressWarnings("unused")
 public class RestyCommandExecutor implements CommandExecutor {
 
-    public static LongAdder time = new LongAdder();
-    public static LongAdder count = new LongAdder();
-
     /**
      * Resty请求上下文
      */
@@ -56,7 +53,6 @@ public class RestyCommandExecutor implements CommandExecutor {
 
     @Override
     public Object execute(LoadBalancer lb, RestyCommand restyCommand) {
-        long start = System.currentTimeMillis();
 
         // 重试次数
         int retry = restyCommand.getRestyCommandConfig().getRetry();
@@ -115,9 +111,6 @@ public class RestyCommandExecutor implements CommandExecutor {
                 }
             }
         }
-        long end = System.currentTimeMillis();
-        count.increment();
-        time.add(end - start);
         return result;
     }
 

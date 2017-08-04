@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
+ * 负载均衡器工厂类
  * Created by darrenfu on 17-6-28.
  */
 @Slf4j
@@ -13,6 +14,13 @@ public class LoadBalanceFactory {
     private static final ConcurrentHashMap<String, LoadBalancer> serviceLoadBalancerMap = new ConcurrentHashMap<>();
 
 
+    /**
+     * 按照service提供LB
+     *
+     * @param serviceName
+     * @param loadBalancer
+     * @return
+     */
     public static LoadBalancer createLoadBalancerForService(String serviceName, String loadBalancer) {
 
         LoadBalancer balancer = serviceLoadBalancerMap.get(serviceName);

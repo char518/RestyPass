@@ -13,20 +13,15 @@ import java.util.Map;
  */
 public class PerformanceTools {
 
-
+    /**
+     * just for print performance log
+     *
+     * @return
+     */
     public static Map<String, Long> getPerformance() {
-
         Map<String, Long> map = new HashMap<>();
-
-        map.put(RestyProxyInvokeHandler.class.getSimpleName(),
-                (RestyProxyInvokeHandler.time.longValue() / RestyProxyInvokeHandler.count.longValue()));
-
-        map.put(RestyCommandExecutor.class.getSimpleName(),
-                (RestyCommandExecutor.time.longValue() / RestyCommandExecutor.count.longValue()));
-
         map.put(RestyFuture.class.getSimpleName(),
                 (RestyFuture.time.longValue() / RestyFuture.count.longValue()));
-
         return map;
     }
 

@@ -16,28 +16,28 @@ public @interface RestyMethod {
      * 是否启用降级服务，为空时以@RestyService的配置为准
      * "true" or "false"
      *
-     * @see RestyMethod#fallbackEnabled()
+     * @see RestyService#fallbackEnabled()
      */
     String fallbackEnabled() default "";
 
     /**
      * 失败后重试次数，为-1时以@RestyService的配置为准
      *
-     * @see RestyMethod#retry()
+     * @see RestyService#retry()
      */
     int retry() default -1;
 
     /**
      * 是否启用断路器，为空时以@RestyService的配置为准
      *
-     * @see RestyMethod#circuitBreakEnabled()
+     * @see RestyService#circuitBreakEnabled()
      */
     String circuitBreakEnabled() default "";
 
     /**
      * 是否强制短路，为空时以@RestyService的配置为准
      *
-     * @see RestyMethod#forceBreakEnabled()
+     * @see RestyService#forceBreakEnabled()
      */
     String forceBreakEnabled() default "";
 }
