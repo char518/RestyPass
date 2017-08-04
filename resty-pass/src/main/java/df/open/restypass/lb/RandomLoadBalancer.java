@@ -15,7 +15,7 @@ import java.util.Random;
 public class RandomLoadBalancer extends AbstractLoadBalancer {
 
     public static final String NAME = "random";
-
+    //TODO 伪随机问题
     private final Random random = new Random();
 
     @Override

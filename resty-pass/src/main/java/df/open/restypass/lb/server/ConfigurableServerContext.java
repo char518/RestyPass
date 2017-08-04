@@ -21,17 +21,19 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 public class ConfigurableServerContext implements ServerContext {
+
     public static final String CONFIG_FILE_NAME = "resty-server.yaml";
 
     private Map<String, List<ServerInstance>> instanceMap;
-
 
     public ConfigurableServerContext() {
         this.instanceMap = new ConcurrentHashMap<>();
         loadServerFromConfigFile();
     }
 
-
+    /**
+     * 加载配置文件
+     */
     private void loadServerFromConfigFile() {
         InputStream inputStream = parseYamlFile(CONFIG_FILE_NAME, true);
         Yaml yaml = new Yaml();

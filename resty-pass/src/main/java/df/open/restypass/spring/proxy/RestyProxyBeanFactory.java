@@ -21,7 +21,7 @@ import java.util.concurrent.locks.ReentrantLock;
 /**
  * RestyService代理工厂类
  *
- * @author darren-fu
+ * @author darren -fu
  */
 @Data
 @Slf4j
@@ -63,6 +63,13 @@ public class RestyProxyBeanFactory implements FactoryBean<Object>, InitializingB
         return true;
     }
 
+    /**
+     * Create proxy object.
+     *
+     * @param type                the type
+     * @param restyCommandContext the resty command context
+     * @return the object
+     */
     protected Object createProxy(Class type, RestyCommandContext restyCommandContext) {
 
         if (!inited) {

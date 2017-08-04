@@ -47,8 +47,8 @@ public abstract class AbstractLoadBalancer implements LoadBalancer {
     /**
      * 基于特定算法，选举可用server实例
      *
-     * @param instanceList         the instance list
-     * @param command              the command
+     * @param instanceList the instance list
+     * @param command      the command
      * @return the server instance
      */
     protected abstract ServerInstance doChoose(List<ServerInstance> instanceList, RestyCommand command);
@@ -63,7 +63,7 @@ public abstract class AbstractLoadBalancer implements LoadBalancer {
         int weight = serverInstance.getPropValue(PROP_WEIGHT_KEY, PROP_WEIGHT_DEFAULT);
 
         if (weight > 0) {
-            long timestamp = serverInstance.getPropValue(PROP_TIMESTAMP_KEY, PROP_TIMESTAMP_DEFAULT);
+            long timestamp = getServerStartTime(serverInstance);
             if (timestamp > 0L) {
                 int uptime = (int) (System.currentTimeMillis() - timestamp);
                 int warmup = serverInstance.getPropValue(PROP_WARMUP_KEY, PROP_WARMUP_DEFAULT);
@@ -75,6 +75,10 @@ public abstract class AbstractLoadBalancer implements LoadBalancer {
         }
 
         return weight;
+    }
+
+    private long getServerStartTime(ServerInstance serverInstance) {
+        return serverInstance.getStartTime() != null ? serverInstance.getStartTime().getTime() : serverInstance.getPropValue(PROP_TIMESTAMP_KEY, PROP_TIMESTAMP_DEFAULT);
     }
 
     /**

@@ -17,8 +17,8 @@ import java.lang.reflect.Type;
 public class JsonResponseConverter implements ResponseConverter<Object> {
 
     private static final String APPLICATION_JSON = "application/json";
-    private ObjectMapper objectMapper;
 
+    private ObjectMapper objectMapper;
 
     public JsonResponseConverter() {
         this.objectMapper = JsonTools.defaultMapper().getMapper();
