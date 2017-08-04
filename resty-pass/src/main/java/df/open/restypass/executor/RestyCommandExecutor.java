@@ -97,7 +97,6 @@ public class RestyCommandExecutor implements CommandExecutor {
                 }
             } catch (Exception ex) {
                 if (times == retry) {
-                    System.out.println("##重试了:" + times + " 次，到达最大值:" + retry);
                     throw ex;
                 } else {
                     // 将本次使用的server 加入排除列表
@@ -107,7 +106,6 @@ public class RestyCommandExecutor implements CommandExecutor {
                     if (serverInstance != null) {
                         excludeInstanceIdList.add(serverInstance.getInstanceId());
                     }
-                    System.out.println("@@重试了:" + times + " 次，最大值:" + retry);
                 }
             }
         }

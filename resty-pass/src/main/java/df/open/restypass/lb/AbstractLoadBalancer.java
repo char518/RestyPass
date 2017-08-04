@@ -3,8 +3,10 @@ package df.open.restypass.lb;
 import df.open.restypass.command.RestyCommand;
 import df.open.restypass.lb.server.ServerContext;
 import df.open.restypass.lb.server.ServerInstance;
+import df.open.restypass.util.CommonTools;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -36,10 +38,18 @@ public abstract class AbstractLoadBalancer implements LoadBalancer {
             return serverList.get(0);
         }
 
-        if (excludeInstanceIdSet != null && excludeInstanceIdSet.size() > 0) {
-            serverList.removeIf(v -> excludeInstanceIdSet.contains(v.getInstanceId()));
+        if (!CommonTools.isEmpty(excludeInstanceIdSet)) {
+            List<ServerInstance> useableServerList = new ArrayList<>();
+            for (ServerInstance instance : serverList) {
+                if (!excludeInstanceIdSet.contains(instance.getInstanceId())) {
+                    useableServerList.add(instance);
+                }
+            }
+            // 排除excludeServer后，有可用server则使用，否则还是使用原始的Server
+            if (!CommonTools.isEmpty(useableServerList)) {
+                serverList = useableServerList;
+            }
         }
-
         return doChoose(serverList, command);
     }
 
