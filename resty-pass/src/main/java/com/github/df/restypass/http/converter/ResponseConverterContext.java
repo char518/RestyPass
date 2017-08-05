@@ -1,9 +1,9 @@
 package com.github.df.restypass.http.converter;
 
 import com.github.df.restypass.command.RestyCommand;
-import com.github.df.restypass.exception.RequestException;
-import com.github.df.restypass.exception.RestyException;
-import com.github.df.restypass.exception.ServerException;
+import com.github.df.restypass.exception.execute.RequestException;
+import com.github.df.restypass.exception.execute.RestyException;
+import com.github.df.restypass.exception.execute.ServerException;
 import com.github.df.restypass.http.pojo.FailedResponse;
 import org.asynchttpclient.Response;
 

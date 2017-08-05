@@ -243,8 +243,6 @@ public class Metrics {
                 if (lastFail == last) {
                     continuousFailCount++;
                 }
-
-
                 lastFail = last = System.currentTimeMillis();
                 failCount = fail.longValue();
                 failPercentage = Math.toIntExact(failCount * 100 / total.longValue());

@@ -3,17 +3,23 @@ package com.github.df.restypass.spring.proxy;
 import com.github.df.restypass.command.DefaultRestyCommand;
 import com.github.df.restypass.command.RestyCommand;
 import com.github.df.restypass.command.RestyCommandContext;
-import com.github.df.restypass.exception.RestyException;
+import com.github.df.restypass.enums.CommandFilterType;
+import com.github.df.restypass.exception.execute.RestyException;
+import com.github.df.restypass.exception.filter.RejectException;
 import com.github.df.restypass.executor.CommandExecutor;
 import com.github.df.restypass.executor.FallbackExecutor;
+import com.github.df.restypass.filter.CommandFilter;
+import com.github.df.restypass.filter.CommandFilterContext;
 import com.github.df.restypass.lb.LoadBalanceFactory;
 import com.github.df.restypass.lb.LoadBalancer;
 import com.github.df.restypass.lb.server.ServerContext;
+import com.github.df.restypass.util.CommonTools;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.List;
 
 /**
  * 代理类执行器
@@ -26,22 +32,41 @@ import java.lang.reflect.Proxy;
 @Slf4j
 public class RestyProxyInvokeHandler implements InvocationHandler {
 
+    /**
+     * Command容器
+     */
     private RestyCommandContext restyCommandContext;
 
+    /**
+     * 命令执行器
+     */
     private CommandExecutor commandExecutor;
 
+    /**
+     * 降级服务执行器
+     */
     private FallbackExecutor fallbackExecutor;
 
+    /**
+     * 服务实例容器
+     */
     private ServerContext serverContext;
+
+    /**
+     * 过滤器容器
+     */
+    private CommandFilterContext commandFilterContext;
 
     public RestyProxyInvokeHandler(RestyCommandContext restyCommandContext,
                                    CommandExecutor commandExecutor,
                                    FallbackExecutor fallbackExecutor,
-                                   ServerContext serverContext) {
+                                   ServerContext serverContext,
+                                   CommandFilterContext commandFilterContext) {
         this.restyCommandContext = restyCommandContext;
         this.commandExecutor = commandExecutor;
         this.fallbackExecutor = fallbackExecutor;
         this.serverContext = serverContext;
+        this.commandFilterContext = commandFilterContext;
     }
 
 
@@ -53,21 +78,34 @@ public class RestyProxyInvokeHandler implements InvocationHandler {
 
         Object result;
 
+        //创建请求载体，RestyCommand
         RestyCommand restyCommand = new DefaultRestyCommand(method.getDeclaringClass(),
                 method,
                 method.getGenericReturnType(),
                 args,
                 restyCommandContext);
+        // 获取过滤器
+        List<CommandFilter> filterList = commandFilterContext.getFilterList();
 
+        // 执行过滤器
+        for (CommandFilter commandFilter : filterList) {
+            if (CommandFilterType.BEFOR_EXECUTE.equals(commandFilter.getFilterType())
+                    && commandFilter.shouldFilter(restyCommand)) {
+                commandFilter.filter(restyCommand);
+            }
+        }
+
+        // 创建负载均衡器
         LoadBalancer loadBalancer = LoadBalanceFactory.createLoadBalancerForService(restyCommand.getServiceName(),
                 restyCommand.getRestyCommandConfig().getLoadBalancer());
 
+        // 为executor设置服务容器
         commandExecutor.setServerContext(serverContext);
         try {
             if (commandExecutor.executable(restyCommand)) {
                 result = commandExecutor.execute(loadBalancer, restyCommand);
             } else {
-                throw new IllegalStateException("Resty command is suitable:" + restyCommand);
+                throw new IllegalStateException("Resty command is not executable:" + restyCommand);
             }
         } catch (RestyException ex) {
             log.warn("请求发生异常:", ex);

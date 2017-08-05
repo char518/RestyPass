@@ -4,7 +4,7 @@ import com.github.df.restypass.annotation.RestyService;
 import com.github.df.restypass.command.RestyCommand;
 import com.github.df.restypass.command.RestyCommandConfig;
 import com.github.df.restypass.enums.RestyCommandStatus;
-import com.github.df.restypass.exception.RestyException;
+import com.github.df.restypass.exception.execute.RestyException;
 import com.github.df.restypass.util.ClassTools;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;

@@ -1,4 +1,4 @@
-package com.github.df.restypass.exception;
+package com.github.df.restypass.exception.execute;
 
 /**
  * 请求连接异常（httpConnectException, TimeoutException,InterruptException）

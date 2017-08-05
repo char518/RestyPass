@@ -1,6 +1,6 @@
 package com.github.df.restypass.testclient.service;
 
-import com.github.df.restypass.exception.RestyException;
+import com.github.df.restypass.exception.execute.RestyException;
 import com.github.df.restypass.testclient.entity.Response;
 import com.github.df.restypass.testclient.entity.User;
 import lombok.extern.slf4j.Slf4j;

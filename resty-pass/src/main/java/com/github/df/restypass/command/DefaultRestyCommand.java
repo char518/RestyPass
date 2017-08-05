@@ -2,7 +2,7 @@ package com.github.df.restypass.command;
 
 import com.github.df.restypass.cb.CircuitBreaker;
 import com.github.df.restypass.enums.RestyCommandStatus;
-import com.github.df.restypass.exception.RestyException;
+import com.github.df.restypass.exception.execute.RestyException;
 import com.github.df.restypass.lb.server.ServerInstance;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;

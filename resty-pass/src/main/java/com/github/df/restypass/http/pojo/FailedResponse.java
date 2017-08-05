@@ -1,6 +1,6 @@
 package com.github.df.restypass.http.pojo;
 
-import com.github.df.restypass.exception.RestyException;
+import com.github.df.restypass.exception.execute.RestyException;
 import io.netty.handler.codec.http.HttpHeaders;
 import org.asynchttpclient.Response;
 import org.asynchttpclient.cookie.Cookie;

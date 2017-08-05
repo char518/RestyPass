@@ -1,6 +1,6 @@
 package com.github.df.restypass.command;
 
-import com.github.df.restypass.exception.ConnectionException;
+import com.github.df.restypass.exception.execute.ConnectionException;
 import com.github.df.restypass.http.converter.ResponseConverterContext;
 import com.github.df.restypass.http.pojo.FailedResponse;
 import lombok.extern.slf4j.Slf4j;

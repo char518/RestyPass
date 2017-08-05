@@ -1,4 +1,4 @@
-package com.github.df.restypass.exception;
+package com.github.df.restypass.exception.execute;
 
 /**
  * 短路 默认抛出此异常

@@ -1,4 +1,4 @@
-package com.github.df.restypass.exception;
+package com.github.df.restypass.exception.execute;
 
 /**
  * Resty请求错误异常

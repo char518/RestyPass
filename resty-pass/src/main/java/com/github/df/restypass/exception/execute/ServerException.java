@@ -1,4 +1,4 @@
-package com.github.df.restypass.exception;
+package com.github.df.restypass.exception.execute;
 
 /**
  * 下游服务异常

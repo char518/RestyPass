@@ -5,11 +5,15 @@ import com.github.df.restypass.executor.CommandExecutor;
 import com.github.df.restypass.executor.FallbackExecutor;
 import com.github.df.restypass.executor.RestyCommandExecutor;
 import com.github.df.restypass.executor.RestyFallbackExecutor;
+import com.github.df.restypass.filter.CommandFilter;
 import com.github.df.restypass.lb.LoadBalancer;
 import com.github.df.restypass.lb.server.CloudDiscoveryServerContext;
 import com.github.df.restypass.lb.server.ConfigurableServerContext;
 import com.github.df.restypass.lb.server.ServerContext;
 import com.github.df.restypass.util.ClassTools;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 默认工厂类
@@ -41,6 +45,13 @@ public class DefaultRestyPassFactory implements RestyPassFactory {
     @Override
     public FallbackExecutor getFallbackExecutor() {
         return new RestyFallbackExecutor();
+    }
+
+    @Override
+    public List<CommandFilter> getCommandFilter() {
+        List<CommandFilter> commandFilterList = new ArrayList<>();
+        //TODO 限流过滤器
+        return commandFilterList;
     }
 
 

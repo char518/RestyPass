@@ -6,7 +6,7 @@ import com.github.df.restypass.command.RestyCommand;
 import com.github.df.restypass.command.RestyCommandContext;
 import com.github.df.restypass.command.RestyFuture;
 import com.github.df.restypass.enums.RestyCommandStatus;
-import com.github.df.restypass.exception.CircuitBreakException;
+import com.github.df.restypass.exception.execute.CircuitBreakException;
 import com.github.df.restypass.http.converter.ResponseConverterContext;
 import com.github.df.restypass.lb.LoadBalancer;
 import com.github.df.restypass.lb.server.ServerContext;
@@ -58,6 +58,8 @@ public class RestyCommandExecutor implements CommandExecutor {
 
         Object result = null;
         CircuitBreaker circuitBreaker = CircuitBreakerFactory.createDefaultCircuitBreaker(restyCommand.getServiceName());
+        // RestyCommand ready to start
+        restyCommand.ready(circuitBreaker);
         ServerInstance serverInstance = null;
 
         // 排除 彻底断路的server， 尝试过的server
@@ -80,8 +82,7 @@ public class RestyCommandExecutor implements CommandExecutor {
                     throw new CircuitBreakException("circuit breaker is working");
                 }
 
-                RestyFuture future = restyCommand.ready(circuitBreaker)
-                        .start(serverInstance);
+                RestyFuture future = restyCommand.start(serverInstance);
 
                 // 同步调用
                 Response response = future.get();

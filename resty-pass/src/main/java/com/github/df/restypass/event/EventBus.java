@@ -15,6 +15,9 @@ import java.util.function.Consumer;
 @Slf4j
 public class EventBus {
 
+    /**
+     * 事件-消费者缓存(eventKey->Consumer)
+     */
     private static ConcurrentHashMap<String, List<Consumer>> eventMap = new ConcurrentHashMap<>();
 
     /**

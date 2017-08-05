@@ -5,7 +5,7 @@ import com.google.common.collect.Table;
 import com.github.df.restypass.command.RestyCommand;
 import com.github.df.restypass.enums.CircuitBreakerStatus;
 import com.github.df.restypass.enums.RestyCommandStatus;
-import com.github.df.restypass.exception.RequestException;
+import com.github.df.restypass.exception.execute.RequestException;
 import com.github.df.restypass.lb.server.ServerInstance;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
@@ -54,7 +54,7 @@ public class DefaultCircuitBreaker implements CircuitBreaker {
     /**
      * Event key的前缀
      */
-    private static final String KEY_PREFIX = "breaker-";
+    private static final String KEY_PREFIX = "default-breaker-";
 
     /**
      * 注册事件使用Key
@@ -71,7 +71,7 @@ public class DefaultCircuitBreaker implements CircuitBreaker {
     private ReentrantLock startLock;
 
     /**
-     * 统计结果缓冲区 metricsKey->Deque
+     * 统计结果缓冲区 metricsKey->Metrics
      */
     private ConcurrentHashMap<String, Metrics> segmentMap;
 
