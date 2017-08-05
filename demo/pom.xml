@@ -46,7 +46,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>df.open.restypass.testclient.TestClientApplication</mainClass>
+                    <mainClass>com.github.df.restypass.testclient.TestClientApplication</mainClass>
                 </configuration>
                 <executions>
                     <execution>
