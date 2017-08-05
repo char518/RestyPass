@@ -1,6 +1,11 @@
 # RestyPass
 > 高性能的Restful服务调用客户端库，完全兼容Spring MVC 注解，基于接口和注解自动代理客户端HTTP请求，支持服务发现，负载均衡，自动熔断，降级、重试。覆盖Feign + Hystrix + Ribbon + ApacheHttpClient的功能
 
+# 欢迎贡献代码 
+
+新生项目，可与spring cloud/spring boot配套使用,帮助微服务架构更容易落地，解决服务间最后一公里的调用问题。
+欢迎贡献想法和code~ 
+
 ## 对比SpringCloud技术栈：Feign+Hystrix+Ribbon+ApacheHttpClient
 - Http连接池性能提升，RestyPass采用基于Netty实现的AsyncHttpClient连接池，性能测试比ApacheHttpClient高30%。
 - 减少对象生成，Feign+Hystrix+Ribbon+ApacheHttpClient，多个库组合完成一个完整的http客户端调用请求，一个调用链中创建很多多余对象。
