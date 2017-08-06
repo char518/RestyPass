@@ -15,6 +15,7 @@ github: https://github.com/darren-fu/RestyPass
 - 更易配置，RestyPass使用注解的方式配置各个接口请求;而使用Feign+Hystrix+Ribbon+ApacheHttpClient，则面临每个库都有自己的配置项，配置繁多而且容易发生冲突，亲身实践，想把这一套配置好是一件不容易的事情。
 - 实时更新配置，RestyPass支持实时更新部分配置，比如实时关闭/启用降级服务，实时熔断/恢复服务，且粒度可以精确到接口级。
 - 易开发，可自由开发大部分核心接口的自定义实现，并直接注入即可启用（Spring容器）。 
+- 支持过滤器，并可以自定义过滤器并注入 
 
 ## 示例（demo[调用方]+demo-serverside[服务端]） 
 
@@ -48,15 +49,19 @@ public class TestClientApplication {
 //使用接口和注解定义并配置调用客户端
 //RestyService注解定义服务
 @RestyService(serviceName = "server",
+        fallbackEnabled = true,
         fallbackClass = ProxyServiceImpl.class,
+        forceBreakEnabled = false,
+        circuitBreakEnabled = false,
+        loadBalancer = RandomLoadBalancer.NAME,
         retry = 1,
-        fallbackEnabled = true
+        requestTimeout = 10000
 )
 @RequestMapping(value = "/resty")
 public interface ProxyService extends ApplicationService {
     
     // RestyMethod注解定义服务接口
-    @RestyMethod(retry = 2)
+    @RestyMethod(retry = 2, forceBreakEnabled = "true")
     @RequestMapping(value = "/get_nothing", method = RequestMethod.GET, headers = "Client=RestyProxy", params = "Param1=val1")
     void getNothing();
 }

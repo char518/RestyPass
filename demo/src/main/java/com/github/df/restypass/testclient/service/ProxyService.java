@@ -2,6 +2,7 @@ package com.github.df.restypass.testclient.service;
 
 import com.github.df.restypass.annotation.RestyMethod;
 import com.github.df.restypass.annotation.RestyService;
+import com.github.df.restypass.lb.RandomLoadBalancer;
 import com.github.df.restypass.testclient.entity.Response;
 import com.github.df.restypass.testclient.entity.User;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,14 +26,18 @@ import java.util.List;
  * @date 2016/11/22
  */
 @RestyService(serviceName = "server",
+        fallbackEnabled = true,
         fallbackClass = ProxyServiceImpl.class,
+        forceBreakEnabled = false,
+        circuitBreakEnabled = false,
+        loadBalancer = RandomLoadBalancer.NAME,
         retry = 1,
-        fallbackEnabled = true
+        requestTimeout = 10000
 )
 @RequestMapping(value = "/resty")
 public interface ProxyService extends ApplicationService {
 
-    @RestyMethod(retry = 2)
+    @RestyMethod(retry = 2, forceBreakEnabled = "true")
     @RequestMapping(value = "/get_nothing", method = RequestMethod.GET, headers = "Client=RestyProxy", params = "Param1=val1")
     void getNothing();
 

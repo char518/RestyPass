@@ -65,14 +65,14 @@ public @interface RestyService {
 
 
     /**
-     * 连接超时时间
+     * 连接超时时间 ms
      */
     int connectTimeout() default 5000;
 
     /**
-     * 响应请求超时时间
+     * 响应请求超时时间 ms
      */
-    int requestTimeout() default 10000;
+    int requestTimeout() default 60000;
 
 
 //    Class<? extends RestyPassFactory> factory() default DefaultRestyPassFactory.class;
