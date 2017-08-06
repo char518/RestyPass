@@ -1,5 +1,5 @@
 # RestyPass
->High performance Restful services call client library, 完全兼容Spring MVC 注解，基于接口和注解自动代理客户端HTTP请求，支持服务发现，负载均衡，自动熔断，降级、重试。覆盖Feign + Hystrix + Ribbon + ApacheHttpClient的功能
+> 高性能的Restful服务调用客户端库，完全兼容Spring MVC 注解，基于接口和注解自动代理客户端HTTP请求，支持服务发现，负载均衡，自动熔断，降级，重试。覆盖Feign + Hystrix + Ribbon + ApacheHttpClient的功能
 
 # 欢迎贡献代码 
 
