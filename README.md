@@ -1,34 +1,33 @@
 # RestyPass
->High performance Restful services call client library, 完全兼容Spring MVC 注解，基于接口和注解自动代理客户端HTTP请求，支持服务发现，负载均衡，自动熔断，降级、重试。覆盖Feign + Hystrix + Ribbon + ApacheHttpClient的功能
+>High performance Restful services call client library, support service discovery, load balance, circuit breaker, service fallback, retry. 
+automatically proxy client HTTP requests based on interfaces and annotations and compatible with Spring MVC annotations。
 
-# 欢迎贡献代码 
+## Purpose 
 
-新生项目，可与spring cloud/spring boot配套使用,帮助微服务架构更容易落地，解决服务间最后一公里的调用问题。
-欢迎贡献想法和code~ 
+Project can be used with spring cloud / spring boot, solve the interface call between services in the micro service architecture.
+Welcome to contribute ideas and code. 
 
-github: https://github.com/darren-fu/RestyPass
+## compare with SpringCloud：Feign + Hystrix + Ribbon + ApacheHttpClient
+- Http connection pool performance upgrade, RestyPass based on Netty implementation of the AsyncHttpClient connection pool, performance testing than ApacheHttpClient 30% higher.
+- Reduce object generation, Feign+Hystrix+Ribbon+ApacheHttpClient, multiple library combinations to complete a complete http client request, a request chain to create a lot of redundant objects。
+- Reduce thread switching, Such as Hystrix, ApacheHttpClient have their own thread pool, a request is often completed through a number of thread switching, loss of performance.
+- Easier configuration, RestyPass uses annotations to configure individual interface requests.
+- Real-time update configuration, RestyPass support real-time update part of the configuration, such as  disable / enable fallback services, disable / enable circuit breaker, and granularity can be accurate to the interface level。
+- Easy to develop, free to develop most of the core interface of the custom implementation, and direct injection can be enabled（base on Spring context）。 
 
-## 对比SpringCloud技术栈：Feign+Hystrix+Ribbon+ApacheHttpClient
-- Http连接池性能提升，RestyPass采用基于Netty实现的AsyncHttpClient连接池，性能测试比ApacheHttpClient高30%。
-- 减少对象生成，Feign+Hystrix+Ribbon+ApacheHttpClient，多个库组合完成一个完整的http客户端调用请求，一个调用链中创建很多多余对象。
-- 减少线程切换，如Hystrix，ApacheHttpClient中都有自己的线程池，一个请求的完成往往要经过多次的线程切换，损耗性能。
-- 更易配置，RestyPass使用注解的方式配置各个接口请求;而使用Feign+Hystrix+Ribbon+ApacheHttpClient，则面临每个库都有自己的配置项，配置繁多而且容易发生冲突，亲身实践，想把这一套配置好是一件不容易的事情。
-- 实时更新配置，RestyPass支持实时更新部分配置，比如实时关闭/启用降级服务，实时熔断/恢复服务，且粒度可以精确到接口级。
-- 易开发，可自由开发大部分核心接口的自定义实现，并直接注入即可启用（Spring容器）。 
+## Demo（demo[client]+demo-serverside[server]） 
 
-## 示例（demo[调用方]+demo-serverside[服务端]） 
-
-1. 客户端 
+1. client 
 
 ```java
-// 使用@EnableRestyPass注解启用RestyPass
+// use @EnableRestyPass to enable RestyPass
 @SpringBootApplication
-@EnableRestyPass(basePackages = {"df.open"})
+@EnableRestyPass(basePackages = {"com.github.df"})
 @RestController
 //@EnableDiscoveryClient
-//启用spring cloud 服务发现则RestyPass自动使用spring的服务发现方式，
-// 否则默认读取resty-server.yaml来获取服务实例
-// 可自定义其它发现服务的方式，实现ServerContext接口并注入即可
+//RestyPass use DiscoveryClient in spring cloud automatically,
+// otherwise it will use resty-server.yaml to get server list
+// use ServerContext interface, you can define your own way to find server, just inject it as a normal bean will be fine. 
 public class TestClientApplication {
     public static void main(String[] args) {
         SpringApplication.run(TestClientApplication.class, args);
@@ -45,8 +44,8 @@ public class TestClientApplication {
 }
 
 
-//使用接口和注解定义并配置调用客户端
-//RestyService注解定义服务
+
+//RestyService define service
 @RestyService(serviceName = "server",
         fallbackClass = ProxyServiceImpl.class,
         retry = 1,
@@ -55,8 +54,9 @@ public class TestClientApplication {
 @RequestMapping(value = "/resty")
 public interface ProxyService extends ApplicationService {
     
-    // RestyMethod注解定义服务接口
+    // RestyMethod define interface
     @RestyMethod(retry = 2)
+    // use spring mvc annotation to define interface's details
     @RequestMapping(value = "/get_nothing", method = RequestMethod.GET, headers = "Client=RestyProxy", params = "Param1=val1")
     void getNothing();
 }
@@ -65,6 +65,7 @@ public interface ProxyService extends ApplicationService {
 
 ```yaml
 # resty-server.yaml
+# define server list
 servers:
   - serviceName: server
     instances:
@@ -73,7 +74,7 @@ servers:
       - host: localhost
         port: 9202
 ```
-2. 服务端 
+2. server 
 
 ```java 
 
