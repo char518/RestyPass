@@ -14,7 +14,8 @@ Welcome to contribute ideas and code.
 - Easier configuration, RestyPass uses annotations to configure individual interface requests.
 - Real-time update configuration, RestyPass support real-time update part of the configuration, such as  disable / enable fallback services, disable / enable circuit breaker, and granularity can be accurate to the interface level。
 - Easy to develop, free to implement most of the core interface of the custom implementation, and direct injection can be enabled（base on Spring context）。 
-- Support filter, and feel free to define a new one.
+- Support filter, and feel free to define a new one. 
+- Support traffic limit configuration.
 ## Demo（demo[client]+demo-serverside[server]） 
 
 1. client 
@@ -53,13 +54,14 @@ public class TestClientApplication {
         circuitBreakEnabled = false,
         loadBalancer = RandomLoadBalancer.NAME,
         retry = 1,
-        requestTimeout = 10000
+        requestTimeout = 10000,
+        limit = 1000 //traffic limit
 )
 @RequestMapping(value = "/resty")
 public interface ProxyService extends ApplicationService {
     
     // RestyMethod define interface
-    @RestyMethod(retry = 2, forceBreakEnabled = "true")
+    @RestyMethod(retry = 2, forceBreakEnabled = "true", limit = 10)
     // use spring mvc annotation to define interface's details
     @RequestMapping(value = "/get_nothing", method = RequestMethod.GET, headers = "Client=RestyProxy", params = "Param1=val1")
     void getNothing();

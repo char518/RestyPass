@@ -65,6 +65,13 @@ public @interface RestyService {
 
 
     /**
+     * 流量限制  允许的每秒请求数
+     * -1无限制
+     */
+    int limit() default -1;
+
+
+    /**
      * 连接超时时间 ms
      */
     int connectTimeout() default 5000;

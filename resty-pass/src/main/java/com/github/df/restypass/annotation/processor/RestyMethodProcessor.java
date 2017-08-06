@@ -1,6 +1,7 @@
 package com.github.df.restypass.annotation.processor;
 
 import com.github.df.restypass.annotation.RestyMethod;
+import com.github.df.restypass.annotation.RestyService;
 import com.github.df.restypass.command.RestyCommandConfig;
 
 import java.lang.annotation.Annotation;
@@ -21,13 +22,14 @@ public class RestyMethodProcessor implements RestyAnnotationProcessor {
 
             RestyMethod restyMethod = (RestyMethod) annotation;
 
-//            String value = restyMethod.value();
             // 设置重试次数
             setRetry(restyMethod, properties);
             // 设置是否打开降级
             setFallbackEnabled(restyMethod, properties);
             // 设置是否打开断路器
             setCircuitBreakEnabled(restyMethod, properties);
+            // 设置流量
+            setLimit(restyMethod, properties);
         }
         return properties;
     }
@@ -84,6 +86,18 @@ public class RestyMethodProcessor implements RestyAnnotationProcessor {
             properties.setForceBreakEnabled(false);
         }
 
+    }
+
+    /**
+     * Sets limit.
+     *
+     * @param restyMethod the resty method
+     * @param properties  the properties
+     */
+    protected void setLimit(RestyMethod restyMethod, RestyCommandConfig properties) {
+        if (restyMethod.limit() > 0) {
+            properties.setLimit(restyMethod.limit());
+        }
     }
 
 }

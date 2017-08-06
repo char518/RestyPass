@@ -82,6 +82,13 @@ public interface RestyCommandConfig extends Updater<UpdateCommandConfig> {
     String getLoadBalancer();
 
     /**
+     * Gets limit.
+     *
+     * @return the limit
+     */
+    int getLimit();
+
+    /**
      * Gets factory.
      *
      * @return the factory
@@ -146,6 +153,13 @@ public interface RestyCommandConfig extends Updater<UpdateCommandConfig> {
     void setLoadBalancer(String loadBalancer);
 
     /**
+     * Sets limit.
+     *
+     * @param limit the limit
+     */
+    void setLimit(int limit);
+
+    /**
      * Sets factory.
      *
      * @param factoryClz the factory clz
@@ -174,6 +188,8 @@ public interface RestyCommandConfig extends Updater<UpdateCommandConfig> {
         private int retry = 1;
 
         private String loadBalancer;
+
+        private int limit = -1;
 
         private Class<? extends RestyPassFactory> factory;
 
@@ -265,6 +281,17 @@ public interface RestyCommandConfig extends Updater<UpdateCommandConfig> {
         @Override
         public void setLoadBalancer(String loadBalancer) {
             this.loadBalancer = loadBalancer;
+        }
+
+
+        @Override
+        public int getLimit() {
+            return limit;
+        }
+
+        @Override
+        public void setLimit(int limit) {
+            this.limit = limit;
         }
 
         @Override

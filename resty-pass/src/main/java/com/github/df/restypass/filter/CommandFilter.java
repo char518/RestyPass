@@ -41,7 +41,9 @@ public interface CommandFilter {
      * @return the resty command
      * @throws FilterException the filter exception
      */
-    void before(RestyCommand restyCommand) throws FilterException;
+    default void before(RestyCommand restyCommand) throws FilterException {
+
+    }
 
 
     /**
@@ -50,7 +52,9 @@ public interface CommandFilter {
      * @param restyCommand the resty command
      * @param result       the result
      */
-    void after(RestyCommand restyCommand, Object result);
+    default void after(RestyCommand restyCommand, Object result) {
+
+    }
 
     /**
      * Error.
@@ -58,6 +62,8 @@ public interface CommandFilter {
      * @param restyCommand the resty command
      * @param ex           the ex
      */
-    void error(RestyCommand restyCommand, RestyException ex);
+    default void error(RestyCommand restyCommand, RestyException ex) {
+
+    }
 
 }

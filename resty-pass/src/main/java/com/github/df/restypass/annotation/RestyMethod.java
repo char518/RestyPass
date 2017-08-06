@@ -40,4 +40,12 @@ public @interface RestyMethod {
      * @see RestyService#forceBreakEnabled()
      */
     String forceBreakEnabled() default "";
+
+    /**
+     * 流量限制  允许的每秒请求数
+     * -1无限制
+     *
+     * @see RestyService#limit()
+     */
+    int limit() default -1;
 }

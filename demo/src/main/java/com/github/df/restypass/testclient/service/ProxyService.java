@@ -32,12 +32,13 @@ import java.util.List;
         circuitBreakEnabled = false,
         loadBalancer = RandomLoadBalancer.NAME,
         retry = 1,
-        requestTimeout = 10000
+        requestTimeout = 10000,
+        limit = 1000
 )
 @RequestMapping(value = "/resty")
 public interface ProxyService extends ApplicationService {
 
-    @RestyMethod(retry = 2, forceBreakEnabled = "true")
+    @RestyMethod(retry = 2, forceBreakEnabled = "false", limit = 10)
     @RequestMapping(value = "/get_nothing", method = RequestMethod.GET, headers = "Client=RestyProxy", params = "Param1=val1")
     void getNothing();
 

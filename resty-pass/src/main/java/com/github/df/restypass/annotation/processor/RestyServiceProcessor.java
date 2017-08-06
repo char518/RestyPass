@@ -33,6 +33,8 @@ public class RestyServiceProcessor implements RestyAnnotationProcessor {
             setLoadBalancer(restyService, properties);
             //设置工厂类
             setFactory(restyService, properties);
+            //设置流量
+            setLimit(restyService, properties);
         }
         return properties;
     }
@@ -108,5 +110,9 @@ public class RestyServiceProcessor implements RestyAnnotationProcessor {
 
     protected void setFactory(RestyService restyService, RestyCommandConfig properties) {
 //        properties.setFactory(restyService.factory());
+    }
+
+    protected void setLimit(RestyService restyService, RestyCommandConfig properties) {
+        properties.setLimit(restyService.limit());
     }
 }
