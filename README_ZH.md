@@ -25,7 +25,7 @@ github: https://github.com/darren-fu/RestyPass
 ```java
 // 使用@EnableRestyPass注解启用RestyPass
 @SpringBootApplication
-@EnableRestyPass(basePackages = {"df.open"})
+@EnableRestyPass(basePackages = {"com.github.df"})
 @RestController
 //@EnableDiscoveryClient
 //启用spring cloud 服务发现则RestyPass自动使用spring的服务发现方式，
