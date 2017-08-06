@@ -5,7 +5,6 @@ import com.github.df.restypass.command.RestyCommand;
 import com.github.df.restypass.command.RestyCommandContext;
 import com.github.df.restypass.enums.CommandFilterType;
 import com.github.df.restypass.exception.execute.RestyException;
-import com.github.df.restypass.exception.filter.RejectException;
 import com.github.df.restypass.executor.CommandExecutor;
 import com.github.df.restypass.executor.FallbackExecutor;
 import com.github.df.restypass.filter.CommandFilter;
@@ -13,7 +12,6 @@ import com.github.df.restypass.filter.CommandFilterContext;
 import com.github.df.restypass.lb.LoadBalanceFactory;
 import com.github.df.restypass.lb.LoadBalancer;
 import com.github.df.restypass.lb.server.ServerContext;
-import com.github.df.restypass.util.CommonTools;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.InvocationHandler;
@@ -91,7 +89,7 @@ public class RestyProxyInvokeHandler implements InvocationHandler {
         for (CommandFilter commandFilter : filterList) {
             if (CommandFilterType.BEFOR_EXECUTE.equals(commandFilter.getFilterType())
                     && commandFilter.shouldFilter(restyCommand)) {
-                commandFilter.filter(restyCommand);
+                commandFilter.before(restyCommand);
             }
         }
 

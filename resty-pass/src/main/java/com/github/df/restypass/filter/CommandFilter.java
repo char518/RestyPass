@@ -2,6 +2,7 @@ package com.github.df.restypass.filter;
 
 import com.github.df.restypass.command.RestyCommand;
 import com.github.df.restypass.enums.CommandFilterType;
+import com.github.df.restypass.exception.execute.RestyException;
 import com.github.df.restypass.exception.filter.FilterException;
 
 /**
@@ -18,12 +19,18 @@ public interface CommandFilter {
      */
     int order();
 
+    /**
+     * Should filter boolean.
+     *
+     * @param restyCommand the resty command
+     * @return the boolean
+     */
     boolean shouldFilter(RestyCommand restyCommand);
 
     /**
      * 过滤器类型
      *
-     * @return the filter type
+     * @return the before type
      */
     CommandFilterType getFilterType();
 
@@ -32,6 +39,25 @@ public interface CommandFilter {
      *
      * @param restyCommand the resty command
      * @return the resty command
+     * @throws FilterException the filter exception
      */
-    RestyCommand filter(RestyCommand restyCommand) throws FilterException;
+    void before(RestyCommand restyCommand) throws FilterException;
+
+
+    /**
+     * After.
+     *
+     * @param restyCommand the resty command
+     * @param result       the result
+     */
+    void after(RestyCommand restyCommand, Object result);
+
+    /**
+     * Error.
+     *
+     * @param restyCommand the resty command
+     * @param ex           the ex
+     */
+    void error(RestyCommand restyCommand, RestyException ex);
+
 }

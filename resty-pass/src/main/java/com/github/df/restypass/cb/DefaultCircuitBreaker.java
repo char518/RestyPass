@@ -32,6 +32,7 @@ public class DefaultCircuitBreaker implements CircuitBreaker {
      */
     private static Table<String, String, String> keyTable = HashBasedTable.create();
 
+    // TODO 熔断条件配置化
     /**
      * 短路条件：失败请求占总请求的比例
      */

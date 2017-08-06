@@ -18,16 +18,16 @@ public class CommandFilterContext {
     private List<CommandFilter> filterList;
 
     /**
-     * Instantiates a new Command filter context.
+     * Instantiates a new Command before context.
      */
     public CommandFilterContext() {
         this(Collections.EMPTY_LIST);
     }
 
     /**
-     * Instantiates a new Command filter context.
+     * Instantiates a new Command before context.
      *
-     * @param filterList the filter list
+     * @param filterList the before list
      */
     public CommandFilterContext(List<CommandFilter> filterList) {
         setFilterWithList(filterList);
@@ -36,23 +36,23 @@ public class CommandFilterContext {
     /**
      * 获取过滤器
      *
-     * @return list filter
+     * @return list before
      */
     public List<CommandFilter> getFilterList() {
         return filterList;
     }
 
     /**
-     * Sets filter list.
+     * Sets before list.
      *
-     * @param filterList the filter list
+     * @param filterList the before list
      */
     public void setFilterList(List<CommandFilter> filterList) {
         setFilterWithList(filterList);
     }
 
     /**
-     * Add filter list.
+     * Add before list.
      *
      * @param filterList the filters
      */
