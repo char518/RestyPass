@@ -93,7 +93,16 @@ public class TestController {
     }
   }
 ```
+# 引入jar 
 
+```xml 
+
+<dependency>
+    <groupId>com.github.darren-fu</groupId>
+    <artifactId>resty-pass</artifactId>
+    <version>LATEST_VERSION</version>
+</dependency>
+``` 
 
 # License
 
