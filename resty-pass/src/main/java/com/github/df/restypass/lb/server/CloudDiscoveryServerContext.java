@@ -174,9 +174,14 @@ public class CloudDiscoveryServerContext implements ServerContext, ApplicationCo
      */
     private void startUpdateTask() {
         Executors.newSingleThreadScheduledExecutor().scheduleWithFixedDelay(() -> {
-            updated.set(false);
-            updateServer();
-            updated.set(true);
+            try {
+                updated.set(false);
+                updateServer();
+                updated.set(true);
+            } catch (Exception ex) {
+                log.error("更新server发生错误:", ex);
+            }
+
         }, 1 * 1000, 20 * 1000, TimeUnit.MILLISECONDS);
     }
 
@@ -184,7 +189,7 @@ public class CloudDiscoveryServerContext implements ServerContext, ApplicationCo
     /**
      * 更新server
      */
-    private void updateServer() {
+    protected void updateServer() {
         List<String> services = getClient().getServices();
         this.updatedInstancesMap = new ConcurrentHashMap<>();
         for (String service : services) {
