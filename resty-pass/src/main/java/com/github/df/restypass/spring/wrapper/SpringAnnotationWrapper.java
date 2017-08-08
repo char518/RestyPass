@@ -86,6 +86,7 @@ public class SpringAnnotationWrapper {
         RequestMapping classAnnotation = findMergedAnnotation(clz,
                 RequestMapping.class);
         if (classAnnotation != null) {
+            //TODO 处理Class的RequestMapping的headers，统一添加header
             // Prepend path from class annotation if specified
             if (classAnnotation.value().length > 0) {
                 String pathValue = emptyToNull(classAnnotation.value()[0]);

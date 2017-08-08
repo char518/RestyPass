@@ -53,6 +53,10 @@ public class RestyCommandExecutor implements CommandExecutor {
     @Override
     public Object execute(LoadBalancer lb, RestyCommand restyCommand) {
 
+        if (restyCommand.getRestyCommandConfig().isForceBreakEnabled()) {
+            throw new CircuitBreakException("circuit breaker is forced to open");
+        }
+
         // 重试次数
         int retry = restyCommand.getRestyCommandConfig().getRetry();
 
@@ -65,21 +69,22 @@ public class RestyCommandExecutor implements CommandExecutor {
         // 排除 彻底断路的server， 尝试过的server
         // 1.判断command使用的serverInstanceList是否存在被熔断的server
         // 1.1 存在的话 server加入 loadBalance 的excludeServerList
-        Set<String> excludeInstanceIdList = circuitBreaker.getBrokenServer();
+        Set<String> excludeInstanceIdSet = circuitBreaker.getBrokenServer();
+
+        // 负载均衡器 选择可用服务实例
+        serverInstance = lb.choose(serverContext, restyCommand, excludeInstanceIdSet);
+        if (serverInstance == null) {
+            throw new RuntimeException("no instances found:" + restyCommand.getServiceName() + ":" + serverContext.getServerList(restyCommand.getServiceName()));
+        }
 
         // 重试机制
         for (int times = 0; times <= retry; times++) {
             try {
-                // 负载均衡器 选择可用服务实例
-                serverInstance = lb.choose(serverContext, restyCommand, excludeInstanceIdList);
-                if (serverInstance == null) {
-                    throw new RuntimeException("no instances found:" + restyCommand.getServiceName() + ":" + serverContext.getServerList(restyCommand.getServiceName()));
-                }
                 boolean shouldPass = circuitBreaker.shouldPass(restyCommand, serverInstance);
 
                 if (!shouldPass) {
                     // fallback or exception
-                    throw new CircuitBreakException("circuit breaker is working");
+                    throw new CircuitBreakException("circuit breaker is open");
                 }
 
                 RestyFuture future = restyCommand.start(serverInstance);
@@ -100,11 +105,17 @@ public class RestyCommandExecutor implements CommandExecutor {
                     throw ex;
                 } else {
                     // 将本次使用的server 加入排除列表
-                    if (excludeInstanceIdList == null || excludeInstanceIdList == Collections.EMPTY_SET) {
-                        excludeInstanceIdList = new HashSet<>();
+                    if (excludeInstanceIdSet == null || excludeInstanceIdSet == Collections.EMPTY_SET) {
+                        excludeInstanceIdSet = new HashSet<>();
                     }
+
                     if (serverInstance != null) {
-                        excludeInstanceIdList.add(serverInstance.getInstanceId());
+                        excludeInstanceIdSet.add(serverInstance.getInstanceId());
+                    }
+                    //选择server， 如果没有server可选则无需重试，直接抛出当前异常
+                    serverInstance = lb.choose(serverContext, restyCommand, excludeInstanceIdSet);
+                    if (serverInstance == null) {
+                        throw ex;
                     }
                 }
             }

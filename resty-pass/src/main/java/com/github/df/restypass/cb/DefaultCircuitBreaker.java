@@ -210,6 +210,7 @@ public class DefaultCircuitBreaker implements CircuitBreaker {
 
     @Override
     public Set<String> getBrokenServer() {
+        // TODO 计算broken server
         return Collections.EMPTY_SET;
     }
 

@@ -106,10 +106,13 @@ public class RestyProxyInvokeHandler implements InvocationHandler {
                 throw new IllegalStateException("Resty command is not executable:" + restyCommand);
             }
         } catch (RestyException ex) {
-            log.warn("请求发生异常:", ex);
             if (fallbackExecutor.executable(restyCommand)) {
+                if (log.isDebugEnabled()) {
+                    log.debug("{}使用降级服务", restyCommand.getPath());
+                }
                 result = fallbackExecutor.execute(restyCommand);
             } else {
+                log.warn("请求{}发生异常:{}", restyCommand.getPath(), ex.getMessage());
                 throw ex;
             }
         }
