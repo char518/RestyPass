@@ -166,7 +166,12 @@ public class CloudDiscoveryServerContext implements ServerContext, ApplicationCo
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
-        startUpdateTask();
+        if (!"false".equalsIgnoreCase(applicationContext.getEnvironment().getProperty("spring.cloud.consul.discovery.enabled", "false"))
+                || !"false".equalsIgnoreCase(applicationContext.getEnvironment().getProperty("spring.cloud.zookeeper.discovery.enabled", "false"))
+                || !"false".equalsIgnoreCase(applicationContext.getEnvironment().getProperty("eureka.client.fetchRegistry", "false"))
+                ) {
+            startUpdateTask();
+        }
     }
 
     /**
