@@ -1,5 +1,6 @@
 package com.github.df.restypass.testclient.service;
 
+import com.github.df.restypass.command.RestyFuture;
 import com.github.df.restypass.exception.execute.RestyException;
 import com.github.df.restypass.testclient.entity.Response;
 import com.github.df.restypass.testclient.entity.User;
@@ -28,7 +29,7 @@ public class ProxyServiceImpl implements ProxyService {
     }
 
     @Override
-    public String getString() {
+    public String getStatus(RestyFuture<String> future) {
         log.error("Fallback String");
         return "Fallback String";
     }

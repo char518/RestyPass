@@ -2,6 +2,7 @@ package com.github.df.restypass.testclient.service;
 
 import com.github.df.restypass.annotation.RestyMethod;
 import com.github.df.restypass.annotation.RestyService;
+import com.github.df.restypass.command.RestyFuture;
 import com.github.df.restypass.lb.RandomLoadBalancer;
 import com.github.df.restypass.testclient.entity.Response;
 import com.github.df.restypass.testclient.entity.User;
@@ -44,8 +45,8 @@ public interface ProxyService extends ApplicationService {
 
 
     @RestyMethod
-    @RequestMapping(value = "/get_string", method = RequestMethod.GET)
-    String getString();
+    @RequestMapping(value = "/get_status", method = RequestMethod.GET)
+    String getStatus(RestyFuture<String> future);
 
     @RestyMethod
     @RequestMapping(value = "/get_user", method = RequestMethod.GET)

@@ -3,6 +3,8 @@ package com.github.df.restypass.command;
 import com.github.df.restypass.exception.execute.ConnectionException;
 import com.github.df.restypass.http.converter.ResponseConverterContext;
 import com.github.df.restypass.http.pojo.FailedResponse;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.asynchttpclient.ListenableFuture;
 import org.asynchttpclient.Response;
@@ -11,7 +13,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.concurrent.atomic.LongAdder;
 
 /**
  * Resty Future
@@ -20,16 +21,23 @@ import java.util.concurrent.atomic.LongAdder;
  */
 @SuppressWarnings({"unused", "WeakerAccess"})
 @Slf4j
-public class RestyFuture implements Future<Response> {
+public class RestyFuture<T> implements Future<T> {
 
-    public static LongAdder time = new LongAdder();
-    public static LongAdder count = new LongAdder();
-
+    @Getter
+    @Setter
     private RestyCommand restyCommand;
 
+    @Getter
+    @Setter
     private ListenableFuture<Response> future;
 
     private ResponseConverterContext converterContext;
+
+    public RestyFuture() {
+        //can not work directly,
+        // use this when you want to get response async
+        // command executor will fill content in this object
+    }
 
     /**
      * Instantiates a new Resty future.
@@ -72,46 +80,34 @@ public class RestyFuture implements Future<Response> {
     }
 
     @Override
-    public Response get() {
-        long start = System.currentTimeMillis();
-
+    public T get() {
+        Response response;
         try {
-            return future.get();
+            response = future.get();
+
+
         } catch (InterruptedException | ExecutionException e) {
             future.abort(e);
             log.error("获取响应失败:{}", e.getMessage());
-            return FailedResponse.create(new ConnectionException(e));
-        } finally {
-            long end = System.currentTimeMillis();
-            count.increment();
-            time.add(end - start);
+            response = FailedResponse.create(new ConnectionException(e));
         }
+        return (T) ResponseConverterContext.DEFAULT.convertResponse(restyCommand, response);
     }
 
 
     @SuppressWarnings("NullableProblems")
     @Override
-    public Response get(long timeout, TimeUnit unit) {
+    public T get(long timeout, TimeUnit unit) {
+        Response response;
+
         try {
-            return future.get(timeout, unit);
+            response = future.get(timeout, unit);
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
             future.abort(e);
             log.error("获取响应失败:{}", e.getMessage());
-            return FailedResponse.create(new ConnectionException(e));
+            response = FailedResponse.create(new ConnectionException(e));
         }
+        return (T) ResponseConverterContext.DEFAULT.convertResponse(restyCommand, response);
     }
 
-
-    /**
-     * Async resty future.
-     *
-     * @param obj the obj
-     * @return the resty future
-     */
-    public static RestyFuture async(Object obj) {
-        if (obj instanceof RestyFuture) {
-            return (RestyFuture) obj;
-        }
-        return null;
-    }
 }

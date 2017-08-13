@@ -7,12 +7,11 @@ import com.github.df.restypass.command.RestyCommandContext;
 import com.github.df.restypass.command.RestyFuture;
 import com.github.df.restypass.enums.RestyCommandStatus;
 import com.github.df.restypass.exception.execute.CircuitBreakException;
-import com.github.df.restypass.http.converter.ResponseConverterContext;
 import com.github.df.restypass.lb.LoadBalancer;
 import com.github.df.restypass.lb.server.ServerContext;
 import com.github.df.restypass.lb.server.ServerInstance;
 import lombok.Setter;
-import org.asynchttpclient.Response;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -23,6 +22,7 @@ import java.util.Set;
  * Created by darrenfu on 17-7-1.
  */
 @SuppressWarnings("unused")
+@Slf4j
 public class RestyCommandExecutor implements CommandExecutor {
 
     /**
@@ -59,7 +59,6 @@ public class RestyCommandExecutor implements CommandExecutor {
 
         // 重试次数
         int retry = restyCommand.getRestyCommandConfig().getRetry();
-
         Object result = null;
         CircuitBreaker circuitBreaker = CircuitBreakerFactory.createDefaultCircuitBreaker(restyCommand.getServiceName());
         // RestyCommand ready to start
@@ -88,10 +87,15 @@ public class RestyCommandExecutor implements CommandExecutor {
                 }
 
                 RestyFuture future = restyCommand.start(serverInstance);
-
+                RestyFuture futureArg = getFutureArg(restyCommand);
+                if (futureArg != null) {
+                    //异步
+                    futureArg.setFuture(future.getFuture());
+                    futureArg.setRestyCommand(future.getRestyCommand());
+                    return null;
+                }
                 // 同步调用
-                Response response = future.get();
-                result = ResponseConverterContext.DEFAULT.convertResponse(restyCommand, response);
+                result = future.get();
                 if (restyCommand.getStatus() == RestyCommandStatus.FAILED) {
                     throw restyCommand.getFailException();
                 }
@@ -121,6 +125,23 @@ public class RestyCommandExecutor implements CommandExecutor {
             }
         }
         return result;
+    }
+
+    /**
+     * 获取请求中的RestyFuture参数
+     *
+     * @param restyCommand
+     * @return
+     */
+    private RestyFuture getFutureArg(RestyCommand restyCommand) {
+        if (restyCommand.getArgs() != null && restyCommand.getArgs().length > 0) {
+            for (Object o : restyCommand.getArgs()) {
+                if (o instanceof RestyFuture) {
+                    return (RestyFuture) o;
+                }
+            }
+        }
+        return null;
     }
 
 
