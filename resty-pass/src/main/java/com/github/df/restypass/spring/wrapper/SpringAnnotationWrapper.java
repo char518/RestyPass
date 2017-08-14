@@ -1,5 +1,6 @@
 package com.github.df.restypass.spring.wrapper;
 
+import com.github.df.restypass.command.RestyFuture;
 import com.github.df.restypass.command.RestyRequestTemplate;
 import com.github.df.restypass.spring.pojo.PathVariableData;
 import com.github.df.restypass.spring.pojo.RequestBodyData;
@@ -131,7 +132,8 @@ public class SpringAnnotationWrapper {
 
             // 处理RequestBody和无注解参数
             RequestBody requestBody = findMergedAnnotation(parameter, RequestBody.class);
-            if (requestBody != null || parameter.getAnnotations().length == 0) {
+            if ((requestBody != null || parameter.getAnnotations().length == 0)
+                    && parameter.getType() != RestyFuture.class) {
                 RequestBodyData requestBodyData = new RequestBodyData();
                 requestBodyData.setIndex(i);
                 requestBodyData.setName(parameter.getName());
