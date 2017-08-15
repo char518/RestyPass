@@ -202,6 +202,7 @@ public class DefaultRestyCommand implements RestyCommand {
             log.debug("请求失败:{}@{}: {}", this.getPath(), this.instance, Arrays.toString(this.args));
         }
         this.emit(circuitBreaker.getEventKey(), this);
+        throw exception;
     }
 
 
