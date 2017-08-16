@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.NoSuchElementException;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -24,9 +25,11 @@ public class RestyFallbackExecutor implements FallbackExecutor {
 
     @Override
     public boolean executable(RestyCommand restyCommand) {
+        if (restyCommand == null) {
+            return false;
+        }
         RestyCommandConfig commandConfig = restyCommand.getRestyCommandConfig();
-        return restyCommand != null
-                && restyCommand.getStatus() == RestyCommandStatus.FAILED
+        return restyCommand.getStatus() == RestyCommandStatus.FAILED
                 && commandConfig.isFallbackEnabled()
                 && ((commandConfig.getFallbackClass() != null && commandConfig.getFallbackClass() != RestyService.Noop.class)
                 || StringUtils.isNotEmpty(commandConfig.getFallbackBean()));
@@ -49,7 +52,7 @@ public class RestyFallbackExecutor implements FallbackExecutor {
             }
             try {
                 return findAndInvokeMethodInFallbackClass(fallbackClass, restyCommand, fallbackObj);
-            } catch (InvocationTargetException | IllegalAccessException e) {
+            } catch (InvocationTargetException | IllegalAccessException | NoSuchMethodException e) {
                 log.warn("调用降级服务出错:{}", e);
             }
 
@@ -60,7 +63,7 @@ public class RestyFallbackExecutor implements FallbackExecutor {
 
     private Object findAndInvokeMethodInFallbackClass(Class fallbackClass,
                                                       RestyCommand restyCommand,
-                                                      Object fallbackObj) throws InvocationTargetException, IllegalAccessException {
+                                                      Object fallbackObj) throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
         Method serviceMethod = restyCommand.getServiceMethod();
         String methodName = serviceMethod.getName();
 
@@ -72,7 +75,7 @@ public class RestyFallbackExecutor implements FallbackExecutor {
         method = getMethod(fallbackClass, methodName, serviceMethod.getParameterTypes());
         if (method == null) {
             log.error("{}中没有发现合适的降级方法:{}", fallbackClass, methodName);
-            throw new RuntimeException(fallbackClass + "没有合适的降级方法:" + methodName);
+            throw new NoSuchMethodException(fallbackClass + "没有合适的降级方法:" + methodName);
         }
         return invokeMethod(method, fallbackObj, restyCommand.getArgs());
     }

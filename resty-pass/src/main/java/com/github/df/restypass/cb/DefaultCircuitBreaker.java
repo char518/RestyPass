@@ -216,7 +216,8 @@ public class DefaultCircuitBreaker implements CircuitBreaker {
 
     @Override
     public void setStatus(RestyCommand restyCommand, CircuitBreakerStatus status) {
-
+        //TODO: impl it
+        throw new UnsupportedOperationException("暂不支持此操作");
     }
 
     /**
@@ -264,7 +265,10 @@ public class DefaultCircuitBreaker implements CircuitBreaker {
                         String key = getMetricsKey(restyCommand.getPath(), restyCommand.getInstanceId());
                         // 获取 计数器
                         Metrics metrics = getCommandMetrics(key);
-
+                        if (metrics == null) {
+                            log.warn("获取计数器失败:{}", key);
+                            continue;
+                        }
                         boolean isSuccess = isCommandSuccessExecuted(restyCommand);
                         boolean forceUseNewMetrics = false;
                         // 如果当前处在短路或半短路状态
@@ -336,7 +340,7 @@ public class DefaultCircuitBreaker implements CircuitBreaker {
      */
     private Metrics getCommandMetrics(String metricsKey) {
         if (segmentMap == null) {
-            System.out.println("NULL le ");
+            return null;
         }
         Metrics metrics = segmentMap.get(metricsKey);
         if (metrics == null) {
@@ -346,6 +350,7 @@ public class DefaultCircuitBreaker implements CircuitBreaker {
             metrics = segmentMap.get(metricsKey);
         }
         return metrics;
+
     }
 
 

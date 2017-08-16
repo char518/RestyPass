@@ -62,11 +62,6 @@ public class RestyProxyBeanFactory implements FactoryBean<Object>, InitializingB
     private FallbackExecutor fallbackExecutor;
 
     /**
-     * 默认实现工厂类
-     */
-    private RestyPassFactory factory;
-
-    /**
      * 过滤器容器
      */
     private CommandFilterContext commandFilterContext;
@@ -74,7 +69,7 @@ public class RestyProxyBeanFactory implements FactoryBean<Object>, InitializingB
     /**
      * 是否完成初始化
      */
-    private boolean inited = false;
+    private volatile boolean inited = false;
 
     private ReentrantLock initLock = new ReentrantLock();
 
@@ -128,13 +123,13 @@ public class RestyProxyBeanFactory implements FactoryBean<Object>, InitializingB
             }
         }
 
-        Object proxy = null;
+        Object proxy;
         try {
             RestyProxyInvokeHandler interfaceIvkHandler =
                     new RestyProxyInvokeHandler(restyCommandContext, commandExecutor, fallbackExecutor, serverContext, commandFilterContext);
             proxy = Proxy.newProxyInstance(type.getClassLoader(), new Class[]{type}, interfaceIvkHandler);
         } catch (Exception e) {
-            e.printStackTrace();
+            throw e;
         }
         return proxy;
     }
@@ -169,7 +164,7 @@ public class RestyProxyBeanFactory implements FactoryBean<Object>, InitializingB
                 log.info("{}使用Spring注入", clz);
             }
             if (t == null) {
-                throw new RuntimeException("无法获取Bean:" + clz);
+                throw new IllegalArgumentException("无法获取Bean:" + clz);
             }
         } catch (BeansException ex) {
             log.info("{}使用默认配置", clz);
