@@ -45,6 +45,12 @@ public class CloudDiscoveryServerContext implements ServerContext, ApplicationCo
      */
     private AtomicBoolean updated = new AtomicBoolean(false);
 
+
+    /**
+     * update task是否启动
+     */
+    private AtomicBoolean taskStarted = new AtomicBoolean(false);
+
     @Override
     public List<String> getAllServiceName() {
         return getClient().getServices();
@@ -178,16 +184,18 @@ public class CloudDiscoveryServerContext implements ServerContext, ApplicationCo
      * 定时任务
      */
     private void startUpdateTask() {
-        Executors.newSingleThreadScheduledExecutor().scheduleWithFixedDelay(() -> {
-            try {
-                updated.set(false);
-                updateServer();
-                updated.set(true);
-            } catch (Exception ex) {
-                log.error("更新server发生错误:", ex);
-            }
+        if (taskStarted.compareAndSet(false, true)) {
+            Executors.newSingleThreadScheduledExecutor().scheduleWithFixedDelay(() -> {
+                try {
+                    updated.set(false);
+                    updateServer();
+                    updated.set(true);
+                } catch (Exception ex) {
+                    log.error("更新server发生错误:", ex);
+                }
 
-        }, 1 * 1000, 20 * 1000, TimeUnit.MILLISECONDS);
+            }, 1 * 1000, 20 * 1000, TimeUnit.MILLISECONDS);
+        }
     }
 
 

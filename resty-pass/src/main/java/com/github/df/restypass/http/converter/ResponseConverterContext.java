@@ -92,7 +92,7 @@ public class ResponseConverterContext {
             }
         }
         if (!converted) {
-            restyCommand.failed(new RestyException(response.getResponseBody()));
+            restyCommand.failed(new RestyException("没有合适的解析器,content-type:" + respContentType + ";body:" + response.getResponseBody()));
         }
         restyCommand.success();
         return result;

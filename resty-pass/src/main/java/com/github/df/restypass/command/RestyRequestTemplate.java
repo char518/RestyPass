@@ -147,6 +147,7 @@ public class RestyRequestTemplate {
                 String pathVariable = findPathVariable(matcher.group(), args);
                 matcher.appendReplacement(sb, ObjectUtils.defaultIfNull(pathVariable, ""));
             }
+            matcher.appendTail(sb);
             return sb.toString();
         } else {
             return this.path;
