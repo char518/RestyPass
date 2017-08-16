@@ -4,15 +4,13 @@ import com.github.df.restypass.command.RestyFuture;
 import com.github.df.restypass.command.RestyRequestTemplate;
 import com.github.df.restypass.spring.pojo.PathVariableData;
 import com.github.df.restypass.spring.pojo.RequestBodyData;
+import com.github.df.restypass.spring.pojo.RequestHeaderData;
 import com.github.df.restypass.spring.pojo.RequestParamData;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.ResourceLoader;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -118,6 +116,7 @@ public class SpringAnnotationWrapper {
                 pathVariableData.setName("{" + (StringUtils.isNotEmpty(pathVariable.name()) ? pathVariable.name() : parameter.getName()) + "}");
                 pathVariableData.setRequired(pathVariable.required());
                 requestTemplate.addPathVariable(pathVariableData);
+                continue;
             }
             // 处理RequestParam
             RequestParam requestParam = findMergedAnnotation(parameter, RequestParam.class);
@@ -128,6 +127,18 @@ public class SpringAnnotationWrapper {
                 requestParamData.setRequired(requestParam.required());
                 requestParamData.setDefaultValue(requestParam.defaultValue());
                 requestTemplate.addRequestParam(requestParamData);
+                continue;
+            }
+
+            RequestHeader requestHeader = findMergedAnnotation(parameter, RequestHeader.class);
+            if (requestHeader != null) {
+                RequestHeaderData requestHeaderData = new RequestHeaderData();
+                requestHeaderData.setIndex(i);
+                requestHeaderData.setName(StringUtils.isNotEmpty(requestHeader.name()) ? requestHeader.name() : parameter.getName());
+                requestHeaderData.setRequired(requestHeader.required());
+                requestHeaderData.setDefaultValue(requestHeader.defaultValue());
+                requestTemplate.addRequestHeader(requestHeaderData);
+                continue;
             }
 
             // 处理RequestBody和无注解参数

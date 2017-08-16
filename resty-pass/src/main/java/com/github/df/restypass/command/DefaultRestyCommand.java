@@ -164,7 +164,7 @@ public class DefaultRestyCommand implements RestyCommand {
                 httpMethod,
                 true);
         requestBuilder.setUri(this.getUri(instance));
-        requestBuilder.setSingleHeaders(requestTemplate.getHeaders());
+        requestBuilder.setSingleHeaders(requestTemplate.getRequestHeaders(args));
         requestBuilder.setBody(requestTemplate.getBody(args));
         this.request = requestBuilder.build();
         ListenableFuture<Response> future = httpClient.executeRequest(request);

@@ -3,6 +3,7 @@ package com.github.df.restypass.command;
 import com.github.df.restypass.base.RestyConst;
 import com.github.df.restypass.spring.pojo.PathVariableData;
 import com.github.df.restypass.spring.pojo.RequestBodyData;
+import com.github.df.restypass.spring.pojo.RequestHeaderData;
 import com.github.df.restypass.spring.pojo.RequestParamData;
 import com.github.df.restypass.util.CommonTools;
 import com.github.df.restypass.util.JsonTools;
@@ -54,18 +55,25 @@ public class RestyRequestTemplate {
     //@RequestBody参数 或者是没有注解的参数
     private List<RequestBodyData> requestBody;
 
+    //@RequestHeader参数
+    private List<RequestHeaderData> requestHeader;
 
     /**
      * Gets headers.
      *
      * @return the headers
      */
-    public Map<String, String> getHeaders() {
+    public Map<String, String> getRequestHeaders(Object[] args) {
         if (CommonTools.isEmpty(headers)) {
             headers = new HashMap<>();
         }
         if (!headers.containsKey(RestyConst.CONTENT_TYPE)) {
             headers.put(RestyConst.CONTENT_TYPE, RestyConst.APPLICATION_JSON);
+        }
+        if (args != null && args.length > 0 && !CommonTools.isEmpty(requestHeader)) {
+            for (RequestHeaderData headerData : requestHeader) {
+                headers.put(headerData.getName(), ObjectUtils.defaultIfNull(String.valueOf(args[headerData.getIndex()]), headerData.getDefaultValue()));
+            }
         }
         return headers;
     }
@@ -131,6 +139,18 @@ public class RestyRequestTemplate {
             requestBody = new ArrayList<>();
         }
         requestBody.add(requestBodyData);
+    }
+
+    /**
+     * Add request header.
+     *
+     * @param requestHeaderData the request header data
+     */
+    public void addRequestHeader(RequestHeaderData requestHeaderData) {
+        if (requestHeader == null) {
+            requestHeader = new ArrayList<>();
+        }
+        requestHeader.add(requestHeaderData);
     }
 
     /**
