@@ -157,18 +157,18 @@ public class RestyProxyBeanFactory implements FactoryBean<Object>, InitializingB
             if (this.applicationContext != null) {
                 t = this.applicationContext.getBean(clz);
             }
-            if (t == null) {
-                log.info("{}使用默认配置", clz);
-                t = DefaultRestyPassFactory.getDefaultBean(clz);
+            if (t != null) {
+                log.info("{}使用Spring注入:{}", clz.getSimpleName(), t.getClass());
             } else {
-                log.info("{}使用Spring注入", clz);
-            }
-            if (t == null) {
+                t = DefaultRestyPassFactory.getDefaultBean(clz);
+                log.info("{}使用默认配置:{}", clz.getSimpleName(), t.getClass());
                 throw new IllegalArgumentException("无法获取Bean:" + clz);
             }
+
         } catch (BeansException ex) {
-            log.info("{}使用默认配置", clz);
             t = DefaultRestyPassFactory.getDefaultBean(clz);
+            log.info("{}使用默认配置:{}", clz.getSimpleName(), t.getClass());
+
         }
         return t;
     }

@@ -8,6 +8,7 @@ import com.github.df.restypass.executor.RestyFallbackExecutor;
 import com.github.df.restypass.filter.CommandFilter;
 import com.github.df.restypass.filter.TrafficLimitFilter;
 import com.github.df.restypass.lb.LoadBalancer;
+import com.github.df.restypass.lb.server.CloudConsulServerContext;
 import com.github.df.restypass.lb.server.CloudDiscoveryServerContext;
 import com.github.df.restypass.lb.server.ConfigurableServerContext;
 import com.github.df.restypass.lb.server.ServerContext;
@@ -30,8 +31,19 @@ public class DefaultRestyPassFactory implements RestyPassFactory {
 
     @Override
     public ServerContext getServerContext() {
-        boolean hasClass = ClassTools.hasClass("org.springframework.cloud.client.discovery.DiscoveryClient");
-        if (hasClass) {
+        // com.ecwid.consul.v1.ConsulClient org.springframework.cloud.consul.discovery.ConsulDiscoveryClient
+        //org.apache.curator.x.discovery.ServiceDiscovery   org.springframework.cloud.zookeeper.discovery.ZookeeperDiscoveryClient
+        // com.netflix.discovery.EurekaClient  org.springframework.cloud.netflix.eureka.EurekaDiscoveryClient
+        boolean isUseCloudConsul = ClassTools.hasClass("org.springframework.cloud.consul.discovery.ConsulDiscoveryClient");
+        boolean isUseCloudZookeeper = ClassTools.hasClass("org.springframework.cloud.zookeeper.discovery.ZookeeperDiscoveryClient");
+        boolean isUseCloudEureka = ClassTools.hasClass("org.springframework.cloud.netflix.eureka.EurekaDiscoveryClient");
+        if (isUseCloudConsul) {
+            return new CloudConsulServerContext();
+        }
+        if (isUseCloudZookeeper) {
+            return new CloudDiscoveryServerContext();
+        }
+        if (isUseCloudEureka) {
             return new CloudDiscoveryServerContext();
         } else {
             return new ConfigurableServerContext();

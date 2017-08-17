@@ -1,7 +1,9 @@
 package com.github.df.restypass.lb.server;
 
 import com.github.df.restypass.base.RestyConst;
+import com.github.df.restypass.util.ClassTools;
 import com.github.df.restypass.util.DateFormatTools;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeansException;
@@ -9,11 +11,12 @@ import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.core.env.Environment;
 
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
@@ -23,89 +26,19 @@ import java.util.stream.Collectors;
  * Created by darrenfu on 17-8-1.
  */
 @Slf4j
-public class CloudDiscoveryServerContext implements ServerContext, ApplicationContextAware {
+public class CloudDiscoveryServerContext extends AbstractDiscoveryServerContext implements ApplicationContextAware {
+
+    private ReentrantLock initLock = new ReentrantLock();
 
     private DiscoveryClient discoveryClient;
 
     private ApplicationContext applicationContext;
 
-    private ReentrantLock initLock = new ReentrantLock();
     /**
-     * server缓存
+     * Spring Cloud 服务发现是否启用
      */
-    private volatile ConcurrentHashMap<String, List<ServerInstance>> instancesMap = new ConcurrentHashMap<>();
-
-    /**
-     * 更新的数据存储map
-     */
-    private volatile ConcurrentHashMap<String, List<ServerInstance>> updatedInstancesMap = new ConcurrentHashMap<>();
-
-    /**
-     * 数据是否更新的标志
-     */
-    private AtomicBoolean updated = new AtomicBoolean(false);
-
-
-    /**
-     * update task是否启动
-     */
-    private AtomicBoolean taskStarted = new AtomicBoolean(false);
-
-    @Override
-    public List<String> getAllServiceName() {
-        return getClient().getServices();
-    }
-
-    @Override
-    public List<ServerInstance> getAllServerList() {
-        checkStatus();
-        List<ServerInstance> instances = new LinkedList<>();
-        for (Map.Entry<String, List<ServerInstance>> entry : instancesMap.entrySet()) {
-            if (entry.getValue() != null && entry.getValue().size() > 0) {
-                instances.addAll(entry.getValue());
-            }
-        }
-        return instances;
-    }
-
-    @Override
-    public List<ServerInstance> getServerList(String serviceName) {
-        checkStatus();
-        return instancesMap.getOrDefault(serviceName, Collections.EMPTY_LIST);
-    }
-
-    @Override
-    public void refreshServerList() {
-        updateServer();
-    }
-
-    @Override
-    public void refreshServerList(String serviceName) {
-        updateServer();
-    }
-
-    @Override
-    public List<ServerInstance> setServerList(List<ServerInstance> instanceList) {
-        throw new UnsupportedOperationException("不支持此操作");
-    }
-
-    @Override
-    public List<ServerInstance> addServerList(List<ServerInstance> instanceList) {
-        throw new UnsupportedOperationException("不支持此操作");
-    }
-
-
-    /**
-     * 检查server是否更新
-     */
-    private void checkStatus() {
-        if (updated.get()) {
-            if (updated.compareAndSet(true, false)) {
-                this.instancesMap = updatedInstancesMap;
-            }
-        }
-    }
-
+    @Getter
+    private AtomicBoolean cloudyDiscoveryEnabled = new AtomicBoolean(false);
 
     /**
      * 转换数据格式
@@ -113,11 +46,11 @@ public class CloudDiscoveryServerContext implements ServerContext, ApplicationCo
      * @param serviceInstanceList
      * @return
      */
-    private List<ServerInstance> convertToServerInstanceList(List<ServiceInstance> serviceInstanceList) {
+    protected List<ServerInstance> convertToServerInstanceList(List<ServiceInstance> serviceInstanceList) {
         if (serviceInstanceList != null) {
             return serviceInstanceList.stream().map(v -> convertToServerInstance(v)).collect(Collectors.toList());
         }
-        return Collections.EMPTY_LIST;
+        return Collections.emptyList();
     }
 
 
@@ -172,43 +105,46 @@ public class CloudDiscoveryServerContext implements ServerContext, ApplicationCo
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
-        if (!"false".equalsIgnoreCase(applicationContext.getEnvironment().getProperty("spring.cloud.consul.discovery.enabled", "false"))
-                || !"false".equalsIgnoreCase(applicationContext.getEnvironment().getProperty("spring.cloud.zookeeper.discovery.enabled", "false"))
-                || !"false".equalsIgnoreCase(applicationContext.getEnvironment().getProperty("eureka.client.fetchRegistry", "false"))
-                ) {
-            startUpdateTask();
-        }
+        init(applicationContext);
     }
 
-    /**
-     * 定时任务
-     */
-    private void startUpdateTask() {
-        if (taskStarted.compareAndSet(false, true)) {
-            Executors.newSingleThreadScheduledExecutor().scheduleWithFixedDelay(() -> {
-                try {
-                    updated.set(false);
-                    updateServer();
-                    updated.set(true);
-                } catch (Exception ex) {
-                    log.error("更新server发生错误:", ex);
-                }
-
-            }, 1 * 1000, 20 * 1000, TimeUnit.MILLISECONDS);
+    protected void init(ApplicationContext applicationContext) {
+        Environment env = applicationContext.getEnvironment();
+        if (isCloudConsulEnabled(env) || isCloudEurekaEnabled(env) || isCloudZookeeperEnabled(env)) {
+            cloudyDiscoveryEnabled.compareAndSet(false, true);
         }
+        System.out.println("initServerContext");
     }
 
 
-    /**
-     * 更新server
-     */
-    protected void updateServer() {
-        List<String> services = getClient().getServices();
-        this.updatedInstancesMap = new ConcurrentHashMap<>();
-        for (String service : services) {
-            List<ServiceInstance> instances = getClient().getInstances(service);
-            updatedInstancesMap.put(service, convertToServerInstanceList(instances));
-        }
-        log.info("更新DiscoverClient server:{}", updatedInstancesMap);
+    protected boolean isCloudConsulEnabled(Environment env) {
+        boolean isUseCloudConsul = ClassTools.hasClass("org.springframework.cloud.consul.discovery.ConsulDiscoveryClient");
+        return isUseCloudConsul && "true".equalsIgnoreCase(env.getProperty("spring.cloud.consul.discovery.enabled", "true"));
+    }
+
+    protected boolean isCloudZookeeperEnabled(Environment env) {
+        boolean isUseCloudZookeeper = ClassTools.hasClass("org.springframework.cloud.zookeeper.discovery.ZookeeperDiscoveryClient");
+        return isUseCloudZookeeper && "true".equalsIgnoreCase(env.getProperty("spring.cloud.zookeeper.discovery.enabled", "true"));
+    }
+
+    protected boolean isCloudEurekaEnabled(Environment env) {
+        boolean isUseCloudEureka = ClassTools.hasClass("org.springframework.cloud.netflix.eureka.EurekaDiscoveryClient");
+        return isUseCloudEureka && "true".equalsIgnoreCase(env.getProperty("eureka.client.fetchRegistry", "true"));
+    }
+
+
+    @Override
+    protected boolean isDiscoveryEnabled() {
+        return cloudyDiscoveryEnabled.get();
+    }
+
+    @Override
+    protected List<String> getServiceNames() {
+        return getClient().getServices();
+    }
+
+    @Override
+    protected List<ServerInstance> getServiceInstances(String serviceName) {
+        return convertToServerInstanceList(getClient().getInstances(serviceName));
     }
 }
