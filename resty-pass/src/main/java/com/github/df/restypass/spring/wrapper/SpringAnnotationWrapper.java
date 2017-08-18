@@ -125,7 +125,7 @@ public class SpringAnnotationWrapper {
                 requestParamData.setIndex(i);
                 requestParamData.setName(StringUtils.isNotEmpty(requestParam.name()) ? requestParam.name() : parameter.getName());
                 requestParamData.setRequired(requestParam.required());
-                requestParamData.setDefaultValue(requestParam.defaultValue());
+                requestParamData.setDefaultValue(resolveDefaultValue(requestParam.defaultValue()));
                 requestTemplate.addRequestParam(requestParamData);
                 continue;
             }
@@ -136,7 +136,7 @@ public class SpringAnnotationWrapper {
                 requestHeaderData.setIndex(i);
                 requestHeaderData.setName(StringUtils.isNotEmpty(requestHeader.name()) ? requestHeader.name() : parameter.getName());
                 requestHeaderData.setRequired(requestHeader.required());
-                requestHeaderData.setDefaultValue(requestHeader.defaultValue());
+                requestHeaderData.setDefaultValue(resolveDefaultValue(requestHeader.defaultValue()));
                 requestTemplate.addRequestHeader(requestHeaderData);
                 continue;
             }
@@ -159,6 +159,12 @@ public class SpringAnnotationWrapper {
         }
     }
 
+    private String resolveDefaultValue(Object defaultValue) {
+        if (defaultValue == null || ValueConstants.DEFAULT_NONE.equals(defaultValue)) {
+            return null;
+        }
+        return defaultValue.toString();
+    }
 
     private String resolve(String value) {
         if (StringUtils.isNotEmpty(value)

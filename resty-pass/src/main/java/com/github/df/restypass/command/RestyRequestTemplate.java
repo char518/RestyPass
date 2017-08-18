@@ -10,6 +10,7 @@ import com.github.df.restypass.util.JsonTools;
 import com.github.df.restypass.util.StringBuilderFactory;
 import lombok.Data;
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Method;
 import java.util.*;
@@ -209,15 +210,18 @@ public class RestyRequestTemplate {
         if (!CommonTools.isEmpty(this.getParams())) {
             // 处理Params的值
             Set<String> paramNames = this.getParams().keySet();
+
             for (String paramName : paramNames) {
-                if (index != 0) {
-                    sb.append("&");
-                }
                 Object paramValue = this.getParams().getOrDefault(paramName, "");
-                sb.append(paramName);
-                sb.append("=");
-                sb.append(paramValue);
-                index++;
+                if (paramValue != null && StringUtils.isNotEmpty(paramValue.toString())) {
+                    if (index != 0) {
+                        sb.append("&");
+                    }
+                    sb.append(paramName);
+                    sb.append("=");
+                    sb.append(paramValue);
+                    index++;
+                }
             }
         }
 
@@ -228,13 +232,14 @@ public class RestyRequestTemplate {
                 if (arg == null) {
                     arg = requestParam.getDefaultValue();
                 }
-                String argValue = arg.toString();
+                if (arg != null && StringUtils.isNotEmpty(arg.toString())) {
+                }
                 if (index != 0) {
                     sb.append("&");
                 }
                 sb.append(requestParam.getName());
                 sb.append("=");
-                sb.append(argValue);
+                sb.append(arg.toString());
                 index++;
             }
 
