@@ -63,8 +63,12 @@ public class TestClientApplication {
 public interface ProxyService extends ApplicationService {
     
     // RestyMethod注解定义服务接口
-    @RestyMethod(retry = 2, forceBreakEnabled = "true", limit = 10)
-    @RequestMapping(value = "/get_nothing", method = RequestMethod.GET, headers = "Client=RestyProxy", params = "Param1=val1")
+    @RestyMethod(retry = 2,
+        fallbackEnabled = "false",
+        circuitBreakEnabled = "false",
+        forceBreakEnabled = "false",
+        limit = 10)    
+    @RequestMapping(value = "/get_nothing", method = RequestMethod.GET, headers = "Client=RestyProxy", params = "Param1=val1") 
     void getNothing();
 }
 
@@ -100,7 +104,7 @@ public class TestController {
 <dependency>
     <groupId>com.github.darren-fu</groupId>
     <artifactId>resty-pass</artifactId>
-    <version>1.2.0</version>
+    <version>1.2.0e</version>
 </dependency>
 ``` 
 

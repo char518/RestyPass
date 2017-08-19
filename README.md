@@ -61,8 +61,11 @@ public class TestClientApplication {
 public interface ProxyService extends ApplicationService {
     
     // RestyMethod define interface
-    @RestyMethod(retry = 2, forceBreakEnabled = "true", limit = 10)
-    // use spring mvc annotation to define interface's details
+    @RestyMethod(retry = 2,
+            fallbackEnabled = "false",
+            circuitBreakEnabled = "false",
+            forceBreakEnabled = "false",
+            limit = 10)    // use spring mvc annotation to define interface's details
     @RequestMapping(value = "/get_nothing", method = RequestMethod.GET, headers = "Client=RestyProxy", params = "Param1=val1")
     void getNothing();
 }
