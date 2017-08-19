@@ -100,7 +100,7 @@ public class TestController {
 <dependency>
     <groupId>com.github.darren-fu</groupId>
     <artifactId>resty-pass</artifactId>
-    <version>LATEST_VERSION</version>
+    <version>1.2.0</version>
 </dependency>
 ``` 
 
