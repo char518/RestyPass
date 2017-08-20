@@ -40,6 +40,7 @@ import java.util.concurrent.Future;
 @RequestMapping(value = "/resty")
 public interface ProxyService extends ApplicationService {
 
+    // 同步调用
     @RestyMethod(retry = 2,
             fallbackEnabled = "false",
             circuitBreakEnabled = "false",
@@ -48,11 +49,12 @@ public interface ProxyService extends ApplicationService {
     @RequestMapping(value = "/get_nothing", method = RequestMethod.GET, headers = "Client=RestyProxy", params = "Param1=val1")
     void getNothing();
 
-
+    // 异步调用形式： Future<?> 参数类型，出参
     @RestyMethod
     @RequestMapping(value = "/get_status", method = RequestMethod.GET)
     String getStatus(RestyFuture<String> future);
 
+    // 异步调用形式： Future<?> 返回类型
     @RestyMethod
     @RequestMapping(value = "/get_user", method = RequestMethod.GET)
     Future<User> getUser();

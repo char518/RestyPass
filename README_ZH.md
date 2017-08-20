@@ -63,13 +63,32 @@ public class TestClientApplication {
 public interface ProxyService extends ApplicationService {
     
     // RestyMethod注解定义服务接口
+    // 同步调用
     @RestyMethod(retry = 2,
-        fallbackEnabled = "false",
-        circuitBreakEnabled = "false",
-        forceBreakEnabled = "false",
-        limit = 10)    
-    @RequestMapping(value = "/get_nothing", method = RequestMethod.GET, headers = "Client=RestyProxy", params = "Param1=val1") 
+            fallbackEnabled = "false",
+            circuitBreakEnabled = "false",
+            forceBreakEnabled = "false",
+            limit = 10)
+    @RequestMapping(value = "/get_nothing", method = RequestMethod.GET, headers = "Client=RestyProxy", params = "Param1=val1")
     void getNothing();
+       
+    //支持spring mvc注解
+    @RestyMethod()
+    @RequestMapping(value = "/get_age", method = RequestMethod.GET)
+    Response<String> getAge(@RequestParam("id") Long id, String code, @PathVariable(value = "name") String name, @RequestHeader(value="TOKEN") String token);
+
+
+    // 异步调用形式： Future<?> 参数类型，出参
+    @RestyMethod
+    @RequestMapping(value = "/get_status", method = RequestMethod.GET)
+    String getStatus(RestyFuture<String> future);
+
+    // 异步调用形式： Future<?> 返回类型
+    @RestyMethod
+    @RequestMapping(value = "/get_user", method = RequestMethod.GET)
+    Future<User> getUser();
+    
+    
 }
 
 ```

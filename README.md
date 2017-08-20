@@ -61,13 +61,29 @@ public class TestClientApplication {
 public interface ProxyService extends ApplicationService {
     
     // RestyMethod define interface
+    // 同步调用
     @RestyMethod(retry = 2,
             fallbackEnabled = "false",
             circuitBreakEnabled = "false",
             forceBreakEnabled = "false",
-            limit = 10)    // use spring mvc annotation to define interface's details
+            limit = 10)
     @RequestMapping(value = "/get_nothing", method = RequestMethod.GET, headers = "Client=RestyProxy", params = "Param1=val1")
     void getNothing();
+    
+    //use spring mvc annotations
+    @RestyMethod()
+    @RequestMapping(value = "/get_age", method = RequestMethod.GET)
+    Response<String> getAge(@RequestParam("id") Long id, String code, @PathVariable(value = "name") String name, @RequestHeader(value="TOKEN") String token);
+
+    // Async call： (outcome)parameter type is Future<?>
+    @RestyMethod
+    @RequestMapping(value = "/get_status", method = RequestMethod.GET)
+    String getStatus(RestyFuture<String> future);
+
+    // Async call ： return type is Future<?> 
+    @RestyMethod
+    @RequestMapping(value = "/get_user", method = RequestMethod.GET)
+    Future<User> getUser();
 }
 
 ```
