@@ -63,7 +63,6 @@ public class RestyCommandExecutor implements CommandExecutor {
         CircuitBreaker circuitBreaker = CircuitBreakerFactory.createDefaultCircuitBreaker(restyCommand.getServiceName());
         // RestyCommand ready to start
         restyCommand.ready(circuitBreaker);
-        ServerInstance serverInstance = null;
 
         // 排除 彻底断路的server， 尝试过的server
         // 1.判断command使用的serverInstanceList是否存在被熔断的server
@@ -71,7 +70,7 @@ public class RestyCommandExecutor implements CommandExecutor {
         Set<String> excludeInstanceIdSet = circuitBreaker.getBrokenServer();
 
         // 负载均衡器 选择可用服务实例
-        serverInstance = lb.choose(serverContext, restyCommand, excludeInstanceIdSet);
+        ServerInstance serverInstance = lb.choose(serverContext, restyCommand, excludeInstanceIdSet);
         if (serverInstance == null) {
             throw new RuntimeException("no instances found:" + restyCommand.getServiceName() + ":" + serverContext.getServerList(restyCommand.getServiceName()));
         }
@@ -88,12 +87,20 @@ public class RestyCommandExecutor implements CommandExecutor {
 
                 RestyFuture future = restyCommand.start(serverInstance);
                 RestyFuture futureArg = getFutureArg(restyCommand);
-                if (futureArg != null) {
-                    //异步
-                    futureArg.setFuture(future.getFuture());
-                    futureArg.setRestyCommand(future.getRestyCommand());
+
+
+                if (restyCommand.isAsyncArg()) {
+                    //异步请求，请求参数中包含RestyFuture作为出参,
+                    //直接返回null， 结果放入出参RestyFuture中
                     return null;
                 }
+
+                if (restyCommand.isAsyncReturn()) {
+                    //异步请求名，请求返回类型是Future<~>
+                    //返回RestyFuture
+                    return future;
+                }
+
                 // 同步调用
                 result = future.get();
                 if (restyCommand.getStatus() == RestyCommandStatus.FAILED) {
@@ -126,6 +133,7 @@ public class RestyCommandExecutor implements CommandExecutor {
         }
         return result;
     }
+
 
     /**
      * 获取请求中的RestyFuture参数

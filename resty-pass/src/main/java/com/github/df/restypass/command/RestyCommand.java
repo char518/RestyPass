@@ -88,4 +88,17 @@ public interface RestyCommand extends RestyCommandLifeCycle, EventEmit {
     RestyRequestTemplate getRequestTemplate();
 
 
+    /**
+     * 是否是异步命令-基于返回值future
+     *
+     * @return the boolean
+     */
+    boolean isAsyncReturn();
+
+    /**
+     * 是否是异步命令-基于请求参数future
+     *
+     * @return the boolean
+     */
+    boolean isAsyncArg();
 }

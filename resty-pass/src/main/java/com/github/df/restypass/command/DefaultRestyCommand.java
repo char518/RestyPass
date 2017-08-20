@@ -8,10 +8,12 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.asynchttpclient.*;
 import org.asynchttpclient.uri.Uri;
+import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Arrays;
+import java.util.concurrent.Future;
 
 /**
  * 默认Resty请求命令
@@ -103,6 +105,12 @@ public class DefaultRestyCommand implements RestyCommand {
     private ServerInstance instance;
 
 
+    private boolean asyncCommand;
+
+    private boolean asyncFutureReturn;
+    private boolean asyncFutureArg;
+
+
     public DefaultRestyCommand(Class serviceClz,
                                Method serviceMethod,
                                Type returnTyp,
@@ -125,6 +133,10 @@ public class DefaultRestyCommand implements RestyCommand {
         this.requestTemplate = context.getRequestTemplate(serviceMethod);
         this.httpMethod = requestTemplate.getHttpMethod();
         this.path = requestTemplate.getPath();
+
+        this.asyncCommand = isAsyncCommand();
+
+
     }
 
 
@@ -139,6 +151,57 @@ public class DefaultRestyCommand implements RestyCommand {
                     requestTemplate.getQueryString(args));
         }
         return uri;
+    }
+
+    @Override
+    public boolean isAsyncReturn() {
+        return this.asyncFutureReturn;
+    }
+
+    @Override
+    public boolean isAsyncArg() {
+        return this.asyncFutureArg;
+    }
+
+    /**
+     * 是否是异步请求
+     *
+     * @return 是异步：true, 不是异步请求：false
+     */
+    private boolean isAsyncCommand() {
+        Type returnType = this.getReturnType();
+        this.asyncFutureReturn = false;
+        this.asyncFutureArg = false;
+
+        if (returnType instanceof ParameterizedTypeImpl) {
+            //返回类型是Future
+            ParameterizedTypeImpl returnParameterType = (ParameterizedTypeImpl) returnType;
+            if (returnParameterType.getRawType() == Future.class
+                    && returnParameterType.getActualTypeArguments() != null
+                    && returnParameterType.getActualTypeArguments().length > 0) {
+                this.returnType = returnParameterType.getActualTypeArguments()[0];
+                this.asyncFutureReturn = true;
+                return true;
+            }
+        }
+        RestyFuture futureArg = getFutureArg();
+        if (futureArg != null) {
+            //异步
+            this.asyncFutureArg = true;
+            return true;
+        }
+        return false;
+    }
+
+    private RestyFuture getFutureArg() {
+        if (this.getArgs() != null && this.getArgs().length > 0) {
+            for (Object o : this.getArgs()) {
+                if (o instanceof RestyFuture) {
+                    return (RestyFuture) o;
+                }
+            }
+        }
+        return null;
     }
 
 
@@ -172,6 +235,18 @@ public class DefaultRestyCommand implements RestyCommand {
         if (log.isDebugEnabled()) {
             log.debug("Request:{}", request);
         }
+
+        RestyFuture restyFuture = new RestyFuture(this, future);
+        if (this.asyncFutureArg) {
+            RestyFuture futureArg = getFutureArg();
+            futureArg.setFuture(future);
+            futureArg.setRestyCommand(this);
+        }
+        if (this.asyncFutureReturn) {
+
+
+        }
+
 
         return new RestyFuture(this, future);
     }

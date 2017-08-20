@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.concurrent.Future;
 
 /**
  * 说明:
@@ -54,7 +55,12 @@ public interface ProxyService extends ApplicationService {
 
     @RestyMethod
     @RequestMapping(value = "/get_user", method = RequestMethod.GET)
-    User getUser();
+    Future<User> getUser();
+
+    @RestyMethod
+    @RequestMapping(value = "/get_void_async", method = RequestMethod.GET)
+    Future<Void> getVoidAsync();
+
 
     @RestyMethod()
     @RequestMapping(value = "/list")

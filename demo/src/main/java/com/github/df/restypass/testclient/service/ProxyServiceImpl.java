@@ -7,6 +7,7 @@ import com.github.df.restypass.testclient.entity.User;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
+import java.util.concurrent.Future;
 
 /**
  * 说明:
@@ -34,20 +35,30 @@ public class ProxyServiceImpl implements ProxyService {
         return "Fallback String";
     }
 
+    @Override
+    public Future<User> getUser() {
+        return null;
+    }
+
+    @Override
+    public Future<Void> getVoidAsync() {
+        return null;
+    }
+
     public String getString(RestyException ex) {
         System.out.println("执行加强降级，Ex:" + ex.getMessage());
         log.error("FallbackException:{}", ex.getMessage());
         return "FallbackException String";
     }
 
-
-    @Override
-    public User getUser() {
-        User user = new User();
-        user.setName("Fallback");
-
-        return user;
-    }
+//
+//    @Override
+//    public User getUser() {
+//        User user = new User();
+//        user.setName("Fallback");
+//
+//        return user;
+//    }
 
 
     @Override
