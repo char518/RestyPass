@@ -104,10 +104,18 @@ public class DefaultRestyCommand implements RestyCommand {
      */
     private ServerInstance instance;
 
-
-    private boolean asyncCommand;
-
+    /**
+     * 是否是异步命令-基于返回值future
+     * 示例接口:
+     * Future<User> getUser(String userId);
+     **/
     private boolean asyncFutureReturn;
+
+
+    /**
+     * 是否是异步命令-基于请求参数future
+     * 示例接口:User getUser(String userId, RestyFuture<User>);
+     */
     private boolean asyncFutureArg;
 
 
@@ -134,9 +142,7 @@ public class DefaultRestyCommand implements RestyCommand {
         this.httpMethod = requestTemplate.getHttpMethod();
         this.path = requestTemplate.getPath();
 
-        this.asyncCommand = isAsyncCommand();
-
-
+        isAsyncCommand();
     }
 
 
@@ -179,6 +185,7 @@ public class DefaultRestyCommand implements RestyCommand {
             if (returnParameterType.getRawType() == Future.class
                     && returnParameterType.getActualTypeArguments() != null
                     && returnParameterType.getActualTypeArguments().length > 0) {
+                //替换return type: Future<User> -> User
                 this.returnType = returnParameterType.getActualTypeArguments()[0];
                 this.asyncFutureReturn = true;
                 return true;
@@ -186,7 +193,11 @@ public class DefaultRestyCommand implements RestyCommand {
         }
         RestyFuture futureArg = getFutureArg();
         if (futureArg != null) {
-            //异步
+            /**
+             * Future类型出参
+             * command执行的时候处理此类异步，将执行结果future放入futureArg中
+             * @see DefaultRestyCommand#start
+             */
             this.asyncFutureArg = true;
             return true;
         }
@@ -195,9 +206,9 @@ public class DefaultRestyCommand implements RestyCommand {
 
     private RestyFuture getFutureArg() {
         if (this.getArgs() != null && this.getArgs().length > 0) {
-            for (Object o : this.getArgs()) {
-                if (o instanceof RestyFuture) {
-                    return (RestyFuture) o;
+            for (Object arg : this.getArgs()) {
+                if (arg != null && arg instanceof RestyFuture) {
+                    return (RestyFuture) arg;
                 }
             }
         }
@@ -236,18 +247,11 @@ public class DefaultRestyCommand implements RestyCommand {
             log.debug("Request:{}", request);
         }
 
-        RestyFuture restyFuture = new RestyFuture(this, future);
         if (this.asyncFutureArg) {
             RestyFuture futureArg = getFutureArg();
             futureArg.setFuture(future);
             futureArg.setRestyCommand(this);
         }
-        if (this.asyncFutureReturn) {
-
-
-        }
-
-
         return new RestyFuture(this, future);
     }
 
