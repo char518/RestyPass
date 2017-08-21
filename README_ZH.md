@@ -97,7 +97,9 @@ public interface ProxyService extends ApplicationService {
 
 ```
 
-**服务端实例定义**
+**服务实例定义**
+- 支持SC自动服务发现，yaml配置等多种方式；
+- 可实现接口ServerContext自定义服务发现机制（如多注册中心）
 
 ```yaml
 # resty-server.yaml
@@ -108,8 +110,9 @@ servers:
         port: 9201
       - host: localhost
         port: 9202
-```
-2. 服务端代码
+``` 
+
+### 服务端代码
 
 ```java 
 
