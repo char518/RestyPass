@@ -19,17 +19,19 @@ Welcome to contribute ideas and code.
 - Support service discovery automatically.
 ## Demo（demo[client]+demo-serverside[server]） 
 
-1. client 
+### client side
+
+#### enable resty service
+
+RestyPass will use DiscoveryClient in spring cloud automatically while you enable server discovery,otherwise it will use resty-server.yaml to get server list.
+Implement ServerContext interface, you can define your own way to find server, just inject it as a normal bean will be fine. 
 
 ```java
 // use @EnableRestyPass to enable RestyPass
 @SpringBootApplication
 @EnableRestyPass(basePackages = {"com.github.df"})
 @RestController
-//@EnableDiscoveryClient
-//RestyPass use DiscoveryClient in spring cloud automatically,
-// otherwise it will use resty-server.yaml to get server list
-// use ServerContext interface, you can define your own way to find server, just inject it as a normal bean will be fine. 
+
 public class TestClientApplication {
     public static void main(String[] args) {
         SpringApplication.run(TestClientApplication.class, args);
@@ -44,8 +46,10 @@ public class TestClientApplication {
         return "OK";
     }
 }
+``` 
 
-
+#### define client service
+```java 
 
 //RestyService define service
 @RestyService(serviceName = "server",
@@ -88,6 +92,8 @@ public interface ProxyService extends ApplicationService {
 }
 
 ```
+#### define server instances
+we use yaml to define instances in demo, usually, we use CloudDiscoveryServerContext to discover instances automatically. 
 
 ```yaml
 # resty-server.yaml
@@ -100,7 +106,7 @@ servers:
       - host: localhost
         port: 9202
 ```
-2. server 
+### server side
 
 ```java 
 

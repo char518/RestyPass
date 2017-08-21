@@ -113,7 +113,6 @@ public class CloudDiscoveryServerContext extends AbstractDiscoveryServerContext 
         if (isCloudConsulEnabled(env) || isCloudEurekaEnabled(env) || isCloudZookeeperEnabled(env)) {
             cloudyDiscoveryEnabled.compareAndSet(false, true);
         }
-        System.out.println("initServerContext");
     }
 
 

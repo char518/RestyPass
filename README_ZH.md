@@ -20,17 +20,17 @@ github: https://github.com/darren-fu/RestyPass
 
 ## 示例（demo[调用方]+demo-serverside[服务端]） 
 
-1. 客户端 
+### 客户端代码 
 
+- 启用spring cloud 服务发现则RestyPass自动使用spring的服务发现方式，
+- 否则默认读取resty-server.yaml来获取服务实例
+- 可自定义其它发现服务的方式，实现ServerContext接口并注入即可
 ```java
 // 使用@EnableRestyPass注解启用RestyPass
 @SpringBootApplication
 @EnableRestyPass(basePackages = {"com.github.df"})
 @RestController
 //@EnableDiscoveryClient
-//启用spring cloud 服务发现则RestyPass自动使用spring的服务发现方式，
-// 否则默认读取resty-server.yaml来获取服务实例
-// 可自定义其它发现服务的方式，实现ServerContext接口并注入即可
 public class TestClientApplication {
     public static void main(String[] args) {
         SpringApplication.run(TestClientApplication.class, args);
@@ -45,7 +45,11 @@ public class TestClientApplication {
         return "OK";
     }
 }
+``` 
 
+**客户端服务**
+ 
+```java 
 
 //使用接口和注解定义并配置调用客户端
 //RestyService注解定义服务
@@ -93,6 +97,8 @@ public interface ProxyService extends ApplicationService {
 
 ```
 
+**服务端实例定义**
+
 ```yaml
 # resty-server.yaml
 servers:
@@ -103,7 +109,7 @@ servers:
       - host: localhost
         port: 9202
 ```
-2. 服务端 
+2. 服务端代码
 
 ```java 
 

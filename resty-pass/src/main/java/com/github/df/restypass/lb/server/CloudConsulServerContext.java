@@ -26,7 +26,6 @@ public class CloudConsulServerContext extends CloudDiscoveryServerContext {
     protected void init(ApplicationContext applicationContext) {
         super.init(applicationContext);
         this.consulClient = applicationContext.getBean(ConsulClient.class);
-        System.out.println("XXXXXXX");
     }
 
     @Override
