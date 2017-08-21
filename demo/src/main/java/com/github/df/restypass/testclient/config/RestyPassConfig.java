@@ -23,7 +23,6 @@ public class RestyPassConfig {
 
     @Bean
     public FallbackExecutor fallbackExecutor() {
-        System.out.println("initProps fallback..");
         return new RestyFallbackExecutor();
     }
 

@@ -115,7 +115,83 @@ public class TestController {
         System.out.println("############nothing");
     }
   }
-```
+``` 
+
+## 核心接口
+
+- RestyCommand: 包含单次所有信息。
+- RestyCommandExecutor: command执行器，返回执行结果。
+- ServerContext: 服务实例容器，负责服务发现和更新。
+- LoadBalancer: 负载均衡器，实现接口或者继承抽象类可以轻易的实现想要的LB，并且很容易在RestyService中配置并使用
+- CommandFilter: command过滤器
+- FallbackExecutor: 降级服务类执行器。
+
+## 配置与注入
+注入自己的实现类，实现特殊需求。
+ 
+```java
+@Configuration
+public class RestyPassConfig {
+
+    @Bean
+    public FallbackExecutor fallbackExecutor() {
+        return new RestyFallbackExecutor();
+    }
+
+    @Bean
+    public ServerContext serverContext() {
+        return new ConfigurableServerContext();
+    }
+
+    @SuppressWarnings("SpringJavaAutowiringInspection")
+    @Bean
+    public CommandExecutor commandExecutor(RestyCommandContext commandContext) {
+        return new RestyCommandExecutor(commandContext);
+    }
+
+    @Bean
+    public CommandFilter CustomCommandFilter() {
+        return new CustomCommandFilter();
+    }
+
+
+    private static class CustomCommandFilter implements CommandFilter {
+        @Override
+        public int order() {
+            return 0;
+        }
+
+        @Override
+        public boolean shouldFilter(RestyCommand restyCommand) {
+            return true;
+        }
+
+        @Override
+        public CommandFilterType getFilterType() {
+            return CommandFilterType.BEFOR_EXECUTE;
+        }
+
+        @Override
+        public void before(RestyCommand restyCommand) throws FilterException {
+
+            System.out.println("custom command filter");
+        }
+
+        @Override
+        public void after(RestyCommand restyCommand, Object result) {
+
+        }
+
+        @Override
+        public void error(RestyCommand restyCommand, RestyException ex) {
+
+        }
+    }
+
+}
+
+
+``` 
 # 引入jar 
 
 ```xml 

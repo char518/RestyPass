@@ -16,6 +16,7 @@ Welcome to contribute ideas and code.
 - Easy to develop, free to implement most of the core interface of the custom implementation, and direct injection can be enabled（base on Spring context）。 
 - Support filter, and feel free to define a new one. 
 - Support traffic limit configuration.
+- Support service discovery automatically.
 ## Demo（demo[client]+demo-serverside[server]） 
 
 1. client 
@@ -112,6 +113,81 @@ public class TestController {
     }
   }
 ```
+## core conception
+
+- RestyCommand: contain all information in one resty request.
+- RestyCommandExecutor: execute resty command and return the result.
+- ServerContext: server instances container, find adn refresh the server instances.
+- LoadBalancer: loadbalancer, you can define one technical LB for every resty service.
+- CommandFilter: filter the command as your want.
+- FallbackExecutor: execute the fallback Impl.
+
+## config and inject
+You can use your own Impl, just inject it will be fine. 
+ 
+```java
+@Configuration
+public class RestyPassConfig {
+
+    @Bean
+    public FallbackExecutor fallbackExecutor() {
+        return new RestyFallbackExecutor();
+    }
+
+    @Bean
+    public ServerContext serverContext() {
+        return new ConfigurableServerContext();
+    }
+
+    @SuppressWarnings("SpringJavaAutowiringInspection")
+    @Bean
+    public CommandExecutor commandExecutor(RestyCommandContext commandContext) {
+        return new RestyCommandExecutor(commandContext);
+    }
+
+    @Bean
+    public CommandFilter CustomCommandFilter() {
+        return new CustomCommandFilter();
+    }
+
+
+    private static class CustomCommandFilter implements CommandFilter {
+        @Override
+        public int order() {
+            return 0;
+        }
+
+        @Override
+        public boolean shouldFilter(RestyCommand restyCommand) {
+            return true;
+        }
+
+        @Override
+        public CommandFilterType getFilterType() {
+            return CommandFilterType.BEFOR_EXECUTE;
+        }
+
+        @Override
+        public void before(RestyCommand restyCommand) throws FilterException {
+
+            System.out.println("custom command filter");
+        }
+
+        @Override
+        public void after(RestyCommand restyCommand, Object result) {
+
+        }
+
+        @Override
+        public void error(RestyCommand restyCommand, RestyException ex) {
+
+        }
+    }
+
+}
+
+
+``` 
 
 # import jar 
 
