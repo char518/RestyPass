@@ -117,8 +117,8 @@ public class TestController {
 
 - RestyCommand: contain all information in one resty request.
 - RestyCommandExecutor: execute resty command and return the result.
-- ServerContext: server instances container, find adn refresh the server instances.
-- LoadBalancer: loadbalancer, you can define one technical LB for every resty service.
+- ServerContext: server instances container, find and refresh the server instances.
+- LoadBalancer: load balancer, you can define one technical LB for every resty service.
 - CommandFilter: filter the command as your want.
 - FallbackExecutor: execute the fallback Impl.
 
