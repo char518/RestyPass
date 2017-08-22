@@ -95,7 +95,7 @@ public class CloudDiscoveryServerContext extends AbstractDiscoveryServerContext 
             DiscoveryClient discoveryClient = this.applicationContext.getBean(DiscoveryClient.class);
             this.discoveryClient = discoveryClient;
         } catch (Exception ex) {
-            throw new RuntimeException("没有发现bean实例:" + DiscoveryClient.class.getSimpleName());
+            throw new RuntimeException("没有发现bean实例:" + DiscoveryClient.class.getSimpleName() + ",ex:" + ex.getMessage());
         } finally {
             initLock.unlock();
         }

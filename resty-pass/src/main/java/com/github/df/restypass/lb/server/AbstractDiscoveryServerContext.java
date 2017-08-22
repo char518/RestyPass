@@ -114,10 +114,10 @@ public abstract class AbstractDiscoveryServerContext implements ServerContext {
                         updated.set(true);
                     }
                 } catch (Exception ex) {
-                    log.error("更新server发生错误:", ex);
+                    log.warn("更新server发生错误:" + ex.getMessage(), ex);
                 }
 
-            }, 1 * 1000, 20 * 1000, TimeUnit.MILLISECONDS);
+            }, 3 * 1000, 20 * 1000, TimeUnit.MILLISECONDS);
         }
     }
 
