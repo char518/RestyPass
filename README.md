@@ -77,8 +77,8 @@ public interface ProxyService extends ApplicationService {
     
     //use spring mvc annotations
     @RestyMethod()
-    @RequestMapping(value = "/get_age", method = RequestMethod.GET)
-    Response<String> getAge(@RequestParam("id") Long id, String code, @PathVariable(value = "name") String name, @RequestHeader(value="TOKEN") String token);
+    @RequestMapping(value = "/get_age/{name}", method = RequestMethod.GET)
+    Response<String> getAge(@RequestParam("id") Long id, @PathVariable(value = "name") String name, @RequestHeader(value="TOKEN") String token);
 
     // Async call： (outcome)parameter type is Future<?>
     @RestyMethod

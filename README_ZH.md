@@ -78,8 +78,8 @@ public interface ProxyService extends ApplicationService {
        
     //支持spring mvc注解
     @RestyMethod()
-    @RequestMapping(value = "/get_age", method = RequestMethod.GET)
-    Response<String> getAge(@RequestParam("id") Long id, String code, @PathVariable(value = "name") String name, @RequestHeader(value="TOKEN") String token);
+    @RequestMapping(value = "/get_age/{name}", method = RequestMethod.GET)
+    Response<String> getAge(@RequestParam("id") Long id, @PathVariable(value = "name") String name, @RequestHeader(value="TOKEN") String token);
 
 
     // 异步调用形式： Future<?> 参数类型，出参
