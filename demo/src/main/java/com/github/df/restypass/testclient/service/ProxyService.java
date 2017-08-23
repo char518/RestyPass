@@ -34,7 +34,8 @@ import java.util.concurrent.Future;
         circuitBreakEnabled = false,
         loadBalancer = RandomLoadBalancer.NAME,
         retry = 1,
-        requestTimeout = 10000,
+        requestTimeout = 4000,
+        connectTimeout = 3000,
         limit = 1000
 )
 @RequestMapping(value = "/resty")

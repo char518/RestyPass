@@ -19,7 +19,9 @@ public class TestController {
     }
 
     @RequestMapping(value = "/get_status", method = RequestMethod.GET)
-    public String getStatus() {
+    public String getStatus() throws InterruptedException {
+
+        Thread.sleep(5000);
         return "Status is OK";
     }
 
