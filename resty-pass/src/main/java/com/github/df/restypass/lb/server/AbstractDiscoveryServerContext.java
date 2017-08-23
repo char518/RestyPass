@@ -132,7 +132,7 @@ public abstract class AbstractDiscoveryServerContext implements ServerContext {
             updatedInstancesMap.put(service, getServiceInstances(service));
         }
         if (log.isDebugEnabled()) {
-            log.debug("更新DiscoverClient server:{}", updatedInstancesMap);
+            log.debug("刷新server instances:{}", updatedInstancesMap);
         }
     }
 
