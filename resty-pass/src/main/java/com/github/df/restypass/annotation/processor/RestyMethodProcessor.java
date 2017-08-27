@@ -3,6 +3,7 @@ package com.github.df.restypass.annotation.processor;
 import com.github.df.restypass.annotation.RestyMethod;
 import com.github.df.restypass.annotation.RestyService;
 import com.github.df.restypass.command.RestyCommandConfig;
+import org.apache.commons.lang3.StringUtils;
 
 import java.lang.annotation.Annotation;
 
@@ -99,5 +100,12 @@ public class RestyMethodProcessor implements RestyAnnotationProcessor {
             properties.setLimit(restyMethod.limit());
         }
     }
+
+    protected void serVersion(RestyMethod restyMethod, RestyCommandConfig properties) {
+        if (StringUtils.isNotEmpty(restyMethod.version())) {
+            properties.setVersion(restyMethod.version());
+        }
+    }
+
 
 }

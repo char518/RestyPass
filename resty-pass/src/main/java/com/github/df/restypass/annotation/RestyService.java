@@ -85,6 +85,11 @@ public @interface RestyService {
 //    Class<? extends RestyPassFactory> factory() default DefaultRestyPassFactory.class;
 
     /**
+     * 路由版本
+     */
+    String version() default "*";
+
+    /**
      * 啥也不干的类
      */
     class Noop {

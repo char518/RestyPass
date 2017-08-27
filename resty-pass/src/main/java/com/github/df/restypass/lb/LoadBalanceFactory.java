@@ -43,8 +43,7 @@ public class LoadBalanceFactory {
                 Class<?> loadBalancerClz = Class.forName(loadBalancer);
                 return (LoadBalancer) loadBalancerClz.newInstance();
             } catch (InstantiationException | IllegalAccessException | ClassNotFoundException | ClassCastException e) {
-                log.error("无法创建指定的负载均衡器:{},ex:{}", loadBalancer, e.getMessage());
-                e.printStackTrace();
+                log.error("无法创建指定的负载均衡器:{},ex:{} ", loadBalancer, e.getMessage(), e);
             }
         }
         return createRoundRobinBalancer();

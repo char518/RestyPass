@@ -35,6 +35,8 @@ public class RestyServiceProcessor implements RestyAnnotationProcessor {
             setFactory(restyService, properties);
             //设置流量
             setLimit(restyService, properties);
+            //设置路由版本
+            setVersion(restyService, properties);
         }
         return properties;
     }
@@ -115,4 +117,9 @@ public class RestyServiceProcessor implements RestyAnnotationProcessor {
     protected void setLimit(RestyService restyService, RestyCommandConfig properties) {
         properties.setLimit(restyService.limit());
     }
+
+    protected void setVersion(RestyService restyService, RestyCommandConfig properties) {
+        properties.setVersion(restyService.version());
+    }
+
 }

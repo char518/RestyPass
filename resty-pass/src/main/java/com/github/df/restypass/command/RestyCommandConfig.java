@@ -95,6 +95,8 @@ public interface RestyCommandConfig extends Updater<UpdateCommandConfig> {
      */
     Class<? extends RestyPassFactory> getFactory();
 
+    String getVersion();
+
     /**
      * Sets async enabled.
      *
@@ -166,6 +168,9 @@ public interface RestyCommandConfig extends Updater<UpdateCommandConfig> {
      */
     void setFactory(Class<? extends RestyPassFactory> factoryClz);
 
+    void setVersion(String version);
+
+
     /**
      * The type Default resty command config.
      */
@@ -190,6 +195,8 @@ public interface RestyCommandConfig extends Updater<UpdateCommandConfig> {
         private String loadBalancer;
 
         private int limit = -1;
+        
+        private String version;
 
         private Class<? extends RestyPassFactory> factory;
 
@@ -231,6 +238,11 @@ public interface RestyCommandConfig extends Updater<UpdateCommandConfig> {
         @Override
         public int getRetry() {
             return retry;
+        }
+
+        @Override
+        public String getVersion() {
+            return version;
         }
 
         @Override
@@ -302,6 +314,11 @@ public interface RestyCommandConfig extends Updater<UpdateCommandConfig> {
         @Override
         public void setFactory(Class<? extends RestyPassFactory> factory) {
             this.factory = factory;
+        }
+
+        @Override
+        public void setVersion(String version) {
+            this.version = version;
         }
 
         @Override
