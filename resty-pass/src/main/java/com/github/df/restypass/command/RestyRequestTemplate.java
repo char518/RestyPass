@@ -233,14 +233,15 @@ public class RestyRequestTemplate {
                     arg = requestParam.getDefaultValue();
                 }
                 if (arg != null && StringUtils.isNotEmpty(arg.toString())) {
+
+                    if (index != 0) {
+                        sb.append("&");
+                    }
+                    sb.append(requestParam.getName());
+                    sb.append("=");
+                    sb.append(arg.toString());
+                    index++;
                 }
-                if (index != 0) {
-                    sb.append("&");
-                }
-                sb.append(requestParam.getName());
-                sb.append("=");
-                sb.append(arg.toString());
-                index++;
             }
 
         }
