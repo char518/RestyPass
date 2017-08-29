@@ -2,6 +2,7 @@ package com.github.df.restypass.annotation.processor;
 
 import com.github.df.restypass.annotation.RestyMethod;
 import com.github.df.restypass.command.RestyCommandConfig;
+import com.github.df.restypass.lb.server.VersionCondition;
 import org.apache.commons.lang3.StringUtils;
 
 import java.lang.annotation.Annotation;
@@ -30,6 +31,8 @@ public class RestyMethodProcessor implements RestyAnnotationProcessor {
             setCircuitBreakEnabled(restyMethod, properties);
             // 设置流量
             setLimit(restyMethod, properties);
+            // 设置路由版本
+            serVersion(restyMethod, properties);
         }
         return properties;
     }
@@ -101,8 +104,12 @@ public class RestyMethodProcessor implements RestyAnnotationProcessor {
     }
 
     protected void serVersion(RestyMethod restyMethod, RestyCommandConfig properties) {
-        if (StringUtils.isNotEmpty(restyMethod.version())) {
-            properties.setVersion(restyMethod.version());
+        if (restyMethod.version() != null) {
+            for (String version : restyMethod.version()) {
+                if (StringUtils.isNotEmpty(version)) {
+                    properties.setVersion(VersionCondition.create(version));
+                }
+            }
         }
     }
 

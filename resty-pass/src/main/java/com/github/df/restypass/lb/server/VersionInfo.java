@@ -13,8 +13,23 @@ import java.util.regex.Pattern;
 @Data
 public class VersionInfo {
 
+    /**
+     * 空版本号
+     */
+    public static VersionInfo EMPTY_VERSION = new VersionInfo();
 
-    private static final Pattern VERSION_NUM_REG = Pattern.compile("^\\d+(\\.\\d)+");
+    public static void main(String[] args) {
+        Matcher matcher = VERSION_NUM_REG.matcher("-1");
+    }
+
+    /**
+     * 版本number reg
+     */
+    private static final Pattern VERSION_NUM_REG = Pattern.compile("^\\d+(\\.\\d)*");
+
+    /**
+     * 版本stage reg
+     */
     private static final Pattern VERSION_STAGE_REG = Pattern.compile("[a-zA-z]+$");
 
     /**
@@ -57,12 +72,13 @@ public class VersionInfo {
     public static VersionInfo create(String originVersion) {
         VersionInfo versionInfo = new VersionInfo();
         versionInfo.setOriginVersion(originVersion);
+        // find version number
         Matcher numMatcher = VERSION_NUM_REG.matcher(originVersion);
-
         if (numMatcher.find()) {
             String[] splitNum = numMatcher.group().split("\\.");
             versionInfo.setVersionNumber(Integer.valueOf(StringUtils.join(splitNum)));
         }
+        //find version stage
         Matcher stageMatcher = VERSION_STAGE_REG.matcher(originVersion);
         if (stageMatcher.find()) {
             versionInfo.setVersionStage(stageMatcher.group().toUpperCase());

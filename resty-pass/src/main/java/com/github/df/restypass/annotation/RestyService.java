@@ -1,6 +1,7 @@
 package com.github.df.restypass.annotation;
 
 import com.github.df.restypass.lb.RoundRobinLoadBalancer;
+import com.github.df.restypass.lb.server.VersionCondition;
 
 import java.lang.annotation.*;
 
@@ -81,13 +82,15 @@ public @interface RestyService {
      */
     int requestTimeout() default 60000;
 
-
+    //TODO: Factory 配置
+//  非Spring环境则可自定义工厂类实现组件定制
 //    Class<? extends RestyPassFactory> factory() default DefaultRestyPassFactory.class;
 
     /**
      * 路由版本
      */
-    String version() default "*";
+    String[] version() default "*";
+
 
     /**
      * 啥也不干的类

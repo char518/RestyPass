@@ -3,6 +3,7 @@ package com.github.df.restypass.command;
 import com.github.df.restypass.base.RestyPassFactory;
 import com.github.df.restypass.command.update.UpdateCommandConfig;
 import com.github.df.restypass.command.update.Updater;
+import com.github.df.restypass.lb.server.VersionCondition;
 
 /**
  * Resty请求的配置
@@ -25,84 +26,80 @@ public interface RestyCommandConfig extends Updater<UpdateCommandConfig> {
      */
     void setServiceName(String serviceName);
 
-    /**
-     * Is async enabled boolean.
-     *
-     * @return the boolean
-     */
-    boolean isAsyncEnabled();
 
     /**
-     * Is circuit break enabled boolean.
+     * 断路器是否启用
+     * 启用时在达到一定条件时，断路器会自动熔断服务接口
      *
      * @return the boolean
      */
     boolean isCircuitBreakEnabled();
 
     /**
-     * Is force break enabled boolean.
+     * 是否强制熔断
+     * <p>
+     * true:强制熔断服务，直到设置为false
      *
      * @return the boolean
      */
     boolean isForceBreakEnabled();
 
     /**
-     * Is fallback enabled boolean.
+     * 是否启用降级服务
+     * true:启用降级服务，熔断后自动调用降级服务并返回结果
      *
      * @return the boolean
      */
     boolean isFallbackEnabled();
 
     /**
-     * Gets fallback class.
+     * 降级服务Class
      *
      * @return the fallback class
      */
     Class getFallbackClass();
 
     /**
-     * Gets fallback com.github.df.restypass.servertest.entity.
+     * 降级服务Bean
      *
-     * @return the fallback com.github.df.restypass.servertest.entity
+     * @return the fallback
      */
     String getFallbackBean();
 
     /**
-     * Gets retry.
+     * 重试次数
      *
      * @return the retry
      */
     int getRetry();
 
     /**
-     * Gets load balancer.
+     * 配置使用的负载均衡器
      *
      * @return the load balancer
      */
     String getLoadBalancer();
 
     /**
-     * Gets limit.
+     * 限流
      *
      * @return the limit
      */
     int getLimit();
 
     /**
-     * Gets factory.
+     * 基础工厂类
      *
      * @return the factory
      */
     Class<? extends RestyPassFactory> getFactory();
 
-    String getVersion();
-
     /**
-     * Sets async enabled.
+     * 版本控制
      *
-     * @param asyncEnabled the async enabled
+     * @return the version
      */
-    void setAsyncEnabled(boolean asyncEnabled);
+    VersionCondition getVersion();
 
     /**
      * Sets circuit break enabled.
@@ -133,9 +130,9 @@ public interface RestyCommandConfig extends Updater<UpdateCommandConfig> {
     void setFallbackClass(Class fallbackClass);
 
     /**
-     * Sets fallback com.github.df.restypass.servertest.entity.
+     * Sets fallback bean.
      *
-     * @param fallbackBean the fallback com.github.df.restypass.servertest.entity
+     * @param fallbackBean the fallback bean
      */
     void setFallbackBean(String fallbackBean);
 
@@ -168,7 +165,12 @@ public interface RestyCommandConfig extends Updater<UpdateCommandConfig> {
      */
     void setFactory(Class<? extends RestyPassFactory> factoryClz);
 
-    void setVersion(String version);
+    /**
+     * Sets version.
+     *
+     * @param version the version
+     */
+    void setVersion(VersionCondition version);
 
 
     /**
@@ -177,8 +179,6 @@ public interface RestyCommandConfig extends Updater<UpdateCommandConfig> {
     class DefaultRestyCommandConfig implements RestyCommandConfig {
 
         private String serviceName;
-
-        private boolean asyncEnabled = false;
 
         private boolean circuitBreakEnabled = true;
 
@@ -195,8 +195,8 @@ public interface RestyCommandConfig extends Updater<UpdateCommandConfig> {
         private String loadBalancer;
 
         private int limit = -1;
-        
-        private String version;
+
+        private VersionCondition version;
 
         private Class<? extends RestyPassFactory> factory;
 
@@ -210,10 +210,6 @@ public interface RestyCommandConfig extends Updater<UpdateCommandConfig> {
             this.serviceName = serviceName;
         }
 
-        @Override
-        public boolean isAsyncEnabled() {
-            return asyncEnabled;
-        }
 
         @Override
         public boolean isCircuitBreakEnabled() {
@@ -241,14 +237,10 @@ public interface RestyCommandConfig extends Updater<UpdateCommandConfig> {
         }
 
         @Override
-        public String getVersion() {
+        public VersionCondition getVersion() {
             return version;
         }
 
-        @Override
-        public void setAsyncEnabled(boolean asyncEnabled) {
-            this.asyncEnabled = asyncEnabled;
-        }
 
         @Override
         public void setCircuitBreakEnabled(boolean enableCircuitBreak) {
@@ -317,7 +309,7 @@ public interface RestyCommandConfig extends Updater<UpdateCommandConfig> {
         }
 
         @Override
-        public void setVersion(String version) {
+        public void setVersion(VersionCondition version) {
             this.version = version;
         }
 

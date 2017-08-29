@@ -21,6 +21,7 @@ import static java.lang.String.format;
  * Created by darrenfu on 17-6-19.
  */
 public class RequestMappingProcessor implements SpringAnnotationProcessor {
+
     private ResourceLoader resourceLoader = new DefaultResourceLoader();
 
     private static final Class<RequestMapping> ANNOTATION = RequestMapping.class;

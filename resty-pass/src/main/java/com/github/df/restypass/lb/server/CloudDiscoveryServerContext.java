@@ -63,21 +63,7 @@ public class CloudDiscoveryServerContext extends AbstractDiscoveryServerContext 
         instance.setIsHttps(serviceInstance.isSecure());
         instance.setHost(serviceInstance.getHost());
         instance.setPort(serviceInstance.getPort());
-
-        Map<String, String> metadata = serviceInstance.getMetadata();
-        if (metadata != null && metadata.size() > 0) {
-            Map<String, Object> props = new HashMap();
-
-            for (Map.Entry<String, String> entry : metadata.entrySet()) {
-                props.put(entry.getKey(), entry.getValue());
-                // 服务启动的时间
-                if (RestyConst.Instance.PROP_TIMESTAMP_KEY.equalsIgnoreCase(entry.getKey())
-                        && StringUtils.isNotEmpty(entry.getValue())) {
-                    instance.setStartTime(DateFormatTools.parseDate(entry.getValue()));
-                }
-            }
-            instance.setProps(props);
-        }
+        instance.addPropValue(serviceInstance.getMetadata());
         instance.ready();
         return instance;
     }

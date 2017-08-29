@@ -54,6 +54,6 @@ public @interface RestyMethod {
      *
      * @see RestyService#version()
      */
-    String version() default "";
+    String[] version() default "";
 
 }

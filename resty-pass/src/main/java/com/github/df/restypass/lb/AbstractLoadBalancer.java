@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -33,34 +34,33 @@ public abstract class AbstractLoadBalancer implements LoadBalancer {
             return null;
         }
 
-
-        boolean instancesNotReady = serverList.removeIf(v -> !v.isReady());
-        if (instancesNotReady) {
-            log.warn("存在状态没有ready的server实例,请调用Ready方法完成ServerInstance初始化");
+        //移除未初始化完成或当前状态未存活的实例
+        Iterator<ServerInstance> iterator = serverList.iterator();
+        while (iterator.hasNext()) {
+            ServerInstance instance = iterator.next();
+            if (!instance.isReady() || !instance.getIsAlive()) {
+                iterator.remove();
+                log.debug("存在不可用的server实例:{}", instance);
+            }
         }
 
+        //只有一个实例，直接返回，忽视排除的实例ID
         if (serverList.size() == 1) {
-            if (excludeInstanceIdSet != null
-                    && excludeInstanceIdSet.size() > 0
-                    && excludeInstanceIdSet.contains(serverList.get(0).getInstanceId())) {
-                return null;
-            }
             return serverList.get(0);
         }
 
         if (!CommonTools.isEmpty(excludeInstanceIdSet)) {
-            List<ServerInstance> useableServerList = new ArrayList<>();
+            List<ServerInstance> usableServerList = new ArrayList<>();
             for (ServerInstance instance : serverList) {
                 if (!excludeInstanceIdSet.contains(instance.getInstanceId())) {
-                    useableServerList.add(instance);
+                    usableServerList.add(instance);
                 }
             }
             // 排除excludeServer后，有可用server则使用，否则还是使用原始的Server
-            if (!CommonTools.isEmpty(useableServerList)) {
-                serverList = useableServerList;
+            if (!CommonTools.isEmpty(usableServerList)) {
+                serverList = usableServerList;
             }
         }
-
 
         return doChoose(serverList, command);
     }
@@ -76,22 +76,23 @@ public abstract class AbstractLoadBalancer implements LoadBalancer {
     protected abstract ServerInstance doChoose(List<ServerInstance> instanceList, RestyCommand command);
 
     /**
+     * 计算权重
      * copy from dubbo
      *
      * @param serverInstance the server instance
      * @return weight
      */
-    protected int getWeight(ServerInstance serverInstance) {
-        int weight = serverInstance.getPropValue(PROP_WEIGHT_KEY, PROP_WEIGHT_DEFAULT);
+    int getWeight(ServerInstance serverInstance) {
+        int weight = serverInstance.getWeight();
 
         if (weight > 0) {
-            long timestamp = getServerStartTime(serverInstance);
+            long timestamp = serverInstance.getStartTimestamp();
             if (timestamp > 0L) {
                 int uptime = (int) (System.currentTimeMillis() - timestamp);
                 int warmup = serverInstance.getPropValue(PROP_WARMUP_KEY, PROP_WARMUP_DEFAULT);
 
                 if (uptime > 0 && uptime < warmup) {
-                    weight = caculateWarmupWeight(uptime, warmup, weight);
+                    weight = calculateWarmupWeight(uptime, warmup, weight);
                 }
             }
         }
@@ -99,19 +100,15 @@ public abstract class AbstractLoadBalancer implements LoadBalancer {
         return weight;
     }
 
-    private long getServerStartTime(ServerInstance serverInstance) {
-        return serverInstance.getStartTime() != null ? serverInstance.getStartTime().getTime() : serverInstance.getPropValue(PROP_TIMESTAMP_KEY, PROP_TIMESTAMP_DEFAULT);
-    }
-
     /**
-     * Caculate warmup weight int.
+     * 根据启动时间和预热时间计算权重
      *
-     * @param uptime the uptime
-     * @param warmup the warmup
-     * @param weight the weight
+     * @param uptime 启动时间
+     * @param warmup 预热时间
+     * @param weight 权重
      * @return the int
      */
-    int caculateWarmupWeight(int uptime, int warmup, int weight) {
+    private int calculateWarmupWeight(int uptime, int warmup, int weight) {
         int ww = (int) ((float) uptime / ((float) warmup / (float) weight));
         return ww < 1 ? 1 : (ww > weight ? weight : ww);
     }

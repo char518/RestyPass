@@ -24,14 +24,8 @@ import java.util.Set;
 
 /**
  * 说明: RestyService代理类注册器
- * <p/>
- * Copyright: Copyright (c)
- * <p/>
- * Company:
- * <p/>
  *
- * @author darren -fu
- * @version 1.0.0
+ * @author darren-fu
  * @contact 13914793391
  * @date 2016 /11/22
  */

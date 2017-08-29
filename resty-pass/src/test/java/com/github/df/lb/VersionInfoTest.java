@@ -32,9 +32,9 @@ public class VersionInfoTest {
 
     @Test
     public void testVersionCreateNoDash() {
-        String originVersion = "3.9snapshot";
+        String originVersion = "3snapshot";
         VersionInfo versionInfo = VersionInfo.create(originVersion);
-        Assert.assertEquals(BigDecimal.valueOf(39), BigDecimal.valueOf(versionInfo.getVersionNumber()));
+        Assert.assertEquals(BigDecimal.valueOf(3), BigDecimal.valueOf(versionInfo.getVersionNumber()));
         Assert.assertEquals("SNAPSHOT", versionInfo.getVersionStage());
         Assert.assertEquals(originVersion, versionInfo.getOriginVersion());
     }
