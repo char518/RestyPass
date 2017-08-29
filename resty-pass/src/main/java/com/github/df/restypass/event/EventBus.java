@@ -1,6 +1,7 @@
 package com.github.df.restypass.event;
 
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -12,8 +13,8 @@ import java.util.function.Consumer;
  * Created by darrenfu on 17-7-23.
  */
 @SuppressWarnings("WeakerAccess")
-@Slf4j
 public class EventBus {
+    private static final Logger log = LoggerFactory.getLogger(EventBus.class);
 
     /**
      * 事件-消费者缓存(eventKey->Consumer)

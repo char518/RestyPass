@@ -1,6 +1,7 @@
 package com.github.df.restypass.lb;
 
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -8,8 +9,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * 负载均衡器工厂类
  * Created by darrenfu on 17-6-28.
  */
-@Slf4j
 public class LoadBalanceFactory {
+    private static final Logger log = LoggerFactory.getLogger(LoadBalanceFactory.class);
 
     private static final ConcurrentHashMap<String, LoadBalancer> serviceLoadBalancerMap = new ConcurrentHashMap<>();
 

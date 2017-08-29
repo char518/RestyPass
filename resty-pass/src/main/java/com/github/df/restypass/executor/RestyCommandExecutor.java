@@ -11,7 +11,8 @@ import com.github.df.restypass.lb.LoadBalancer;
 import com.github.df.restypass.lb.server.ServerContext;
 import com.github.df.restypass.lb.server.ServerInstance;
 import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -22,8 +23,8 @@ import java.util.Set;
  * Created by darrenfu on 17-7-1.
  */
 @SuppressWarnings("unused")
-@Slf4j
 public class RestyCommandExecutor implements CommandExecutor {
+    private static final Logger log = LoggerFactory.getLogger(RestyCommandExecutor.class);
 
     /**
      * Resty请求上下文

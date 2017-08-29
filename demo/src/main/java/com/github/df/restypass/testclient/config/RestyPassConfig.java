@@ -21,22 +21,43 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RestyPassConfig {
 
+    /**
+     * Fallback executor fallback executor.
+     *
+     * @return the fallback executor
+     */
     @Bean
     public FallbackExecutor fallbackExecutor() {
         return new RestyFallbackExecutor();
     }
 
+    /**
+     * Server context server context.
+     *
+     * @return the server context
+     */
     @Bean
     public ServerContext serverContext() {
         return new ConfigurableServerContext();
     }
 
+    /**
+     * Command executor command executor.
+     *
+     * @param commandContext the command context
+     * @return the command executor
+     */
     @SuppressWarnings("SpringJavaAutowiringInspection")
     @Bean
     public CommandExecutor commandExecutor(RestyCommandContext commandContext) {
         return new RestyCommandExecutor(commandContext);
     }
 
+    /**
+     * Custom command filter command filter.
+     *
+     * @return the command filter
+     */
     @Bean
     public CommandFilter CustomCommandFilter() {
         return new CustomCommandFilter();

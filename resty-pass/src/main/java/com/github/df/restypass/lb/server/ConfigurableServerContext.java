@@ -2,8 +2,9 @@ package com.github.df.restypass.lb.server;
 
 import com.github.df.restypass.util.StreamTools;
 import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.InputStream;
@@ -19,8 +20,8 @@ import java.util.stream.Collectors;
  * 服务容器
  * Created by darrenfu on 17-6-28.
  */
-@Slf4j
 public class ConfigurableServerContext implements ServerContext {
+    private static final Logger log = LoggerFactory.getLogger(ConfigurableServerContext.class);
 
     public static final String CONFIG_FILE_NAME = "resty-server.yaml";
 
@@ -43,7 +44,7 @@ public class ConfigurableServerContext implements ServerContext {
         for (YamlServerList server : servers) {
             for (ServerInstance instance : server.getInstances()) {
                 instance.setServiceName(server.getServiceName());
-                instance.initProps();
+                instance.ready();
             }
             instanceMap.put(server.getServiceName(), server.getInstances());
         }
@@ -120,7 +121,7 @@ public class ConfigurableServerContext implements ServerContext {
 
     @Override
     public List<ServerInstance> setServerList(List<ServerInstance> instanceList) {
-        instanceList.forEach(ServerInstance::initProps);
+        instanceList.forEach(ServerInstance::ready);
         this.instanceMap = StreamTools.groupBy(instanceList, ServerInstance::getServiceName);
         return instanceList;
     }
@@ -128,7 +129,7 @@ public class ConfigurableServerContext implements ServerContext {
     @Override
     public List<ServerInstance> addServerList(List<ServerInstance> instanceList) {
 
-        instanceList.forEach(ServerInstance::initProps);
+        instanceList.forEach(ServerInstance::ready);
         Map<String, List<ServerInstance>> map = StreamTools.groupBy(instanceList, ServerInstance::getServiceName);
 
 

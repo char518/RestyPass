@@ -1,7 +1,6 @@
 package com.github.df.restypass.annotation.processor;
 
 import com.github.df.restypass.annotation.RestyMethod;
-import com.github.df.restypass.annotation.RestyService;
 import com.github.df.restypass.command.RestyCommandConfig;
 import org.apache.commons.lang3.StringUtils;
 

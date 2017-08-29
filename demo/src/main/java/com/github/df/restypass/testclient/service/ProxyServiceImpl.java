@@ -17,10 +17,10 @@ import java.util.concurrent.Future;
  * Company:
  * <p/>
  *
- * @author darren-fu
+ * @author darren -fu
  * @version 1.0.0
  * @contact 13914793391
- * @date 2016/11/22
+ * @date 2016 /11/22
  */
 @Slf4j
 public class ProxyServiceImpl implements ProxyService {
@@ -45,6 +45,12 @@ public class ProxyServiceImpl implements ProxyService {
         return null;
     }
 
+    /**
+     * Gets string.
+     *
+     * @param ex the ex
+     * @return the string
+     */
     public String getString(RestyException ex) {
         System.out.println("执行加强降级，Ex:" + ex.getMessage());
         log.error("FallbackException:{}", ex.getMessage());

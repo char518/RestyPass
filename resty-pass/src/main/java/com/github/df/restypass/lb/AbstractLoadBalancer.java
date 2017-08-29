@@ -5,6 +5,8 @@ import com.github.df.restypass.lb.server.ServerContext;
 import com.github.df.restypass.lb.server.ServerInstance;
 import com.github.df.restypass.util.CommonTools;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +19,7 @@ import static com.github.df.restypass.base.RestyConst.Instance.*;
  * Created by darrenfu on 17-7-31.
  */
 public abstract class AbstractLoadBalancer implements LoadBalancer {
+    private static Logger log = LoggerFactory.getLogger(AbstractLoadBalancer.class);
 
     @Override
     public ServerInstance choose(ServerContext context, RestyCommand command, Set<String> excludeInstanceIdSet) {
@@ -29,6 +32,13 @@ public abstract class AbstractLoadBalancer implements LoadBalancer {
         if (serverList == null || serverList.size() == 0) {
             return null;
         }
+
+
+        boolean instancesNotReady = serverList.removeIf(v -> !v.isReady());
+        if (instancesNotReady) {
+            log.warn("存在状态没有ready的server实例,请调用Ready方法完成ServerInstance初始化");
+        }
+
         if (serverList.size() == 1) {
             if (excludeInstanceIdSet != null
                     && excludeInstanceIdSet.size() > 0
@@ -50,6 +60,8 @@ public abstract class AbstractLoadBalancer implements LoadBalancer {
                 serverList = useableServerList;
             }
         }
+
+
         return doChoose(serverList, command);
     }
 

@@ -62,17 +62,24 @@ public class ServerInstance {
     private Date startTime;
 
     /**
+     * 版本信息
+     */
+    private VersionInfo version;
+
+    /**
      * 其它属性
      */
     private Map<String, Object> props;
 
+
+    private boolean ready = false;
 
     /**
      * Init server instance.
      *
      * @return server instance
      */
-    public ServerInstance initProps() {
+    public ServerInstance ready() {
         if (this.port <= 0 || StringUtils.isEmpty(this.host)) {
             throw new IllegalArgumentException("host/port of server instance can not be null");
         }
@@ -94,6 +101,7 @@ public class ServerInstance {
             this.setInstanceId(sb.toString());
         }
 
+        this.ready = true;
         return this;
     }
 

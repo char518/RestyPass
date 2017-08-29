@@ -5,9 +5,10 @@ import com.github.df.restypass.http.converter.ResponseConverterContext;
 import com.github.df.restypass.http.pojo.FailedResponse;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 import org.asynchttpclient.ListenableFuture;
 import org.asynchttpclient.Response;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -20,8 +21,8 @@ import java.util.concurrent.TimeoutException;
  * Created by darrenfu on 17-7-20.
  */
 @SuppressWarnings({"unused", "WeakerAccess"})
-@Slf4j
 public class RestyFuture<T> implements Future<T> {
+    private static final Logger log = LoggerFactory.getLogger(RestyFuture.class);
 
     @Getter
     @Setter

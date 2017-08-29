@@ -1,6 +1,5 @@
 package com.github.df.restypass.command;
 
-import com.google.common.collect.HashBasedTable;
 import com.github.df.restypass.annotation.RestyMethod;
 import com.github.df.restypass.annotation.RestyService;
 import com.github.df.restypass.annotation.processor.RestyMethodProcessor;
@@ -10,10 +9,12 @@ import com.github.df.restypass.command.update.Updater;
 import com.github.df.restypass.http.client.HttpClientWrapper;
 import com.github.df.restypass.http.config.AsyncHttpConfigFactory;
 import com.github.df.restypass.spring.wrapper.SpringAnnotationWrapper;
-import lombok.extern.slf4j.Slf4j;
+import com.google.common.collect.HashBasedTable;
 import org.apache.commons.lang3.StringUtils;
 import org.asynchttpclient.AsyncHttpClient;
 import org.asynchttpclient.AsyncHttpClientConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -28,8 +29,9 @@ import java.util.concurrent.ConcurrentHashMap;
  * Created by darrenfu on 17-6-21.
  */
 @SuppressWarnings("WeakerAccess")
-@Slf4j
 public class RestyCommandContext implements Updater<UpdateCommandConfig> {
+
+    private static final Logger log = LoggerFactory.getLogger(RestyCommandContext.class);
 
     /**
      * 服务与注解 map
