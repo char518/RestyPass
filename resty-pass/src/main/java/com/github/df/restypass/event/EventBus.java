@@ -62,7 +62,7 @@ public class EventBus {
     static <T> void emitEvent(String event, T obj) {
 
         List<Consumer> consumers = eventMap.get(event);
-        if (consumers != null && eventMap.size() > 0) {
+        if (consumers != null && consumers.size() > 0) {
             for (Consumer consumer : consumers) {
                 consumer.accept(obj);
             }

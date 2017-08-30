@@ -1,7 +1,6 @@
 package com.github.df.restypass.annotation;
 
 import com.github.df.restypass.lb.RoundRobinLoadBalancer;
-import com.github.df.restypass.lb.server.VersionCondition;
 
 import java.lang.annotation.*;
 

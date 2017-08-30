@@ -142,9 +142,17 @@ public class RestyCommandContext implements Updater<UpdateCommandConfig> {
 
         SpringAnnotationWrapper wrapper = new SpringAnnotationWrapper();
 
+        RestyCommandConfig commandProperties = new RestyCommandConfig.DefaultRestyCommandConfig();
+        processRestyServiceAnnotation(restyService, commandProperties);
+
+
         for (Method method : serviceClz.getMethods()) {
             //存储 httpMethod 和 restyCommandConfig
-            RestyCommandConfig commandProperties = processRestyAnnotation(restyService, method);
+            RestyMethod restyMethod = method.getDeclaredAnnotation(RestyMethod.class);
+            if (restyMethod != null) {
+                storeRestyMethod(method, restyMethod);
+                processRestyMethodAnnotation(restyMethod, commandProperties);
+            }
             commandPropertiesMap.putIfAbsent(method, commandProperties);
 
             // 存储 httpMethod 和 requestTemplate
@@ -160,22 +168,32 @@ public class RestyCommandContext implements Updater<UpdateCommandConfig> {
      * 处理Resty 注解,生成 RestyCommandConfig
      * 合并RestyService和RestyMethod中的配置
      *
-     * @param restyService service注解
-     * @param method       方法
-     * @return RestyCommandConfig
+     * @param restyService      service注解
+     * @param commandProperties the command properties
+     * @return RestyCommandConfig resty command config
      * @see RestyService
      * @see RestyMethod
      */
-    private RestyCommandConfig processRestyAnnotation(RestyService restyService, Method method) {
-        RestyCommandConfig commandProperties = new RestyCommandConfig.DefaultRestyCommandConfig();
-        RestyMethod restyMethod = method.getDeclaredAnnotation(RestyMethod.class);
-        if (restyMethod != null) {
-            this.storeRestyMethod(method, restyMethod);
-        }
+    protected RestyCommandConfig processRestyServiceAnnotation(RestyService restyService, RestyCommandConfig commandProperties) {
+
         // 处理resty 注解
         serviceProcessor.processor(restyService, commandProperties);
-        methodProcessor.processor(restyMethod, commandProperties);
+        return commandProperties;
+    }
 
+    /**
+     * 处理Resty 注解,生成 RestyCommandConfig
+     * 合并RestyService和RestyMethod中的配置
+     *
+     * @param restyMethod       the resty method
+     * @param commandProperties the command properties
+     * @return RestyCommandConfig resty command config
+     * @see RestyService
+     * @see RestyMethod
+     */
+    protected RestyCommandConfig processRestyMethodAnnotation(RestyMethod restyMethod, RestyCommandConfig commandProperties) {
+        // 处理resty 注解
+        methodProcessor.processor(restyMethod, commandProperties);
         return commandProperties;
     }
 

@@ -1,6 +1,7 @@
 package com.github.df.restypass.lb.server;
 
 import com.github.df.restypass.base.RestyConst;
+import com.github.df.restypass.event.EventEmit;
 import com.github.df.restypass.util.CommonTools;
 import com.github.df.restypass.util.StringBuilderFactory;
 import lombok.Data;
@@ -17,7 +18,7 @@ import static com.github.df.restypass.base.RestyConst.Instance.*;
  * Created by darrenfu on 17-6-25.
  */
 @Data
-public class ServerInstance {
+public class ServerInstance implements EventEmit {
 
     /**
      * 服务实例ID unique
@@ -116,9 +117,10 @@ public class ServerInstance {
         //设置预热时间
         this.setWarmupSeconds(ObjectUtils.defaultIfNull(this.warmupSeconds,
                 Integer.valueOf(getPropValue(PROP_WARMUP_KEY, PROP_WARMUP_DEFAULT))));
-
+        String versionAttr = getPropValue(PROP_VERSION_KEY, PROP_VERSION_DEFAULT);
         //版本
-        this.setVersion(ObjectUtils.defaultIfNull(this.version, VersionInfo.EMPTY_VERSION));
+        this.setVersion(ObjectUtils.defaultIfNull(this.version,
+                StringUtils.isEmpty(versionAttr) ? VersionInfo.EMPTY_VERSION : VersionInfo.create(this.instanceId, versionAttr)));
 
         if (StringUtils.isEmpty(this.instanceId)) {
             StringBuilder sb = StringBuilderFactory.DEFAULT.stringBuilder();
@@ -132,6 +134,9 @@ public class ServerInstance {
 
         this.getPropValue(PROP_TIMESTAMP_KEY, PROP_TIMESTAMP_DEFAULT);
         this.ready = true;
+        //发布服务实例变更事件
+        this.emit(VersionRule.EVENT_KEY_PREFIX + this.serviceName, this);
+
         return this;
     }
 

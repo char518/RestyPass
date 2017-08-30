@@ -2,7 +2,7 @@ package com.github.df.restypass.annotation.processor;
 
 import com.github.df.restypass.annotation.RestyService;
 import com.github.df.restypass.command.RestyCommandConfig;
-import com.github.df.restypass.lb.server.VersionCondition;
+import com.github.df.restypass.lb.server.VersionRule;
 import org.apache.commons.lang3.StringUtils;
 
 import java.lang.annotation.Annotation;
@@ -122,15 +122,15 @@ public class RestyServiceProcessor implements RestyAnnotationProcessor {
     }
 
     protected void setVersion(RestyService restyService, RestyCommandConfig properties) {
-        List<VersionCondition> versionConditionList = new ArrayList<>();
+        List<VersionRule> versionRuleList = new ArrayList<>();
 
         for (String version : restyService.version()) {
             if (StringUtils.isNotEmpty(version)) {
-                versionConditionList.add(VersionCondition.create(version));
+                versionRuleList.add(VersionRule.create(restyService.serviceName(), version));
             }
         }
-        if (versionConditionList.size() > 0) {
-            properties.setVersion(versionConditionList);
+        if (versionRuleList.size() > 0) {
+            properties.setVersion(versionRuleList);
         }
     }
 

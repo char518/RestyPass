@@ -10,6 +10,7 @@ import com.github.df.restypass.executor.FallbackExecutor;
 import com.github.df.restypass.executor.RestyCommandExecutor;
 import com.github.df.restypass.executor.RestyFallbackExecutor;
 import com.github.df.restypass.filter.CommandFilter;
+import com.github.df.restypass.lb.server.CloudConsulServerContext;
 import com.github.df.restypass.lb.server.ConfigurableServerContext;
 import com.github.df.restypass.lb.server.ServerContext;
 import org.springframework.context.annotation.Bean;
@@ -38,7 +39,7 @@ public class RestyPassConfig {
      */
     @Bean
     public ServerContext serverContext() {
-        return new ConfigurableServerContext();
+        return new CloudConsulServerContext();
     }
 
     /**

@@ -3,7 +3,7 @@ package com.github.df.restypass.command;
 import com.github.df.restypass.base.RestyPassFactory;
 import com.github.df.restypass.command.update.UpdateCommandConfig;
 import com.github.df.restypass.command.update.Updater;
-import com.github.df.restypass.lb.server.VersionCondition;
+import com.github.df.restypass.lb.server.VersionRule;
 
 import java.util.List;
 
@@ -101,7 +101,7 @@ public interface RestyCommandConfig extends Updater<UpdateCommandConfig> {
      *
      * @return the version
      */
-    List<VersionCondition> getVersion();
+    List<VersionRule> getVersion();
 
     /**
      * Sets circuit break enabled.
@@ -172,7 +172,7 @@ public interface RestyCommandConfig extends Updater<UpdateCommandConfig> {
      *
      * @param version the version
      */
-    void setVersion(List<VersionCondition> version);
+    void setVersion(List<VersionRule> version);
 
 
     /**
@@ -198,7 +198,7 @@ public interface RestyCommandConfig extends Updater<UpdateCommandConfig> {
 
         private int limit = -1;
 
-        private List<VersionCondition> version;
+        private List<VersionRule> version;
 
         private Class<? extends RestyPassFactory> factory;
 
@@ -239,7 +239,7 @@ public interface RestyCommandConfig extends Updater<UpdateCommandConfig> {
         }
 
         @Override
-        public List<VersionCondition> getVersion() {
+        public List<VersionRule> getVersion() {
             return version;
         }
 
@@ -311,7 +311,7 @@ public interface RestyCommandConfig extends Updater<UpdateCommandConfig> {
         }
 
         @Override
-        public void setVersion(List<VersionCondition> version) {
+        public void setVersion(List<VersionRule> version) {
             this.version = version;
         }
 

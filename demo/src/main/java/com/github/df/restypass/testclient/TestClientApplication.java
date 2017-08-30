@@ -23,7 +23,7 @@ import java.util.concurrent.Future;
  */
 @SuppressWarnings("SpringJavaAutowiringInspection")
 @SpringBootApplication
-//@EnableDiscoveryClient
+@EnableDiscoveryClient
 @EnableRestyPass(basePackages = {"com.github.df"})
 @RestController
 public class TestClientApplication {

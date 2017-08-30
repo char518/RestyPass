@@ -35,7 +35,8 @@ import java.util.concurrent.Future;
         loadBalancer = RandomLoadBalancer.NAME,
         retry = 1,
         requestTimeout = 10000,
-        limit = 1000
+        limit = 1000,
+        version = {">1.3.1"}
 )
 @RequestMapping(value = "/resty")
 public interface ProxyService extends ApplicationService {
