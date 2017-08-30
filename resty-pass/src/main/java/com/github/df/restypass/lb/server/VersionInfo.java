@@ -16,7 +16,7 @@ public class VersionInfo {
     /**
      * 空版本号
      */
-    public static VersionInfo EMPTY_VERSION = new VersionInfo();
+    public static final VersionInfo EMPTY_VERSION = new VersionInfo();
 
     public static void main(String[] args) {
         Matcher matcher = VERSION_NUM_REG.matcher("-1");

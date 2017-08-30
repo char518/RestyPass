@@ -6,6 +6,8 @@ import com.github.df.restypass.lb.server.VersionCondition;
 import org.apache.commons.lang3.StringUtils;
 
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * RestyMethod 注解处理器
@@ -103,12 +105,23 @@ public class RestyMethodProcessor implements RestyAnnotationProcessor {
         }
     }
 
+    /**
+     * Ser version.
+     *
+     * @param restyMethod the resty method
+     * @param properties  the properties
+     */
     protected void serVersion(RestyMethod restyMethod, RestyCommandConfig properties) {
         if (restyMethod.version() != null) {
+            List<VersionCondition> versionConditionList = new ArrayList<>();
+
             for (String version : restyMethod.version()) {
                 if (StringUtils.isNotEmpty(version)) {
-                    properties.setVersion(VersionCondition.create(version));
+                    versionConditionList.add(VersionCondition.create(version));
                 }
+            }
+            if (versionConditionList.size() > 0) {
+                properties.setVersion(versionConditionList);
             }
         }
     }

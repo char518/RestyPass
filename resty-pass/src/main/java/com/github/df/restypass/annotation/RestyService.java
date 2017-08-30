@@ -89,7 +89,7 @@ public @interface RestyService {
     /**
      * 路由版本
      */
-    String[] version() default "*";
+    String[] version() default "";
 
 
     /**

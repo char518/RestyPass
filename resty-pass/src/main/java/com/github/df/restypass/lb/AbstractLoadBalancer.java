@@ -89,7 +89,7 @@ public abstract class AbstractLoadBalancer implements LoadBalancer {
             long timestamp = serverInstance.getStartTimestamp();
             if (timestamp > 0L) {
                 int uptime = (int) (System.currentTimeMillis() - timestamp);
-                int warmup = serverInstance.getPropValue(PROP_WARMUP_KEY, PROP_WARMUP_DEFAULT);
+                int warmup = serverInstance.getWarmupSeconds() * 1000;
 
                 if (uptime > 0 && uptime < warmup) {
                     weight = calculateWarmupWeight(uptime, warmup, weight);
@@ -103,8 +103,8 @@ public abstract class AbstractLoadBalancer implements LoadBalancer {
     /**
      * 根据启动时间和预热时间计算权重
      *
-     * @param uptime 启动时间
-     * @param warmup 预热时间
+     * @param uptime 已经启动的时间 ms
+     * @param warmup 预热时间 ms
      * @param weight 权重
      * @return the int
      */

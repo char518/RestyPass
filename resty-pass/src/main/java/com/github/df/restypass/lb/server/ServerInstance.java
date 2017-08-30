@@ -78,7 +78,7 @@ public class ServerInstance {
     /**
      * 其它属性
      */
-    private Map<String, Object> props;
+    private Map<String, String> props;
 
     /**
      * 是否准备好
@@ -107,12 +107,15 @@ public class ServerInstance {
         //服务名称
         this.setServiceName(ObjectUtils.defaultIfNull(this.serviceName, RestyConst.SERVICE_DEFAULT));
         //启动时间
-        this.setStartTimestamp(ObjectUtils.defaultIfNull(this.startTimestamp, getPropValue(PROP_TIMESTAMP_KEY, PROP_TIMESTAMP_DEFAULT)));
+        this.setStartTimestamp(ObjectUtils.defaultIfNull(this.startTimestamp,
+                Long.valueOf(getPropValue(PROP_TIMESTAMP_KEY, PROP_TIMESTAMP_DEFAULT))));
         //权重
-        this.setWeight(ObjectUtils.defaultIfNull(this.weight, getPropValue(PROP_WEIGHT_KEY, PROP_WEIGHT_DEFAULT)));
+        this.setWeight(ObjectUtils.defaultIfNull(this.weight,
+                Integer.valueOf(getPropValue(PROP_WEIGHT_KEY, PROP_WEIGHT_DEFAULT))));
 
         //设置预热时间
-        this.setWarmupSeconds(ObjectUtils.defaultIfNull(this.warmupSeconds, getPropValue(PROP_WARMUP_KEY, PROP_WARMUP_DEFAULT)));
+        this.setWarmupSeconds(ObjectUtils.defaultIfNull(this.warmupSeconds,
+                Integer.valueOf(getPropValue(PROP_WARMUP_KEY, PROP_WARMUP_DEFAULT))));
 
         //版本
         this.setVersion(ObjectUtils.defaultIfNull(this.version, VersionInfo.EMPTY_VERSION));
@@ -140,16 +143,16 @@ public class ServerInstance {
      * @param defaultValue the default value
      * @return the prop value
      */
-    public <T> T getPropValue(String propKey, T defaultValue) {
+    public <T> String getPropValue(String propKey, T defaultValue) {
         if (props == null || props.size() == 0) {
-            return defaultValue;
+            return String.valueOf(defaultValue);
         }
-        Object propVal = props.get(propKey);
+        String propVal = props.get(propKey);
 
         if (propVal == null) {
-            return defaultValue;
+            return String.valueOf(defaultValue);
         }
-        return (T) propVal;
+        return propVal;
     }
 
     /**
@@ -159,7 +162,7 @@ public class ServerInstance {
      * @param value the value
      * @return the server instance
      */
-    public ServerInstance addPropValue(String prop, Object value) {
+    public ServerInstance addPropValue(String prop, String value) {
         if (props == null) {
             props = new HashMap();
         }
@@ -173,7 +176,7 @@ public class ServerInstance {
      * @param propMap the prop map
      * @return the server instance
      */
-    public ServerInstance addPropValue(Map<String, ? extends Object> propMap) {
+    public ServerInstance addPropValue(Map<String, String> propMap) {
         if (CommonTools.isEmpty(propMap)) {
             return this;
         }

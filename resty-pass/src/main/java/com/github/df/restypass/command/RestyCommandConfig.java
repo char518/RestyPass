@@ -5,6 +5,8 @@ import com.github.df.restypass.command.update.UpdateCommandConfig;
 import com.github.df.restypass.command.update.Updater;
 import com.github.df.restypass.lb.server.VersionCondition;
 
+import java.util.List;
+
 /**
  * Resty请求的配置
  * Created by darrenfu on 17-6-21.
@@ -99,7 +101,7 @@ public interface RestyCommandConfig extends Updater<UpdateCommandConfig> {
      *
      * @return the version
      */
-    VersionCondition getVersion();
+    List<VersionCondition> getVersion();
 
     /**
      * Sets circuit break enabled.
@@ -170,7 +172,7 @@ public interface RestyCommandConfig extends Updater<UpdateCommandConfig> {
      *
      * @param version the version
      */
-    void setVersion(VersionCondition version);
+    void setVersion(List<VersionCondition> version);
 
 
     /**
@@ -196,7 +198,7 @@ public interface RestyCommandConfig extends Updater<UpdateCommandConfig> {
 
         private int limit = -1;
 
-        private VersionCondition version;
+        private List<VersionCondition> version;
 
         private Class<? extends RestyPassFactory> factory;
 
@@ -237,7 +239,7 @@ public interface RestyCommandConfig extends Updater<UpdateCommandConfig> {
         }
 
         @Override
-        public VersionCondition getVersion() {
+        public List<VersionCondition> getVersion() {
             return version;
         }
 
@@ -309,7 +311,7 @@ public interface RestyCommandConfig extends Updater<UpdateCommandConfig> {
         }
 
         @Override
-        public void setVersion(VersionCondition version) {
+        public void setVersion(List<VersionCondition> version) {
             this.version = version;
         }
 
