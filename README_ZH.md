@@ -133,11 +133,11 @@ public class TestController {
 
 版本信息由版本号和版本阶段组成。 
 
-如： 1.2.2-RELEASE, 版本号为：1.22, 版本阶段：RELEASE。 
+如： 1.2.2-RELEASE -> 版本号为：1.22, 版本阶段：RELEASE。 
 
-3.4SNAPSHOT, 版本号为：3.4, 版本阶段： SNPSHOT。 
+3.4SNAPSHOT -> 版本号为：3.4, 版本阶段： SNAPSHOT。 
 
-1.1.0,版本阶段：1.10,没有版本阶段。 
+1.1.0 -> 版本号：1.10,没有版本阶段。 
 
 
 2. 配置 

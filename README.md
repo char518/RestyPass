@@ -123,12 +123,16 @@ public class TestController {
 ```
 ### version route rules
 1. concept
-version will be parse into version number and version stage.
+version will be parse into version number and version stage. 
 
 eg. 1.2.2-RELEASE, version number is 1.22, version stage is RELEASE. 
-3.4SNAPSHOT, version number is 3.4, version stage is SNPSHOT.
-2. configuration
-version number support operations: >, >=, <, <=, =,!,!= (! same with !=)
+
+3.4SNAPSHOT, version number is 3.4, version stage is SNAPSHOT. 
+
+2. configuration 
+
+version number support operations: >, >=, <, <=, =,!,!= (! same with !=) 
+
 version stage support operations:!, !=, =(! same with !=)
 
 eg. version = {"<=1.3.1-RELEASE","<2.0-RC"} 
