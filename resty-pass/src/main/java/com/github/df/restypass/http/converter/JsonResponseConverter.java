@@ -4,7 +4,8 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.github.df.restypass.util.JsonTools;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -13,8 +14,9 @@ import java.lang.reflect.Type;
  * Json类型响应解析类
  * Created by darrenfu on 17-7-19.
  */
-@Slf4j
 public class JsonResponseConverter implements ResponseConverter<Object> {
+
+    private static final Logger log = LoggerFactory.getLogger(JsonResponseConverter.class);
 
     private static final String APPLICATION_JSON = "application/json";
 

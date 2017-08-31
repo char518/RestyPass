@@ -23,10 +23,15 @@ import java.util.concurrent.Future;
  */
 @SuppressWarnings("SpringJavaAutowiringInspection")
 @SpringBootApplication
-//@EnableDiscoveryClient
+@EnableDiscoveryClient
 @EnableRestyPass(basePackages = {"com.github.df"})
 @RestController
 public class TestClientApplication {
+    /**
+     * The entry point of application.
+     *
+     * @param args the input arguments
+     */
     public static void main(String[] args) {
         SpringApplication.run(TestClientApplication.class, args);
     }
@@ -35,12 +40,22 @@ public class TestClientApplication {
     @Autowired
     private ProxyService proxyService;
 
+    /**
+     * Call nothing string.
+     *
+     * @return the string
+     */
     @RequestMapping(value = "nothing")
     public String callNothing() {
         proxyService.getNothing();
         return "OK";
     }
 
+    /**
+     * Call status string.
+     *
+     * @return the string
+     */
     @RequestMapping(value = "status")
     public String callStatus() {
         // future为出参，将会被填充future数据
@@ -53,6 +68,13 @@ public class TestClientApplication {
         return "OK";
     }
 
+    /**
+     * Call user string.
+     *
+     * @return the string
+     * @throws ExecutionException   the execution exception
+     * @throws InterruptedException the interrupted exception
+     */
     @RequestMapping(value = "user")
     public String callUser() throws ExecutionException, InterruptedException {
         Future<User> future = proxyService.getUser();
@@ -69,6 +91,13 @@ public class TestClientApplication {
     }
 
 
+    /**
+     * Call void async string.
+     *
+     * @return the string
+     * @throws ExecutionException   the execution exception
+     * @throws InterruptedException the interrupted exception
+     */
     @RequestMapping(value = "void_async")
     public String callVoidAsync() throws ExecutionException, InterruptedException {
         Future<Void> future = proxyService.getVoidAsync();
@@ -79,6 +108,11 @@ public class TestClientApplication {
         return "OK";
     }
 
+    /**
+     * Result string.
+     *
+     * @return the string
+     */
     @RequestMapping(value = "/result")
     public String result() {
         return PerformanceTools.getPerformance().toString();

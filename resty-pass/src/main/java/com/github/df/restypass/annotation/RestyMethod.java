@@ -48,4 +48,12 @@ public @interface RestyMethod {
      * @see RestyService#limit()
      */
     int limit() default -1;
+
+    /**
+     * 路由版本 为空时使用@RestyService的配置为准
+     *
+     * @see RestyService#version()
+     */
+    String[] version() default "";
+
 }

@@ -4,8 +4,9 @@ import com.github.df.restypass.base.RestyConst;
 import com.github.df.restypass.util.ClassTools;
 import com.github.df.restypass.util.DateFormatTools;
 import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
@@ -25,8 +26,9 @@ import java.util.stream.Collectors;
  * Spring Cloud DiscoveryClient 服务容器
  * Created by darrenfu on 17-8-1.
  */
-@Slf4j
 public class CloudDiscoveryServerContext extends AbstractDiscoveryServerContext implements ApplicationContextAware {
+
+    private static final Logger log = LoggerFactory.getLogger(CloudDiscoveryServerContext.class);
 
     private ReentrantLock initLock = new ReentrantLock();
 
@@ -61,22 +63,8 @@ public class CloudDiscoveryServerContext extends AbstractDiscoveryServerContext 
         instance.setIsHttps(serviceInstance.isSecure());
         instance.setHost(serviceInstance.getHost());
         instance.setPort(serviceInstance.getPort());
-
-        Map<String, String> metadata = serviceInstance.getMetadata();
-        if (metadata != null && metadata.size() > 0) {
-            Map<String, Object> props = new HashMap();
-
-            for (Map.Entry<String, String> entry : metadata.entrySet()) {
-                props.put(entry.getKey(), entry.getValue());
-                // 服务启动的时间
-                if (RestyConst.Instance.PROP_TIMESTAMP_KEY.equalsIgnoreCase(entry.getKey())
-                        && StringUtils.isNotEmpty(entry.getValue())) {
-                    instance.setStartTime(DateFormatTools.parseDate(entry.getValue()));
-                }
-            }
-            instance.setProps(props);
-        }
-        instance.initProps();
+        instance.addPropValue(serviceInstance.getMetadata());
+        instance.ready();
         return instance;
     }
 

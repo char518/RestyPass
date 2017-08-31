@@ -1,15 +1,16 @@
 package com.github.df.restypass.cb;
 
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
 import com.github.df.restypass.command.RestyCommand;
 import com.github.df.restypass.enums.CircuitBreakerStatus;
 import com.github.df.restypass.enums.RestyCommandStatus;
 import com.github.df.restypass.exception.execute.RequestException;
 import com.github.df.restypass.lb.server.ServerInstance;
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
 import lombok.ToString;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -24,8 +25,9 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 @SuppressWarnings({"FieldCanBeLocal", "WeakerAccess"})
 @ToString(exclude = {"commandQueue", "halfOpenLock"})
-@Slf4j
 public class DefaultCircuitBreaker implements CircuitBreaker {
+
+    private static final Logger log = LoggerFactory.getLogger(DefaultCircuitBreaker.class);
 
     /**
      * key:[RestyCommand#path, ServerInstance#instanceId, metricsKey]

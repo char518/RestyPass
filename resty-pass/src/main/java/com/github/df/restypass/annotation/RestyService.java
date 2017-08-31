@@ -81,8 +81,15 @@ public @interface RestyService {
      */
     int requestTimeout() default 60000;
 
-
+    //TODO: Factory 配置
+//  非Spring环境则可自定义工厂类实现组件定制
 //    Class<? extends RestyPassFactory> factory() default DefaultRestyPassFactory.class;
+
+    /**
+     * 路由版本
+     */
+    String[] version() default "";
+
 
     /**
      * 啥也不干的类

@@ -6,20 +6,20 @@ import com.github.df.restypass.command.RestyCommandConfig;
 import com.github.df.restypass.enums.RestyCommandStatus;
 import com.github.df.restypass.exception.execute.RestyException;
 import com.github.df.restypass.util.ClassTools;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.NoSuchElementException;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 服务降级处理类
  * Created by darrenfu on 17-7-27.
  */
-@Slf4j
 public class RestyFallbackExecutor implements FallbackExecutor {
+    private static final Logger log = LoggerFactory.getLogger(RestyFallbackExecutor.class);
 
     private static ConcurrentHashMap<Class, Object> fallbackClassMap = new ConcurrentHashMap<>();
 

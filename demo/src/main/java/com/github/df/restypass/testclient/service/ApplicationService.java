@@ -9,5 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public interface ApplicationService {
 
 
+    /**
+     * Application index.
+     */
     void applicationIndex();
 }

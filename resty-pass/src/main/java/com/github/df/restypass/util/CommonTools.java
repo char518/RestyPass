@@ -1,5 +1,6 @@
 package com.github.df.restypass.util;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Map;
 
@@ -32,10 +33,56 @@ public class CommonTools {
     /**
      * Is empty boolean.
      *
+     * @param coll the coll
+     * @return the boolean
+     */
+    public static boolean isNotEmpty(Collection coll) {
+        return coll != null && coll.size() > 0;
+    }
+
+    /**
+     * Is empty boolean.
+     *
      * @param map the map
      * @return the boolean
      */
     public static boolean isEmpty(Map map) {
         return map == null || map.isEmpty();
     }
+
+
+    /**
+     * Is not empty boolean.
+     *
+     * @param map the map
+     * @return the boolean
+     */
+    public static boolean isNotEmpty(Map map) {
+        return map != null && map.size() > 0;
+    }
+
+    /**
+     * 将版本号转换成 BigDecimal
+     * 1.2.3->new BigDecimal("1.23")
+     *
+     * @param versionNumber the version number
+     * @return the big decimal
+     */
+    public static BigDecimal convertVersionNum(String versionNumber) {
+        StringBuffer sb = new StringBuffer(16);
+        boolean alreadyAppendDot = false;
+        for (char c : versionNumber.toCharArray()) {
+            if (Character.isDigit(c)) {
+                sb.append(c);
+            }
+            if (!alreadyAppendDot && c == '.') {
+                sb.append(c);
+                alreadyAppendDot = true;
+            }
+        }
+
+        return new BigDecimal(sb.toString());
+
+    }
+
 }

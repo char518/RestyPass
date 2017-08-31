@@ -12,14 +12,14 @@ import java.lang.annotation.Annotation;
 public interface SpringAnnotationProcessor {
 
     /**
-     * Gets annotation type.
+     * 获取注解Class
      *
      * @return the annotation type
      */
     Class<? extends Annotation> getAnnotationType();
 
     /**
-     * Process boolean.
+     * 处理Spring注解,数据填充requestTemplate
      *
      * @param requestTemplate the request template
      * @param annotation      the annotation

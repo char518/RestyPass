@@ -5,9 +5,10 @@ import com.github.df.restypass.enums.RestyCommandStatus;
 import com.github.df.restypass.exception.execute.RestyException;
 import com.github.df.restypass.lb.server.ServerInstance;
 import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
 import org.asynchttpclient.*;
 import org.asynchttpclient.uri.Uri;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 
 import java.lang.reflect.Method;
@@ -21,8 +22,9 @@ import java.util.concurrent.Future;
  * Created by darrenfu on 17-6-20.
  */
 @Data
-@Slf4j
 public class DefaultRestyCommand implements RestyCommand {
+
+    private static final Logger log = LoggerFactory.getLogger(DefaultRestyCommand.class);
 
     /**
      * request 模板

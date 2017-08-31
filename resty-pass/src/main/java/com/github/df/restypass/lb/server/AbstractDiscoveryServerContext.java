@@ -1,6 +1,7 @@
 package com.github.df.restypass.lb.server;
 
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -10,16 +11,15 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
 /**
  * SpringCloud服务发现抽象容器
  * Created by darrenfu on 17-8-17.
  */
-@Slf4j
 public abstract class AbstractDiscoveryServerContext implements ServerContext {
 
+    private static final Logger log = LoggerFactory.getLogger(AbstractDiscoveryServerContext.class);
 
     /**
      * server缓存

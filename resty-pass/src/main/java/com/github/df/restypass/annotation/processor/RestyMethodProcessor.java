@@ -1,10 +1,13 @@
 package com.github.df.restypass.annotation.processor;
 
 import com.github.df.restypass.annotation.RestyMethod;
-import com.github.df.restypass.annotation.RestyService;
 import com.github.df.restypass.command.RestyCommandConfig;
+import com.github.df.restypass.lb.rule.VersionRule;
+import org.apache.commons.lang3.StringUtils;
 
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * RestyMethod 注解处理器
@@ -30,6 +33,8 @@ public class RestyMethodProcessor implements RestyAnnotationProcessor {
             setCircuitBreakEnabled(restyMethod, properties);
             // 设置流量
             setLimit(restyMethod, properties);
+            // 设置路由版本
+            serVersion(restyMethod, properties);
         }
         return properties;
     }
@@ -99,5 +104,27 @@ public class RestyMethodProcessor implements RestyAnnotationProcessor {
             properties.setLimit(restyMethod.limit());
         }
     }
+
+    /**
+     * 设置路由版本
+     *
+     * @param restyMethod the resty method
+     * @param properties  the properties
+     */
+    protected void serVersion(RestyMethod restyMethod, RestyCommandConfig properties) {
+        if (restyMethod.version() != null) {
+            List<VersionRule> versionRuleList = new ArrayList<>();
+
+            for (String version : restyMethod.version()) {
+                if (StringUtils.isNotEmpty(version)) {
+                    versionRuleList.add(VersionRule.create(properties.getServiceName(), version));
+                }
+            }
+            if (versionRuleList.size() > 0) {
+                properties.setVersion(versionRuleList);
+            }
+        }
+    }
+
 
 }

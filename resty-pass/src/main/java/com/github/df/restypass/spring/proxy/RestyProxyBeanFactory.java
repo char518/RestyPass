@@ -1,7 +1,6 @@
 package com.github.df.restypass.spring.proxy;
 
 import com.github.df.restypass.base.DefaultRestyPassFactory;
-import com.github.df.restypass.base.RestyPassFactory;
 import com.github.df.restypass.command.RestyCommandContext;
 import com.github.df.restypass.executor.CommandExecutor;
 import com.github.df.restypass.executor.FallbackExecutor;
@@ -10,7 +9,8 @@ import com.github.df.restypass.filter.CommandFilterContext;
 import com.github.df.restypass.lb.server.ServerContext;
 import com.github.df.restypass.util.CommonTools;
 import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
@@ -19,7 +19,10 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.util.Assert;
 
 import java.lang.reflect.Proxy;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
@@ -28,8 +31,9 @@ import java.util.concurrent.locks.ReentrantLock;
  * @author darren -fu
  */
 @Data
-@Slf4j
 public class RestyProxyBeanFactory implements FactoryBean<Object>, InitializingBean, ApplicationContextAware {
+
+    private static final Logger log = LoggerFactory.getLogger(RestyProxyBeanFactory.class);
 
     /**
      * 代理类 class

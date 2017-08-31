@@ -12,7 +12,8 @@ import com.github.df.restypass.filter.CommandFilterContext;
 import com.github.df.restypass.lb.LoadBalanceFactory;
 import com.github.df.restypass.lb.LoadBalancer;
 import com.github.df.restypass.lb.server.ServerContext;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -27,8 +28,9 @@ import java.util.List;
  * @contact 13914793391
  * @date 2016/11/22
  */
-@Slf4j
 public class RestyProxyInvokeHandler implements InvocationHandler {
+
+    private static final Logger log = LoggerFactory.getLogger(RestyProxyInvokeHandler.class);
 
     /**
      * Command容器

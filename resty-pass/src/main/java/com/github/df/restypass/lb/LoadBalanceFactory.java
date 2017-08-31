@@ -1,6 +1,7 @@
 package com.github.df.restypass.lb;
 
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -8,8 +9,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * 负载均衡器工厂类
  * Created by darrenfu on 17-6-28.
  */
-@Slf4j
 public class LoadBalanceFactory {
+    private static final Logger log = LoggerFactory.getLogger(LoadBalanceFactory.class);
 
     private static final ConcurrentHashMap<String, LoadBalancer> serviceLoadBalancerMap = new ConcurrentHashMap<>();
 
@@ -43,8 +44,7 @@ public class LoadBalanceFactory {
                 Class<?> loadBalancerClz = Class.forName(loadBalancer);
                 return (LoadBalancer) loadBalancerClz.newInstance();
             } catch (InstantiationException | IllegalAccessException | ClassNotFoundException | ClassCastException e) {
-                log.error("无法创建指定的负载均衡器:{},ex:{}", loadBalancer, e.getMessage());
-                e.printStackTrace();
+                log.error("无法创建指定的负载均衡器:{},ex:{} ", loadBalancer, e.getMessage(), e);
             }
         }
         return createRoundRobinBalancer();

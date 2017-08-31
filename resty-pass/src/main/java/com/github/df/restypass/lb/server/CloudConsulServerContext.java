@@ -5,7 +5,8 @@ import com.ecwid.consul.v1.QueryParams;
 import com.ecwid.consul.v1.Response;
 import com.ecwid.consul.v1.health.model.Check;
 import com.ecwid.consul.v1.health.model.HealthService;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cloud.client.DefaultServiceInstance;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.context.ApplicationContext;
@@ -17,8 +18,9 @@ import java.util.*;
  * 可自动过滤consul中critical状态的instance
  * Created by darrenfu on 17-8-17.
  */
-@Slf4j
 public class CloudConsulServerContext extends CloudDiscoveryServerContext {
+
+    private static final Logger log = LoggerFactory.getLogger(CloudConsulServerContext.class);
 
     private ConsulClient consulClient;
 

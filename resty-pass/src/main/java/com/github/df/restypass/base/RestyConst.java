@@ -54,5 +54,12 @@ public class RestyConst {
          */
         public static final String PROP_TIMESTAMP_KEY = "timestamp";
         public static final Long PROP_TIMESTAMP_DEFAULT = 0L;
+
+
+        /**
+         * server开始服务时间
+         */
+        public static final String PROP_VERSION_KEY = "version";
+        public static final String PROP_VERSION_DEFAULT = "";
     }
 }
