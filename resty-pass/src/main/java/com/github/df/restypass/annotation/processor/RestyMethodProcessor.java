@@ -2,7 +2,7 @@ package com.github.df.restypass.annotation.processor;
 
 import com.github.df.restypass.annotation.RestyMethod;
 import com.github.df.restypass.command.RestyCommandConfig;
-import com.github.df.restypass.lb.server.VersionRule;
+import com.github.df.restypass.lb.rule.VersionRule;
 import org.apache.commons.lang3.StringUtils;
 
 import java.lang.annotation.Annotation;

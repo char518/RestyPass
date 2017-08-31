@@ -3,7 +3,7 @@ package com.github.df.restypass.command;
 import com.github.df.restypass.base.RestyPassFactory;
 import com.github.df.restypass.command.update.UpdateCommandConfig;
 import com.github.df.restypass.command.update.Updater;
-import com.github.df.restypass.lb.server.VersionRule;
+import com.github.df.restypass.lb.rule.VersionRule;
 
 import java.util.List;
 

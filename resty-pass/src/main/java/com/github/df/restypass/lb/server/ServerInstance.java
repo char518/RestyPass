@@ -2,6 +2,7 @@ package com.github.df.restypass.lb.server;
 
 import com.github.df.restypass.base.RestyConst;
 import com.github.df.restypass.event.EventEmit;
+import com.github.df.restypass.lb.rule.VersionRule;
 import com.github.df.restypass.util.CommonTools;
 import com.github.df.restypass.util.StringBuilderFactory;
 import lombok.Data;
@@ -107,6 +108,19 @@ public class ServerInstance implements EventEmit {
 
         //服务名称
         this.setServiceName(ObjectUtils.defaultIfNull(this.serviceName, RestyConst.SERVICE_DEFAULT));
+
+        //ID
+        if (StringUtils.isEmpty(this.instanceId)) {
+            StringBuilder sb = StringBuilderFactory.DEFAULT.stringBuilder();
+            sb.append(serviceName);
+            sb.append("@");
+            sb.append(host);
+            sb.append(":");
+            sb.append(port);
+            this.setInstanceId(sb.toString());
+        }
+
+
         //启动时间
         this.setStartTimestamp(ObjectUtils.defaultIfNull(this.startTimestamp,
                 Long.valueOf(getPropValue(PROP_TIMESTAMP_KEY, PROP_TIMESTAMP_DEFAULT))));
@@ -122,15 +136,6 @@ public class ServerInstance implements EventEmit {
         this.setVersion(ObjectUtils.defaultIfNull(this.version,
                 StringUtils.isEmpty(versionAttr) ? VersionInfo.EMPTY_VERSION : VersionInfo.create(this.instanceId, versionAttr)));
 
-        if (StringUtils.isEmpty(this.instanceId)) {
-            StringBuilder sb = StringBuilderFactory.DEFAULT.stringBuilder();
-            sb.append(serviceName);
-            sb.append("@");
-            sb.append(host);
-            sb.append(":");
-            sb.append(port);
-            this.setInstanceId(sb.toString());
-        }
 
         this.getPropValue(PROP_TIMESTAMP_KEY, PROP_TIMESTAMP_DEFAULT);
         this.ready = true;

@@ -1,6 +1,7 @@
 package com.github.df.restypass.lb;
 
 import com.github.df.restypass.command.RestyCommand;
+import com.github.df.restypass.lb.rule.VersionRule;
 import com.github.df.restypass.lb.server.ServerContext;
 import com.github.df.restypass.lb.server.ServerInstance;
 import com.github.df.restypass.util.CommonTools;
@@ -33,38 +34,82 @@ public abstract class AbstractLoadBalancer implements LoadBalancer {
         if (serverList == null || serverList.size() == 0) {
             return null;
         }
+        List<ServerInstance> usableServerList = null;
+        final int instanceSize = serverList.size();
 
         //移除未初始化完成或当前状态未存活的实例
         Iterator<ServerInstance> iterator = serverList.iterator();
         while (iterator.hasNext()) {
             ServerInstance instance = iterator.next();
-            if (!instance.isReady() || !instance.getIsAlive()) {
+            if (!instance.isReady()
+                    || !instance.getIsAlive()
+                    || !isVersionOk(command, instance)) {
                 iterator.remove();
-                log.debug("存在不可用的server实例:{}", instance);
+                if (log.isTraceEnabled()) {
+                    log.trace("剔除本次不可使用的server实例:{}", instance);
+                }
+            } else if (shouldExcludeInstance(excludeInstanceIdSet, instance)) {
+                //剔除被排除的实例ID
+                if (usableServerList == null) {
+                    usableServerList = new ArrayList<>(instanceSize);
+                }
+                iterator.remove();
+                if (log.isTraceEnabled()) {
+                    log.trace("剔除本次被排除的server实例:{}", instance);
+                }
+                usableServerList.add(instance);
             }
+        }
+
+        if (CommonTools.isEmpty(serverList) && CommonTools.isEmpty(usableServerList)) {
+            return null;
+        }
+        // 排除excludeServer后，有可用server则使用，否则还是使用原始的Server
+        // 避免失败重试导致无instance可用
+        if (CommonTools.isEmpty(serverList) && CommonTools.isNotEmpty(usableServerList)) {
+            serverList = usableServerList;
         }
 
         //只有一个实例，直接返回，忽视排除的实例ID
         if (serverList.size() == 1) {
             return serverList.get(0);
         }
-
-        if (!CommonTools.isEmpty(excludeInstanceIdSet)) {
-            List<ServerInstance> usableServerList = new ArrayList<>();
-            for (ServerInstance instance : serverList) {
-                if (!excludeInstanceIdSet.contains(instance.getInstanceId())) {
-                    usableServerList.add(instance);
-                }
-            }
-            // 排除excludeServer后，有可用server则使用，否则还是使用原始的Server
-            if (!CommonTools.isEmpty(usableServerList)) {
-                serverList = usableServerList;
-            }
-        }
-
         return doChoose(serverList, command);
     }
 
+    /**
+     * 验证版本是否OK
+     *
+     * @param command  the command
+     * @param instance the instance
+     * @return boolean boolean
+     */
+    protected boolean isVersionOk(RestyCommand command, ServerInstance instance) {
+        List<VersionRule> versionRules = command.getRestyCommandConfig().getVersion();
+        if (versionRules == null || versionRules.size() == 0) {
+            return true;
+        }
+
+        for (VersionRule versionRule : versionRules) {
+            //版本不匹配版本规则
+            if (!versionRule.match(instance.getVersion())) {
+                return false;
+            }
+        }
+        // 匹配成功
+        return true;
+    }
+
+    /**
+     * 判断instance是否已被排除
+     *
+     * @param excludeInstanceIdSet
+     * @param instance
+     * @return
+     */
+    private boolean shouldExcludeInstance(Set<String> excludeInstanceIdSet, ServerInstance instance) {
+        return CommonTools.isNotEmpty(excludeInstanceIdSet) && excludeInstanceIdSet.contains(instance.getInstanceId());
+    }
 
     /**
      * 基于特定算法，选举可用server实例
@@ -80,7 +125,7 @@ public abstract class AbstractLoadBalancer implements LoadBalancer {
      * copy from dubbo
      *
      * @param serverInstance the server instance
-     * @return weight
+     * @return weight weight
      */
     int getWeight(ServerInstance serverInstance) {
         int weight = serverInstance.getWeight();

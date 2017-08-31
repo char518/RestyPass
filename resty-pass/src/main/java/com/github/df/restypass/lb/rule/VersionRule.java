@@ -1,8 +1,9 @@
-package com.github.df.restypass.lb.server;
+package com.github.df.restypass.lb.rule;
 
 import com.github.df.restypass.annotation.RestyService;
 import com.github.df.restypass.event.EventConsumer;
-import com.github.df.restypass.lb.rule.RouteRule;
+import com.github.df.restypass.lb.server.ServerInstance;
+import com.github.df.restypass.lb.server.VersionInfo;
 import com.github.df.restypass.util.CommonTools;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
@@ -26,10 +27,9 @@ public class VersionRule implements RouteRule<VersionInfo>, EventConsumer {
     public static final String EVENT_KEY_PREFIX = "ServerInstance_Version";
 
     /**
-     * 存放不同serverInstance对此版本约束的匹配条件
+     * 缓存不同serverInstance对此版本约束的匹配条件
      * key->value:ServerInstanceId->boolean是否匹配
-     * 线程不安全
-     * 使用EventBus，单线程更新此数据
+     * 线程不安全(不需要，一个service的同一个instance同一时间应该只有一个版本)
      */
     private Map<String, Boolean> versionMatchMap = new HashMap(32);
 
@@ -149,6 +149,9 @@ public class VersionRule implements RouteRule<VersionInfo>, EventConsumer {
      */
     @Override
     public boolean match(VersionInfo versionInfo) {
+        if (versionInfo == null || versionInfo == VersionInfo.EMPTY_VERSION) {
+            return true;
+        }
         Boolean match = versionMatchMap.get(versionInfo.getId());
         return match != null ? match : doMath(versionInfo);
     }

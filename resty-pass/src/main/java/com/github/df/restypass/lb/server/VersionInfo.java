@@ -21,6 +21,11 @@ public class VersionInfo {
      */
     public static final VersionInfo EMPTY_VERSION = new VersionInfo();
 
+    /**
+     * The entry point of application.
+     *
+     * @param args the input arguments
+     */
     public static void main(String[] args) {
         char cc = '.';
         System.out.println(cc == '.');
@@ -57,6 +62,7 @@ public class VersionInfo {
     private String versionStage;
 
     private VersionInfo() {
+        this.id = UUID.randomUUID().toString();
     }
 
 
@@ -67,12 +73,20 @@ public class VersionInfo {
      * @return the version info
      */
     public static VersionInfo create(String originVersion) {
-        return create(UUID.randomUUID().toString(), originVersion);
+        return create(originVersion, originVersion);
     }
 
 
+    /**
+     * 创建版本信息
+     *
+     * @param id            the id
+     * @param originVersion the origin version
+     * @return the version info
+     */
     public static VersionInfo create(String id, String originVersion) {
         VersionInfo versionInfo = new VersionInfo();
+        versionInfo.setId(id);
         versionInfo.setOriginVersion(originVersion);
         // find version number
         Matcher numMatcher = VERSION_NUM_REG.matcher(originVersion);

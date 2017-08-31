@@ -1,6 +1,6 @@
 package com.github.df.lb;
 
-import com.github.df.restypass.lb.server.VersionRule;
+import com.github.df.restypass.lb.rule.VersionRule;
 import com.github.df.restypass.lb.server.VersionInfo;
 import org.junit.Assert;
 import org.junit.Test;
@@ -54,6 +54,11 @@ public class VersionRouteRuleTest {
 
         versionInfo = VersionInfo.create("RELEASE");
         Assert.assertTrue("stage is release", condition.match(versionInfo));
+
+        condition = VersionRule.create("testServer", "!SNAPSHOT");
+
+        versionInfo = VersionInfo.create("SNAPSHOT");
+        Assert.assertTrue("stage is SNAPSHOT", !condition.match(versionInfo));
 
 
         condition = VersionRule.create("testServer", "!=1.2.0!RELEASE");

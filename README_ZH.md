@@ -61,7 +61,8 @@ public class TestClientApplication {
         loadBalancer = RandomLoadBalancer.NAME,
         retry = 1,
         requestTimeout = 10000,
-        limit = 1000 //限流
+        limit = 1000, //限流
+        version = {"<=1.3.1-RELEASE","<2.0-RC"} // version route
 )
 @RequestMapping(value = "/resty")
 public interface ProxyService extends ApplicationService {
@@ -125,6 +126,23 @@ public class TestController {
     }
   }
 ``` 
+
+### 版本路由机制
+1. 要点
+版本信息由版本号和版本阶段组成
+如： 1.2.2-RELEASE, 版本号为：1.22, 版本阶段：RELEASE. 
+3.4SNAPSHOT, 版本号为：3.4, 版本阶段： SNPSHOT.
+1.1.0,版本阶段：1.10,没有版本阶段
+
+2. 配置
+版本路由的配置在配置版本号和版本阶段的同时，支持多种操作符来作为版本的路由约束条件。
+版本号： >, >=, <, <=, =,!,!= (!等同!=)
+版本阶段!, !=, =(!等同!=)
+
+例如： version = {"<=1.3.1-RELEASE","<2.0-RC"} 
+
+1.2.5-RELEASE 或者 1.8.1-RC 匹配此配置；  1.3.2-RELEASE或1.2.5-SNAPSHOT 不匹配。
+
 
 ## 核心接口
 

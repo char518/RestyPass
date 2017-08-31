@@ -33,11 +33,32 @@ public class CommonTools {
     /**
      * Is empty boolean.
      *
+     * @param coll the coll
+     * @return the boolean
+     */
+    public static boolean isNotEmpty(Collection coll) {
+        return coll != null && coll.size() > 0;
+    }
+
+    /**
+     * Is empty boolean.
+     *
      * @param map the map
      * @return the boolean
      */
     public static boolean isEmpty(Map map) {
         return map == null || map.isEmpty();
+    }
+
+
+    /**
+     * Is not empty boolean.
+     *
+     * @param map the map
+     * @return the boolean
+     */
+    public static boolean isNotEmpty(Map map) {
+        return map != null && map.size() > 0;
     }
 
     /**
