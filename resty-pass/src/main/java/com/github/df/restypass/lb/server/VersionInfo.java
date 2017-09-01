@@ -21,15 +21,6 @@ public class VersionInfo {
      */
     public static final VersionInfo EMPTY_VERSION = new VersionInfo();
 
-    /**
-     * The entry point of application.
-     *
-     * @param args the input arguments
-     */
-    public static void main(String[] args) {
-        char cc = '.';
-        System.out.println(cc == '.');
-    }
 
     /**
      * 版本number reg

@@ -133,13 +133,6 @@ public class VersionRule implements RouteRule<VersionInfo>, EventConsumer {
         return condition;
     }
 
-    public static void main(String[] args) {
-        BigDecimal a = new BigDecimal("1.20");
-        BigDecimal b = new BigDecimal("1.2");
-        System.out.println(a.equals(b));
-        System.out.println(a.compareTo(b));
-
-    }
 
     /**
      * 匹配版本

@@ -19,6 +19,7 @@ public class EventBus {
     /**
      * 事件-消费者缓存(eventKey->Consumer)
      */
+    //TODO 注意应用场景，在常驻对象上使用，否则可能存在内存泄漏
     private static ConcurrentHashMap<String, List<Consumer>> eventMap = new ConcurrentHashMap<>();
 
     /**
