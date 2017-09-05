@@ -10,7 +10,7 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
  * Created by darrenfu on 17-7-29.
  */
 @SpringBootApplication
-@EnableDiscoveryClient
+//@EnableDiscoveryClient
 public class TestServerApplication9201 {
     public static void main(String[] args) {
 

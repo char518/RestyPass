@@ -39,7 +39,7 @@ public class RestyPassConfig {
      */
     @Bean
     public ServerContext serverContext() {
-        return new CloudConsulServerContext();
+        return new ConfigurableServerContext();
     }
 
     /**

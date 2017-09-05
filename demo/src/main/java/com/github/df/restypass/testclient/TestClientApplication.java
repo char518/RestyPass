@@ -23,7 +23,7 @@ import java.util.concurrent.Future;
  */
 @SuppressWarnings("SpringJavaAutowiringInspection")
 @SpringBootApplication
-@EnableDiscoveryClient
+//@EnableDiscoveryClient
 @EnableRestyPass(basePackages = {"com.github.df"})
 @RestController
 public class TestClientApplication {
@@ -65,7 +65,7 @@ public class TestClientApplication {
         String futureResult = future.get();
 
         Assert.assertTrue("future获取正确结果", "Status is OK".equals(futureResult));
-        return "OK";
+        return "Result:" + futureResult;
     }
 
     /**
