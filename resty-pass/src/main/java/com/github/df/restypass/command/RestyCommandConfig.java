@@ -3,6 +3,7 @@ package com.github.df.restypass.command;
 import com.github.df.restypass.base.RestyPassFactory;
 import com.github.df.restypass.command.update.UpdateCommandConfig;
 import com.github.df.restypass.command.update.Updater;
+import com.github.df.restypass.lb.LoadBalancer;
 import com.github.df.restypass.lb.rule.VersionRule;
 
 import java.util.List;
@@ -80,7 +81,7 @@ public interface RestyCommandConfig extends Updater<UpdateCommandConfig> {
      *
      * @return the load balancer
      */
-    String getLoadBalancer();
+    Class<? extends LoadBalancer> getLoadBalancer();
 
     /**
      * 限流
@@ -151,7 +152,7 @@ public interface RestyCommandConfig extends Updater<UpdateCommandConfig> {
      *
      * @param loadBalancer the load balancer
      */
-    void setLoadBalancer(String loadBalancer);
+    void setLoadBalancer(Class<? extends LoadBalancer> loadBalancer);
 
     /**
      * Sets limit.
@@ -194,7 +195,7 @@ public interface RestyCommandConfig extends Updater<UpdateCommandConfig> {
 
         private int retry = 1;
 
-        private String loadBalancer;
+        private Class<? extends LoadBalancer> loadBalancer;
 
         private int limit = -1;
 
@@ -280,12 +281,12 @@ public interface RestyCommandConfig extends Updater<UpdateCommandConfig> {
         }
 
         @Override
-        public String getLoadBalancer() {
+        public Class<? extends LoadBalancer> getLoadBalancer() {
             return loadBalancer;
         }
 
         @Override
-        public void setLoadBalancer(String loadBalancer) {
+        public void setLoadBalancer(Class<? extends LoadBalancer> loadBalancer) {
             this.loadBalancer = loadBalancer;
         }
 
