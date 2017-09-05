@@ -95,6 +95,6 @@ public @interface RestyService {
      * 啥也不干的类
      */
     class Noop {
-
+        public static Noop noop = new Noop();
     }
 }

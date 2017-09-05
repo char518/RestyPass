@@ -5,6 +5,7 @@ import com.github.df.restypass.exception.execute.RestyException;
 import com.github.df.restypass.testclient.entity.Response;
 import com.github.df.restypass.testclient.entity.User;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.concurrent.Future;
@@ -23,6 +24,7 @@ import java.util.concurrent.Future;
  * @date 2016 /11/22
  */
 @Slf4j
+//@Component
 public class ProxyServiceImpl implements ProxyService {
     @Override
     public void getNothing() {

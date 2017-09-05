@@ -130,7 +130,8 @@ public class RestyProxyBeanFactory implements FactoryBean<Object>, InitializingB
         Object proxy;
         try {
             RestyProxyInvokeHandler interfaceIvkHandler =
-                    new RestyProxyInvokeHandler(restyCommandContext, commandExecutor, fallbackExecutor, serverContext, commandFilterContext);
+                    new RestyProxyInvokeHandler(restyCommandContext, commandExecutor,
+                            fallbackExecutor, serverContext, commandFilterContext);
             proxy = Proxy.newProxyInstance(type.getClassLoader(), new Class[]{type}, interfaceIvkHandler);
         } catch (Exception e) {
             throw e;
@@ -166,7 +167,9 @@ public class RestyProxyBeanFactory implements FactoryBean<Object>, InitializingB
             } else {
                 t = DefaultRestyPassFactory.getDefaultBean(clz);
                 log.info("{}使用默认配置:{}", clz.getSimpleName(), t.getClass());
-                throw new IllegalArgumentException("无法获取Bean:" + clz);
+                if (t == null) {
+                    throw new IllegalArgumentException("无法获取Bean:" + clz);
+                }
             }
 
         } catch (BeansException ex) {
