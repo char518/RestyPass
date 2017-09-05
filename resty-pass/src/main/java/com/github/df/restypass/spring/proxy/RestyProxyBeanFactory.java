@@ -166,7 +166,9 @@ public class RestyProxyBeanFactory implements FactoryBean<Object>, InitializingB
             } else {
                 t = DefaultRestyPassFactory.getDefaultBean(clz);
                 log.info("{}使用默认配置:{}", clz.getSimpleName(), t.getClass());
-                throw new IllegalArgumentException("无法获取Bean:" + clz);
+                if (t == null) {
+                    throw new IllegalArgumentException("无法获取Bean:" + clz);
+                }
             }
 
         } catch (BeansException ex) {
