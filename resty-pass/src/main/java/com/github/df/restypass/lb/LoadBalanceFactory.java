@@ -1,5 +1,6 @@
 package com.github.df.restypass.lb;
 
+import com.github.df.restypass.util.ClassTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,14 +20,14 @@ public class LoadBalanceFactory {
      * 按照service提供LB
      *
      * @param serviceName
-     * @param loadBalancer
+     * @param loadBalancerClz
      * @return
      */
-    public static LoadBalancer createLoadBalancerForService(String serviceName, String loadBalancer) {
+    public static LoadBalancer createLoadBalancerForService(String serviceName, Class<? extends LoadBalancer> loadBalancerClz) {
 
         LoadBalancer balancer = serviceLoadBalancerMap.get(serviceName);
         if (balancer == null) {
-            LoadBalancer newLoadBalancer = createLoadBalancer(loadBalancer);
+            LoadBalancer newLoadBalancer = createLoadBalancer(loadBalancerClz);
             serviceLoadBalancerMap.putIfAbsent(serviceName, newLoadBalancer);
             balancer = serviceLoadBalancerMap.get(serviceName);
         }
@@ -34,16 +35,15 @@ public class LoadBalanceFactory {
         return balancer;
     }
 
-    private static LoadBalancer createLoadBalancer(String loadBalancer) {
-        if (RandomLoadBalancer.NAME.equalsIgnoreCase(loadBalancer)) {
+    private static LoadBalancer createLoadBalancer(Class<? extends LoadBalancer> loadBalancer) {
+        if (RandomLoadBalancer.class.equals(loadBalancer)) {
             return createRandomLoadBalancer();
-        } else if (RoundRobinLoadBalancer.NAME.equalsIgnoreCase(loadBalancer)) {
+        } else if (RoundRobinLoadBalancer.class.equals(loadBalancer)) {
             return createRoundRobinBalancer();
-        } else if (loadBalancer.contains(".")) {
+        } else {
             try {
-                Class<?> loadBalancerClz = Class.forName(loadBalancer);
-                return (LoadBalancer) loadBalancerClz.newInstance();
-            } catch (InstantiationException | IllegalAccessException | ClassNotFoundException | ClassCastException e) {
+                return loadBalancer.newInstance();
+            } catch (InstantiationException | IllegalAccessException | ClassCastException e) {
                 log.error("无法创建指定的负载均衡器:{},ex:{} ", loadBalancer, e.getMessage(), e);
             }
         }

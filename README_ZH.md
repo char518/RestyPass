@@ -59,7 +59,7 @@ public class TestClientApplication {
         fallbackClass = ProxyServiceImpl.class,
         forceBreakEnabled = false,
         circuitBreakEnabled = false,
-        loadBalancer = RandomLoadBalancer.NAME,
+        loadBalancer = RandomLoadBalancer.class,
         retry = 1,
         requestTimeout = 10000,
         limit = 1000, //限流
