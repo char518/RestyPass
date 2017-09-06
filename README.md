@@ -2,6 +2,18 @@
 >High performance Restful services call client library, support service discovery, load balance, circuit breaker, service fallback, retry. 
 automatically proxy client HTTP requests based on interfaces and annotations and compatible with Spring MVC annotations。
 
+# import jar 
+
+```xml 
+
+<dependency>
+    <groupId>com.github.darren-fu</groupId>
+    <artifactId>resty-pass</artifactId>
+    <version>1.4.2</version>
+</dependency>
+``` 
+
+
 ## Purpose 
 
 Project can be used with spring cloud / spring boot, solve the interface call between services in the micro service architecture.
@@ -220,16 +232,6 @@ public class RestyPassConfig {
 
 
 
-# import jar 
-
-```xml 
-
-<dependency>
-    <groupId>com.github.darren-fu</groupId>
-    <artifactId>resty-pass</artifactId>
-    <version>1.3.0</version>
-</dependency>
-``` 
 
 
 # License
