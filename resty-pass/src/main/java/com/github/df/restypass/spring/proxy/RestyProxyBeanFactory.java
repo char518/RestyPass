@@ -107,10 +107,7 @@ public class RestyProxyBeanFactory implements FactoryBean<Object>, InitializingB
                 if (!inited) {
                     // 初始化服务实例容器
                     this.serverContext = getBean(ServerContext.class);
-                    if (serverContext instanceof ApplicationContextAware) {
-                        ApplicationContextAware contextAware = (ApplicationContextAware) serverContext;
-                        contextAware.setApplicationContext(this.applicationContext);
-                    }
+
                     // 初始化command执行器
                     this.commandExecutor = getBean(CommandExecutor.class);
                     // 初始化降级服务执行器
@@ -130,7 +127,8 @@ public class RestyProxyBeanFactory implements FactoryBean<Object>, InitializingB
         Object proxy;
         try {
             RestyProxyInvokeHandler interfaceIvkHandler =
-                    new RestyProxyInvokeHandler(restyCommandContext, commandExecutor, fallbackExecutor, serverContext, commandFilterContext);
+                    new RestyProxyInvokeHandler(restyCommandContext, commandExecutor,
+                            fallbackExecutor, serverContext, commandFilterContext);
             proxy = Proxy.newProxyInstance(type.getClassLoader(), new Class[]{type}, interfaceIvkHandler);
         } catch (Exception e) {
             throw e;
@@ -168,6 +166,10 @@ public class RestyProxyBeanFactory implements FactoryBean<Object>, InitializingB
                 log.info("{}使用默认配置:{}", clz.getSimpleName(), t.getClass());
                 if (t == null) {
                     throw new IllegalArgumentException("无法获取Bean:" + clz);
+                }
+                if (t instanceof ApplicationContextAware) {
+                    ApplicationContextAware contextAware = (ApplicationContextAware) serverContext;
+                    contextAware.setApplicationContext(this.applicationContext);
                 }
             }
 

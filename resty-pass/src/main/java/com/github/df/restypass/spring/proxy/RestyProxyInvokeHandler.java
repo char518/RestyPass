@@ -4,6 +4,7 @@ import com.github.df.restypass.command.DefaultRestyCommand;
 import com.github.df.restypass.command.RestyCommand;
 import com.github.df.restypass.command.RestyCommandContext;
 import com.github.df.restypass.enums.CommandFilterType;
+import com.github.df.restypass.exception.execute.FallbackException;
 import com.github.df.restypass.exception.execute.RestyException;
 import com.github.df.restypass.executor.CommandExecutor;
 import com.github.df.restypass.executor.FallbackExecutor;
@@ -112,7 +113,12 @@ public class RestyProxyInvokeHandler implements InvocationHandler {
                 if (log.isDebugEnabled()) {
                     log.debug("{}使用降级服务", restyCommand.getPath());
                 }
-                result = fallbackExecutor.execute(restyCommand);
+                try {
+                    result = fallbackExecutor.execute(restyCommand);
+                } catch (FallbackException fe) {
+                    log.warn("服务{}降级发生异常:{}", restyCommand.getPath(), fe.getMessage());
+                    throw ex;//抛出原始Resty异常
+                }
             } else {
                 log.warn("请求{}发生异常:{}", restyCommand.getPath(), ex.getMessage());
                 throw ex;

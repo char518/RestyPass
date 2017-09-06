@@ -5,6 +5,9 @@ import com.github.df.restypass.exception.execute.RestyException;
 import com.github.df.restypass.testclient.entity.Response;
 import com.github.df.restypass.testclient.entity.User;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.List;
 import java.util.concurrent.Future;
@@ -23,8 +26,11 @@ import java.util.concurrent.Future;
  * @date 2016 /11/22
  */
 @Slf4j
+@Component(value = "ProxyServiceImpl")
+@RequestMapping(value = "/fallback")
 public class ProxyServiceImpl implements ProxyService {
     @Override
+    @RequestMapping(value = "/get_nothing", method = RequestMethod.GET, headers = "Client=RestyProxy", params = "Param1=val1")
     public void getNothing() {
         log.error("Fallback nothing");
     }

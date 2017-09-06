@@ -1,6 +1,7 @@
 package com.github.df.restypass.executor;
 
 import com.github.df.restypass.command.RestyCommand;
+import com.github.df.restypass.exception.execute.RestyException;
 import com.github.df.restypass.lb.LoadBalancer;
 import com.github.df.restypass.lb.server.ServerContext;
 
@@ -26,7 +27,7 @@ public interface CommandExecutor {
      * @param restyCommand the resty command
      * @return the t
      */
-    Object execute(LoadBalancer lb, RestyCommand restyCommand);
+    Object execute(LoadBalancer lb, RestyCommand restyCommand) throws RestyException;
 
 
     /**

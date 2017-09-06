@@ -7,6 +7,7 @@ import com.github.df.restypass.command.RestyCommandContext;
 import com.github.df.restypass.command.RestyFuture;
 import com.github.df.restypass.enums.RestyCommandStatus;
 import com.github.df.restypass.exception.execute.CircuitBreakException;
+import com.github.df.restypass.exception.execute.RestyException;
 import com.github.df.restypass.lb.LoadBalancer;
 import com.github.df.restypass.lb.server.ServerContext;
 import com.github.df.restypass.lb.server.ServerInstance;
@@ -17,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
 
 /**
  * 异步Resty请求执行器
@@ -52,7 +54,7 @@ public class RestyCommandExecutor implements CommandExecutor {
     }
 
     @Override
-    public Object execute(LoadBalancer lb, RestyCommand restyCommand) {
+    public Object execute(LoadBalancer lb, RestyCommand restyCommand) throws RestyException{
 
         if (restyCommand.getRestyCommandConfig().isForceBreakEnabled()) {
             throw new CircuitBreakException("circuit breaker is forced to open");
@@ -126,8 +128,10 @@ public class RestyCommandExecutor implements CommandExecutor {
                     }
                     //选择server， 如果没有server可选则无需重试，直接抛出当前异常
                     serverInstance = lb.choose(serverContext, restyCommand, excludeInstanceIdSet);
-                    if (serverInstance == null) {
+                    if (serverInstance == null || excludeInstanceIdSet.contains(serverInstance.getInstanceId())) {
                         throw ex;
+                    } else if (log.isDebugEnabled()) {
+                        log.debug("请求切换服务实例重试:{}", serverInstance);
                     }
                 }
             }

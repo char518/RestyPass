@@ -1,11 +1,15 @@
 package com.github.df.restypass.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Class工具类
  * Created by darrenfu on 17-7-23.
  */
 @SuppressWarnings("unused")
 public class ClassTools {
+    private static final Logger log = LoggerFactory.getLogger(ClassTools.class);
 
     /**
      * Cast to t.
@@ -30,7 +34,7 @@ public class ClassTools {
         try {
             return targetClz.newInstance();
         } catch (InstantiationException | IllegalAccessException e) {
-            e.printStackTrace();
+            log.warn("Instantiation failed:{}", e.getMessage(), e);
         }
         return null;
     }

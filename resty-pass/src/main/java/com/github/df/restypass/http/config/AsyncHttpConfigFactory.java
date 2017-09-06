@@ -24,7 +24,7 @@ public class AsyncHttpConfigFactory {
                 -1,
                 DefaultChannelPool.PoolLeaseStrategy.LIFO,
                 timer,
-                1000);
+                3000);
 
         return new DefaultAsyncHttpClientConfig.Builder()
                 .setConnectTimeout(connectTimeout)
