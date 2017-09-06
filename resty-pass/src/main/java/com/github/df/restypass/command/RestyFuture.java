@@ -1,6 +1,7 @@
 package com.github.df.restypass.command;
 
 import com.github.df.restypass.exception.execute.ConnectionException;
+import com.github.df.restypass.exception.execute.RestyException;
 import com.github.df.restypass.http.converter.ResponseConverterContext;
 import com.github.df.restypass.http.pojo.FailedResponse;
 import lombok.Getter;
@@ -81,15 +82,16 @@ public class RestyFuture<T> implements Future<T> {
     }
 
     @Override
-    public T get() {
+    public T get() throws RestyException {
         Response response;
         try {
             response = future.get();
-
-
         } catch (InterruptedException | ExecutionException e) {
             future.abort(e);
-            log.error("获取响应失败:{}", e.getMessage());
+            log.warn("获取响应失败:{}", e.getMessage());
+            if (this.getRestyCommand().isAsyncArg() || this.getRestyCommand().isAsyncReturn()) {
+                throw new RestyException(e);
+            }
             response = FailedResponse.create(new ConnectionException(e));
         }
         return (T) ResponseConverterContext.DEFAULT.convertResponse(restyCommand, response);
@@ -98,7 +100,7 @@ public class RestyFuture<T> implements Future<T> {
 
     @SuppressWarnings("NullableProblems")
     @Override
-    public T get(long timeout, TimeUnit unit) {
+    public T get(long timeout, TimeUnit unit) throws RestyException {
         Response response;
 
         try {
@@ -106,9 +108,49 @@ public class RestyFuture<T> implements Future<T> {
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
             future.abort(e);
             log.error("获取响应失败:{}", e.getMessage());
+            if (this.getRestyCommand().isAsyncArg() || this.getRestyCommand().isAsyncReturn()) {
+                throw new RestyException(e);
+            }
             response = FailedResponse.create(new ConnectionException(e));
         }
         return (T) ResponseConverterContext.DEFAULT.convertResponse(restyCommand, response);
     }
 
+
+    public static class ErrorRestyFuture extends RestyFuture {
+        private Exception exception;
+
+        public ErrorRestyFuture(Exception exception) {
+            this.exception = exception;
+        }
+
+
+        @Override
+        public boolean cancel(boolean mayInterruptIfRunning) {
+            return false;
+        }
+
+        @Override
+        public boolean isCancelled() {
+            return false;
+        }
+
+        @Override
+        public boolean isDone() {
+            return true;
+        }
+
+        @Override
+        public Exception get() {
+            return this.exception;
+        }
+
+
+        @SuppressWarnings("NullableProblems")
+        @Override
+        public Exception get(long timeout, TimeUnit unit) {
+            return this.exception;
+        }
+
+    }
 }

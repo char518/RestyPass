@@ -8,11 +8,9 @@ import com.github.df.restypass.util.CommonTools;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static com.github.df.restypass.base.RestyConst.Instance.*;
 
@@ -34,47 +32,30 @@ public abstract class AbstractLoadBalancer implements LoadBalancer {
         if (serverList == null || serverList.size() == 0) {
             return null;
         }
-        List<ServerInstance> usableServerList = null;
-        final int instanceSize = serverList.size();
+        List<ServerInstance> usableServerList = new LinkedList();
 
-        //移除未初始化完成或当前状态未存活的实例
-        Iterator<ServerInstance> iterator = serverList.iterator();
-        while (iterator.hasNext()) {
-            ServerInstance instance = iterator.next();
-            if (!instance.isReady()
-                    || !instance.getIsAlive()
-                    || !isVersionOk(command, instance)) {
-                iterator.remove();
+        //移除未初始化完成或当前状态未存活,版本不匹配，已排除的实例
+        for (ServerInstance instance : serverList) {
+            if (instance.isReady()
+                    && instance.getIsAlive()
+                    && isVersionOk(command, instance)
+                    && !shouldExcludeInstance(excludeInstanceIdSet, instance)) {
                 if (log.isTraceEnabled()) {
                     log.trace("剔除本次不可使用的server实例:{}", instance);
-                }
-            } else if (shouldExcludeInstance(excludeInstanceIdSet, instance)) {
-                //剔除被排除的实例ID
-                if (usableServerList == null) {
-                    usableServerList = new ArrayList<>(instanceSize);
-                }
-                iterator.remove();
-                if (log.isTraceEnabled()) {
-                    log.trace("剔除本次被排除的server实例:{}", instance);
                 }
                 usableServerList.add(instance);
             }
         }
 
-        if (CommonTools.isEmpty(serverList) && CommonTools.isEmpty(usableServerList)) {
+        if (CommonTools.isEmpty(usableServerList)) {
             return null;
-        }
-        // 排除excludeServer后，有可用server则使用，否则还是使用原始的Server
-        // 避免失败重试导致无instance可用
-        if (CommonTools.isEmpty(serverList) && CommonTools.isNotEmpty(usableServerList)) {
-            serverList = usableServerList;
         }
 
         //只有一个实例，直接返回，忽视排除的实例ID
-        if (serverList.size() == 1) {
-            return serverList.get(0);
+        if (usableServerList.size() == 1) {
+            return usableServerList.get(0);
         }
-        return doChoose(serverList, command);
+        return doChoose(usableServerList, command);
     }
 
     /**

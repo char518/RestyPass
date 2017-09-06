@@ -3,5 +3,7 @@ servers:
     instances:
       - host: localhost
         port: 9201
-#      - host: localhost
-#        port: 9202
+      - host: localhost
+        port: 9202
+      - host: localhost
+        port: 9203

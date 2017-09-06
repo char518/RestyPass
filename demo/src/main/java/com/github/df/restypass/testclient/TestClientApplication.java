@@ -63,10 +63,18 @@ public class TestClientApplication {
         RestyFuture<String> future = new RestyFuture<>();
         String status = proxyService.getStatus(future);
         Assert.assertTrue("原始返回为null", status == null);
-        String futureResult = future.get();
+        System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@2");
+        try {
+            String futureResult = future.get();
+            System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
 
-        Assert.assertTrue("future获取正确结果", "Status is OK".equals(futureResult));
-        return "Result:" + futureResult;
+            Assert.assertTrue("future获取正确结果", "Status is OK".equals(futureResult));
+            return "Result:" + futureResult;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return ex.getMessage();
+        }
+
     }
 
     /**

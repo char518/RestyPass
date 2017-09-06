@@ -14,7 +14,7 @@ import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Arrays;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
 
 /**
  * 默认Resty请求命令
@@ -193,7 +193,7 @@ public class DefaultRestyCommand implements RestyCommand {
                 return true;
             }
         }
-        RestyFuture futureArg = getFutureArg();
+        RestyFuture futureArg = getFutureArg(this);
         if (futureArg != null) {
             /**
              * Future类型出参
@@ -206,9 +206,9 @@ public class DefaultRestyCommand implements RestyCommand {
         return false;
     }
 
-    private RestyFuture getFutureArg() {
-        if (this.getArgs() != null && this.getArgs().length > 0) {
-            for (Object arg : this.getArgs()) {
+    private RestyFuture getFutureArg(RestyCommand restyCommand) {
+        if (restyCommand.getArgs() != null && restyCommand.getArgs().length > 0) {
+            for (Object arg : restyCommand.getArgs()) {
                 if (arg != null && arg instanceof RestyFuture) {
                     return (RestyFuture) arg;
                 }
@@ -243,18 +243,27 @@ public class DefaultRestyCommand implements RestyCommand {
         requestBuilder.setSingleHeaders(requestTemplate.getRequestHeaders(args));
         requestBuilder.setBody(requestTemplate.getBody(args));
         this.request = requestBuilder.build();
-        ListenableFuture<Response> future = httpClient.executeRequest(request);
+
+        ListenableFuture<Response> future;
+        RestyFuture restyFuture = new RestyFuture();
+        restyFuture.setRestyCommand(this);
+        try {
+            future = requestBuilder.execute(SingletonAsyncErrorHandler.handler);
+//            future = httpClient.executeRequest(request);
+        } catch (Exception e) {
+            future = new ErrorFuture<>(e);
+        }
+        restyFuture.setFuture(future);
 
         if (log.isDebugEnabled()) {
             log.debug("Request:{}", request);
         }
-
         if (this.asyncFutureArg) {
-            RestyFuture futureArg = getFutureArg();
+            RestyFuture futureArg = getFutureArg(this);
             futureArg.setFuture(future);
             futureArg.setRestyCommand(this);
         }
-        return new RestyFuture(this, future);
+        return restyFuture;
     }
 
 
@@ -292,5 +301,89 @@ public class DefaultRestyCommand implements RestyCommand {
         return this.exception;
     }
 
+
+    static class SingletonAsyncErrorHandler extends AsyncCompletionHandlerBase {
+
+        static SingletonAsyncErrorHandler handler = new SingletonAsyncErrorHandler();
+
+        SingletonAsyncErrorHandler() {
+
+        }
+
+        @Override
+        public void onThrowable(Throwable t) {
+
+            // do nothing
+        }
+
+    }
+
+
+    class ErrorFuture<T> implements ListenableFuture<T> {
+
+        private final ExecutionException e;
+
+        public ErrorFuture(Throwable t) {
+            e = new ExecutionException(t);
+        }
+
+        public ErrorFuture(String message, Throwable t) {
+            e = new ExecutionException(message, t);
+        }
+
+        @Override
+        public boolean cancel(boolean mayInterruptIfRunning) {
+            return true;
+        }
+
+        @Override
+        public boolean isCancelled() {
+            return false;
+        }
+
+        @Override
+        public boolean isDone() {
+            return true;
+        }
+
+        @Override
+        public T get() throws InterruptedException, ExecutionException {
+            throw e;
+        }
+
+        @Override
+        public T get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
+            throw e;
+        }
+
+        @Override
+        public void done() {
+        }
+
+        @Override
+        public void abort(Throwable t) {
+        }
+
+        @Override
+        public void touch() {
+        }
+
+        @Override
+        public ListenableFuture<T> addListener(Runnable listener, Executor exec) {
+            if (exec != null) {
+                exec.execute(listener);
+            } else {
+                listener.run();
+            }
+            return this;
+        }
+
+        @Override
+        public CompletableFuture<T> toCompletableFuture() {
+            CompletableFuture<T> future = new CompletableFuture<>();
+            future.completeExceptionally(e);
+            return future;
+        }
+    }
 
 }

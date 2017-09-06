@@ -3,7 +3,7 @@ package com.github.df.restypass.testclient.service;
 import com.github.df.restypass.annotation.RestyMethod;
 import com.github.df.restypass.annotation.RestyService;
 import com.github.df.restypass.command.RestyFuture;
-import com.github.df.restypass.lb.RandomLoadBalancer;
+import com.github.df.restypass.lb.RoundRobinLoadBalancer;
 import com.github.df.restypass.testclient.entity.Response;
 import com.github.df.restypass.testclient.entity.User;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,7 +32,7 @@ import java.util.concurrent.Future;
         fallbackClass = ProxyServiceImpl.class,
         forceBreakEnabled = false,
         circuitBreakEnabled = false,
-        loadBalancer = RandomLoadBalancer.class,
+        loadBalancer = RoundRobinLoadBalancer.class,
         retry = 1,
         requestTimeout = 10000,
         limit = 1000,
@@ -45,8 +45,8 @@ public interface ProxyService extends ApplicationService {
      * Gets nothing.
      */
 // 同步调用
-    @RestyMethod(retry = 2,
-            fallbackEnabled = "false",
+    @RestyMethod(retry = 1,
+            fallbackEnabled = "true",
             circuitBreakEnabled = "false",
             forceBreakEnabled = "false",
             limit = 10)

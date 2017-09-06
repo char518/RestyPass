@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
 
 /**
  * 异步Resty请求执行器
@@ -126,8 +127,10 @@ public class RestyCommandExecutor implements CommandExecutor {
                     }
                     //选择server， 如果没有server可选则无需重试，直接抛出当前异常
                     serverInstance = lb.choose(serverContext, restyCommand, excludeInstanceIdSet);
-                    if (serverInstance == null) {
+                    if (serverInstance == null || excludeInstanceIdSet.contains(serverInstance.getInstanceId())) {
                         throw ex;
+                    } else if (log.isDebugEnabled()) {
+                        log.debug("请求切换服务实例重试:{}", serverInstance);
                     }
                 }
             }
