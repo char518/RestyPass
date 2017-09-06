@@ -38,7 +38,6 @@ public class TestClientApplication {
 
 
     @Autowired
-
     private ProxyService proxyService;
 
     /**

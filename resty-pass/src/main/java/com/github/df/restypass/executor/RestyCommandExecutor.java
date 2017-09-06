@@ -7,6 +7,7 @@ import com.github.df.restypass.command.RestyCommandContext;
 import com.github.df.restypass.command.RestyFuture;
 import com.github.df.restypass.enums.RestyCommandStatus;
 import com.github.df.restypass.exception.execute.CircuitBreakException;
+import com.github.df.restypass.exception.execute.RestyException;
 import com.github.df.restypass.lb.LoadBalancer;
 import com.github.df.restypass.lb.server.ServerContext;
 import com.github.df.restypass.lb.server.ServerInstance;
@@ -53,7 +54,7 @@ public class RestyCommandExecutor implements CommandExecutor {
     }
 
     @Override
-    public Object execute(LoadBalancer lb, RestyCommand restyCommand) {
+    public Object execute(LoadBalancer lb, RestyCommand restyCommand) throws RestyException{
 
         if (restyCommand.getRestyCommandConfig().isForceBreakEnabled()) {
             throw new CircuitBreakException("circuit breaker is forced to open");

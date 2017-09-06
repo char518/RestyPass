@@ -4,7 +4,6 @@ import com.github.df.restypass.cb.CircuitBreaker;
 import com.github.df.restypass.enums.RestyCommandStatus;
 import com.github.df.restypass.exception.execute.RestyException;
 import com.github.df.restypass.lb.server.ServerInstance;
-import lombok.Data;
 import org.asynchttpclient.*;
 import org.asynchttpclient.uri.Uri;
 import org.slf4j.Logger;
@@ -21,7 +20,6 @@ import java.util.concurrent.*;
  * 封装请求内容，实现请求过程
  * Created by darrenfu on 17-6-20.
  */
-@Data
 public class DefaultRestyCommand implements RestyCommand {
 
     private static final Logger log = LoggerFactory.getLogger(DefaultRestyCommand.class);
@@ -60,6 +58,7 @@ public class DefaultRestyCommand implements RestyCommand {
     /**
      * 方法参数列表
      */
+
     private Object[] args;
 
     /**
@@ -149,16 +148,60 @@ public class DefaultRestyCommand implements RestyCommand {
 
 
     @Override
+    public String getPath() {
+        return this.path;
+    }
+
+    @Override
+    public String getHttpMethod() {
+        return this.httpMethod;
+    }
+
+    @Override
+    public String getServiceName() {
+        return this.serviceName;
+    }
+
+    @Override
+    public Method getServiceMethod() {
+        return this.serviceMethod;
+    }
+
+    @Override
+    public Type getReturnType() {
+        return this.returnType;
+    }
+
+    @Override
+    public Object[] getArgs() {
+        return this.args;
+    }
+
+    @Override
+    public RestyCommandConfig getRestyCommandConfig() {
+        return this.restyCommandConfig;
+    }
+
+    @Override
     public Uri getUri(ServerInstance serverInstance) {
         if (uri == null) {
-            uri = new Uri(serverInstance.getIsHttps() ? HTTPS : HTTP,
-                    null,
-                    serverInstance.getHost(),
-                    serverInstance.getPort(),
-                    requestTemplate.getRequestPath(args),
-                    requestTemplate.getQueryString(args));
+            uri = createUri(serverInstance);
         }
         return uri;
+    }
+
+    private Uri createUri(ServerInstance serverInstance) {
+        return new Uri(serverInstance.getIsHttps() ? HTTPS : HTTP,
+                null,
+                serverInstance.getHost(),
+                serverInstance.getPort(),
+                requestTemplate.getRequestPath(args),
+                requestTemplate.getQueryString(args));
+    }
+
+    @Override
+    public RestyRequestTemplate getRequestTemplate() {
+        return this.requestTemplate;
     }
 
     @Override
@@ -232,6 +275,10 @@ public class DefaultRestyCommand implements RestyCommand {
 
     @Override
     public RestyFuture start(ServerInstance instance) {
+        if (this.instance != null && !this.instance.equals(instance.getInstanceId())) {
+            this.uri = this.createUri(instance);
+        }
+
         this.status = RestyCommandStatus.STARTED;
         this.instance = instance;
 
@@ -249,7 +296,6 @@ public class DefaultRestyCommand implements RestyCommand {
         restyFuture.setRestyCommand(this);
         try {
             future = requestBuilder.execute(SingletonAsyncErrorHandler.handler);
-//            future = httpClient.executeRequest(request);
         } catch (Exception e) {
             future = new ErrorFuture<>(e);
         }
@@ -312,7 +358,6 @@ public class DefaultRestyCommand implements RestyCommand {
 
         @Override
         public void onThrowable(Throwable t) {
-
             // do nothing
         }
 
@@ -347,13 +392,13 @@ public class DefaultRestyCommand implements RestyCommand {
         }
 
         @Override
-        public T get() throws InterruptedException, ExecutionException {
-            throw e;
+        public T get() throws RestyException {
+            throw new RestyException(e);
         }
 
         @Override
-        public T get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
-            throw e;
+        public T get(long timeout, TimeUnit unit) throws RestyException {
+            throw new RestyException(e);
         }
 
         @Override

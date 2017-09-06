@@ -29,7 +29,8 @@ import java.util.concurrent.Future;
  */
 @RestyService(serviceName = "server",
         fallbackEnabled = true,
-        fallbackClass = ProxyServiceImpl.class,
+//        fallbackClass = ProxyServiceImpl.class,
+        fallbackBean = "ProxyServiceImpl",
         forceBreakEnabled = false,
         circuitBreakEnabled = false,
         loadBalancer = RoundRobinLoadBalancer.class,
