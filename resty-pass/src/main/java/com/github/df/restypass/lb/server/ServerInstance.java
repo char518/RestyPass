@@ -5,7 +5,9 @@ import com.github.df.restypass.event.EventEmit;
 import com.github.df.restypass.lb.rule.VersionRule;
 import com.github.df.restypass.util.CommonTools;
 import com.github.df.restypass.util.StringBuilderFactory;
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Setter;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -75,7 +77,12 @@ public class ServerInstance implements EventEmit {
     /**
      * 版本信息
      */
-    private VersionInfo version;
+    private VersionInfo versionInfo;
+
+    /**
+     * 原始版本信息
+     */
+    private String version;
 
     /**
      * 其它属性
@@ -85,6 +92,7 @@ public class ServerInstance implements EventEmit {
     /**
      * 是否准备好
      */
+    @Setter(value = AccessLevel.PRIVATE)
     private boolean ready = false;
 
     /**
@@ -131,9 +139,11 @@ public class ServerInstance implements EventEmit {
         //设置预热时间
         this.setWarmupSeconds(ObjectUtils.defaultIfNull(this.warmupSeconds,
                 Integer.valueOf(getPropValue(PROP_WARMUP_KEY, PROP_WARMUP_DEFAULT))));
-        String versionAttr = getPropValue(PROP_VERSION_KEY, PROP_VERSION_DEFAULT);
+
         //版本
-        this.setVersion(ObjectUtils.defaultIfNull(this.version,
+        String versionAttr = StringUtils.isNotEmpty(version) ? version : getPropValue(PROP_VERSION_KEY, PROP_VERSION_DEFAULT);
+        this.version = versionAttr;
+        this.setVersionInfo(ObjectUtils.defaultIfNull(this.versionInfo,
                 StringUtils.isEmpty(versionAttr) ? VersionInfo.EMPTY_VERSION : VersionInfo.create(this.instanceId, versionAttr)));
 
 

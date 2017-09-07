@@ -176,7 +176,7 @@ public class VersionRule implements RouteRule<VersionInfo>, EventConsumer {
         this.on(getEventKey(), (instance) -> {
             if (instance != null && instance instanceof ServerInstance) {
                 ServerInstance serverInstance = (ServerInstance) instance;
-                versionMatchMap.put(serverInstance.getVersion().getId(), this.doMath(serverInstance.getVersion()));
+                versionMatchMap.put(serverInstance.getVersionInfo().getId(), this.doMath(serverInstance.getVersionInfo()));
             }
         });
 

@@ -37,7 +37,7 @@ import java.util.concurrent.Future;
         retry = 1,
         requestTimeout = 10000,
         limit = 1000,
-        version = {">=1.3.1"}
+        version = {">=1.3.1-RELEASE"}
 )
 @RequestMapping(value = "/resty")
 public interface ProxyService extends ApplicationService {

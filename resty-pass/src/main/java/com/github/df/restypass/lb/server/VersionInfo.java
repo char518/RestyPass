@@ -61,7 +61,7 @@ public class VersionInfo {
      * 创建版本信息
      *
      * @param originVersion 原始版本数据 1.0.0-RELEASE 2.0RELEASE
-     * @return the version info
+     * @return the versionInfo info
      */
     public static VersionInfo create(String originVersion) {
         return create(originVersion, originVersion);
@@ -72,19 +72,19 @@ public class VersionInfo {
      * 创建版本信息
      *
      * @param id            the id
-     * @param originVersion the origin version
-     * @return the version info
+     * @param originVersion the origin versionInfo
+     * @return the versionInfo info
      */
     public static VersionInfo create(String id, String originVersion) {
         VersionInfo versionInfo = new VersionInfo();
         versionInfo.setId(id);
         versionInfo.setOriginVersion(originVersion);
-        // find version number
+        // find versionInfo number
         Matcher numMatcher = VERSION_NUM_REG.matcher(originVersion);
         if (numMatcher.find()) {
             versionInfo.setVersionNumber(CommonTools.convertVersionNum(numMatcher.group()));
         }
-        //find version stage
+        //find versionInfo stage
         Matcher stageMatcher = VERSION_STAGE_REG.matcher(originVersion);
         if (stageMatcher.find()) {
             versionInfo.setVersionStage(stageMatcher.group().toUpperCase());

@@ -29,7 +29,7 @@ Welcome to contribute ideas and code.
 - Support filter, and feel free to define a new one. 
 - Support traffic limit configuration.
 - Support service discovery automatically.
-- Support version route.
+- Support versionInfo route.
 ## Demo（demo[client]+demo-serverside[server]） 
 
 ### client side
@@ -74,7 +74,7 @@ public class TestClientApplication {
         retry = 1,
         requestTimeout = 10000,
         limit = 1000, //traffic limit
-        version = {"<=1.3.1-RELEASE","<2.0-RC"} // version route
+        versionInfo = {"<=1.3.1-RELEASE","<2.0-RC"} // versionInfo route
 )
 @RequestMapping(value = "/resty")
 public interface ProxyService extends ApplicationService {
@@ -133,23 +133,23 @@ public class TestController {
     }
   }
 ```
-### version route rules
+### versionInfo route rules
 1. concept
-version will be parse into version number and version stage. 
+versionInfo will be parse into versionInfo number and versionInfo stage. 
 
-eg. 1.2.2-RELEASE, version number is 1.22, version stage is RELEASE. 
+eg. 1.2.2-RELEASE, versionInfo number is 1.22, versionInfo stage is RELEASE. 
 
-3.4SNAPSHOT, version number is 3.4, version stage is SNAPSHOT. 
+3.4SNAPSHOT, versionInfo number is 3.4, versionInfo stage is SNAPSHOT. 
 
 2. configuration 
 
-version number support operations: >, >=, <, <=, =,!,!= (! same with !=) 
+versionInfo number support operations: >, >=, <, <=, =,!,!= (! same with !=) 
 
-version stage support operations:!, !=, =(! same with !=)
+versionInfo stage support operations:!, !=, =(! same with !=)
 
-eg. version = {"<=1.3.1-RELEASE","<2.0-RC"} 
+eg. versionInfo = {"<=1.3.1-RELEASE","<2.0-RC"} 
 
-the config is math when the version of server instance is 1.2.5-RELEASE or 1.8.1-RC, but 1.3.2-RELEASE is not match.
+the config is math when the versionInfo of server instance is 1.2.5-RELEASE or 1.8.1-RC, but 1.3.2-RELEASE is not match.
 
 
 
