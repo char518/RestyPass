@@ -1,6 +1,5 @@
 package com.github.df.restypass.lb;
 
-import com.github.df.restypass.util.ClassTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

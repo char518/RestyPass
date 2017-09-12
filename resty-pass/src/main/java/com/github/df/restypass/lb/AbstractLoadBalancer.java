@@ -8,11 +8,8 @@ import com.github.df.restypass.util.CommonTools;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.CollectionUtils;
 
 import java.util.*;
-
-import static com.github.df.restypass.base.RestyConst.Instance.*;
 
 /**
  * 负载均衡器，顶级抽象类
@@ -40,10 +37,12 @@ public abstract class AbstractLoadBalancer implements LoadBalancer {
                     && instance.getIsAlive()
                     && isVersionOk(command, instance)
                     && !shouldExcludeInstance(excludeInstanceIdSet, instance)) {
+
+                usableServerList.add(instance);
+            } else {
                 if (log.isTraceEnabled()) {
                     log.trace("剔除本次不可使用的server实例:{}", instance);
                 }
-                usableServerList.add(instance);
             }
         }
 
@@ -73,7 +72,7 @@ public abstract class AbstractLoadBalancer implements LoadBalancer {
 
         for (VersionRule versionRule : versionRules) {
             //版本不匹配版本规则
-            if (!versionRule.match(instance.getVersion())) {
+            if (!versionRule.match(instance.getVersionInfo())) {
                 return false;
             }
         }

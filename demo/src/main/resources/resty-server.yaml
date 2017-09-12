@@ -3,7 +3,10 @@ servers:
     instances:
       - host: localhost
         port: 9201
+        version: 1.1.1-RELEASE
       - host: localhost
         port: 9202
+        version: 1.5.1-RELEASE
       - host: localhost
         port: 9203
+        version: 1.6.1-SNAPSHOT

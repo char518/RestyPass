@@ -10,6 +10,7 @@
     <logger name="org.hibernate" level="INFO"/>
     <logger name="org.springframework" level="INFO"/>
     <logger name="io.netty" level="INFO"/>
+    <logger name="com.github.df" level="TRACE"/>
 
 
     <root level="DEBUG">

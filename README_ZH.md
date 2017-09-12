@@ -1,17 +1,13 @@
 # RestyPass
 > 高性能的Restful服务调用客户端库，完全兼容Spring MVC 注解，基于接口和注解自动代理客户端HTTP请求，支持服务发现，负载均衡，自动熔断，降级，重试，限流。覆盖Feign + Hystrix + Ribbon + ApacheHttpClient的功能
 
-# 设计目标 
+## 设计目标 
 
-可与spring cloud/spring boot配套使用,帮助微服务架构更容易落地，解决服务间最后一公里的调用问题。
-欢迎贡献想法和code~ 
+可与spring cloud/spring boot配套使用,帮助微服务架构更容易落地，解决服务间最后一公里的调用问题。 
 
-github: https://github.com/darren-fu/RestyPass
-
-# 引入jar 
+## 引入jar 
 
 ```xml 
-
 <dependency>
     <groupId>com.github.darren-fu</groupId>
     <artifactId>resty-pass</artifactId>
@@ -74,7 +70,7 @@ public class TestClientApplication {
         retry = 1,
         requestTimeout = 10000,
         limit = 1000, //限流
-        version = {"<=1.3.1-RELEASE","<2.0-RC"} // version route
+        versionInfo = {"<=1.3.1-RELEASE","<2.0-RC"} // versionInfo route
 )
 @RequestMapping(value = "/resty")
 public interface ProxyService extends ApplicationService {
@@ -159,7 +155,7 @@ public class TestController {
 
 版本阶段!, !=, =(!等同!=) 
 
-例如： version = {"<=1.3.1-RELEASE","<2.0-RC"} 
+例如： versionInfo = {"<=1.3.1-RELEASE","<2.0-RC"} 
  
 1.2.5-RELEASE 或者 1.8.1-RC 匹配此配置；  1.3.2-RELEASE或1.2.5-SNAPSHOT 不匹配。
 

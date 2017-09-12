@@ -68,6 +68,9 @@ public class DefaultCircuitBreaker implements CircuitBreaker {
      * 半开状态使用的锁，保证只有一个请求通过
      */
     private ReentrantLock halfOpenLock;
+
+    private ConcurrentHashMap<String, ReentrantLock> halfOpenLockMap;
+
     /**
      * 启动锁
      */
@@ -124,6 +127,7 @@ public class DefaultCircuitBreaker implements CircuitBreaker {
                     this.brokenServerSet = new CopyOnWriteArraySet<>();
                     this.commandQueue = new LinkedBlockingQueue<>();
                     this.halfOpenLock = new ReentrantLock();
+                    this.halfOpenLockMap = new ConcurrentHashMap<>(64);
                     this.registerEvent();
                     this.startTask();
                     started = true;
@@ -148,10 +152,12 @@ public class DefaultCircuitBreaker implements CircuitBreaker {
         String metricsKey = getMetricsKey(restyCommand.getPath(), serverInstance.getInstanceId());
 
         // 强制短路
+        CircuitBreakerStatus cbStatus = statusMap.get(metricsKey);
+
         if (restyCommand.getRestyCommandConfig().isForceBreakEnabled()) {
             statusMap.put(metricsKey, CircuitBreakerStatus.FORCE_BREAK);
             return false;
-        } else if (CircuitBreakerStatus.FORCE_BREAK == statusMap.get(metricsKey)) {
+        } else if (CircuitBreakerStatus.FORCE_BREAK == cbStatus) {
             // 强制短路关闭后，OPEN
             statusMap.put(metricsKey, CircuitBreakerStatus.OPEN);
         }
@@ -166,15 +172,20 @@ public class DefaultCircuitBreaker implements CircuitBreaker {
         if (metrics == null) {
             return true;
         }
-        boolean shouldPass = true;
 
+        // 半开状态说明已经有请求通过断路器，尝试恢复短路，所以其它请求直接拒绝，继续熔断
+        if (CircuitBreakerStatus.HALF_OPEN == cbStatus) {
+            return false;
+        }
+        // 是否应该通过
+        boolean shouldPass = true;
         // 获取计数器
         Metrics.SegmentMetrics segmentMetrics = metrics.getMetrics();
         // 计数器中失败数量和比例超过阀值，则触发短路判断
         if (segmentMetrics.getContinuousFailCount() >= continuousFailCount // 连续失败次数达到阀值
                 // 失败比例以及失败数量达到阀值
                 || (segmentMetrics.failCount() >= breakFailCount && segmentMetrics.failPercentage() >= breakFailPercentage)) {
-            CircuitBreakerStatus breakerStatus = statusMap.get(metricsKey);
+            CircuitBreakerStatus breakerStatus = cbStatus;
             shouldPass = false;
             if (breakerStatus == null || breakerStatus == CircuitBreakerStatus.OPEN) {
                 // 短路
@@ -185,7 +196,9 @@ public class DefaultCircuitBreaker implements CircuitBreaker {
                 // 如果上次的请求距离现在超过阀值，则允许一次试探请求
                 long now = System.currentTimeMillis();
                 if (segmentMetrics.last() != null && (now - segmentMetrics.last() > halfOpenMilliseconds)) {
-                    final ReentrantLock lock = this.halfOpenLock;
+
+
+                    final ReentrantLock lock = getHalfOpenLockInMap(metricsKey);
                     lock.lock();
                     try {
                         // 判断当前短路状态 确保只有一个请求通过
@@ -198,16 +211,32 @@ public class DefaultCircuitBreaker implements CircuitBreaker {
                     }
                 }
             }
-            if (shouldPass) {
-                if (log.isDebugEnabled()) {
-                    log.debug("尝试恢复短路服务:{}:{},metrics:{}", restyCommand.getServiceName(), restyCommand.getPath(), metrics);
-                }
-            } else if (log.isDebugEnabled()) {
-                log.debug("熔断服务:{}:{},metrics:{}", restyCommand.getServiceName(), restyCommand.getPath(), metrics);
 
+            if (log.isDebugEnabled()) {
+                if (shouldPass) {
+                    log.debug("尝试恢复短路服务:{}:{},metrics:{}", restyCommand.getServiceName(), restyCommand.getPath(), metrics);
+                } else {
+                    log.debug("熔断服务:{}:{},metrics:{}", restyCommand.getServiceName(), restyCommand.getPath(), metrics);
+                }
             }
+
         }
         return shouldPass;
+    }
+
+    /**
+     * 获取半开锁
+     *
+     * @param metricsKey
+     * @return
+     */
+    private ReentrantLock getHalfOpenLockInMap(String metricsKey) {
+        ReentrantLock reentrantLock = halfOpenLockMap.get(metricsKey);
+        if (reentrantLock == null) {
+            halfOpenLockMap.putIfAbsent(metricsKey, new ReentrantLock());
+            reentrantLock = halfOpenLockMap.get(metricsKey);
+        }
+        return reentrantLock;
     }
 
     @Override
