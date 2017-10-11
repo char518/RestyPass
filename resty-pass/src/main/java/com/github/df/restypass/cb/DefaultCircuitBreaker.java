@@ -5,8 +5,8 @@ import com.github.df.restypass.enums.CircuitBreakerStatus;
 import com.github.df.restypass.enums.RestyCommandStatus;
 import com.github.df.restypass.exception.execute.RequestException;
 import com.github.df.restypass.lb.server.ServerInstance;
+import com.github.df.restypass.util.CommonTools;
 import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
 import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -18,6 +18,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.Collectors;
 
 /**
  * 默认断路器
@@ -30,9 +31,15 @@ public class DefaultCircuitBreaker implements CircuitBreaker {
     private static final Logger log = LoggerFactory.getLogger(DefaultCircuitBreaker.class);
 
     /**
+     * metricsKey分隔符
+     */
+    public static final String METRIC_KEY_SPLIT = "@@";
+
+
+    /**
      * key:[RestyCommand#path, ServerInstance#instanceId, metricsKey]
      */
-    private static Table<String, String, String> keyTable = HashBasedTable.create();
+    private static HashBasedTable<String, String, String> keyTable = HashBasedTable.create();
 
     // TODO 熔断条件配置化
     /**
@@ -67,8 +74,6 @@ public class DefaultCircuitBreaker implements CircuitBreaker {
     /**
      * 半开状态使用的锁，保证只有一个请求通过
      */
-    private ReentrantLock halfOpenLock;
-
     private ConcurrentHashMap<String, ReentrantLock> halfOpenLockMap;
 
     /**
@@ -101,6 +106,7 @@ public class DefaultCircuitBreaker implements CircuitBreaker {
      */
     private boolean started;
 
+
     /**
      * Init Method
      */
@@ -126,7 +132,6 @@ public class DefaultCircuitBreaker implements CircuitBreaker {
                     this.statusMap = new ConcurrentHashMap<>();
                     this.brokenServerSet = new CopyOnWriteArraySet<>();
                     this.commandQueue = new LinkedBlockingQueue<>();
-                    this.halfOpenLock = new ReentrantLock();
                     this.halfOpenLockMap = new ConcurrentHashMap<>(64);
                     this.registerEvent();
                     this.startTask();
@@ -241,8 +246,17 @@ public class DefaultCircuitBreaker implements CircuitBreaker {
 
     @Override
     public Set<String> getBrokenServer() {
-        // TODO 计算broken server
-        return Collections.EMPTY_SET;
+        List<String> brokenMetricKeyList = new ArrayList<>();
+        for (Map.Entry<String, CircuitBreakerStatus> statusEntry : statusMap.entrySet()) {
+            if (CircuitBreakerStatus.FORCE_BREAK == statusEntry.getValue() || CircuitBreakerStatus.BREAK == statusEntry.getValue()) {
+                brokenMetricKeyList.add(statusEntry.getKey());
+            }
+        }
+        if (CommonTools.isEmpty(brokenMetricKeyList)) {
+            return Collections.EMPTY_SET;
+        }
+        Set<String> brokenInstanceIdSet = brokenMetricKeyList.stream().map(v -> v.split(METRIC_KEY_SPLIT)[1]).distinct().collect(Collectors.toSet());
+        return brokenInstanceIdSet;
     }
 
     @Override
@@ -356,7 +370,7 @@ public class DefaultCircuitBreaker implements CircuitBreaker {
     private String getMetricsKey(String commandPath, String instanceId) {
         String metricsKey = keyTable.get(commandPath, instanceId);
         if (StringUtils.isEmpty(metricsKey)) {
-            metricsKey = commandPath + instanceId;
+            metricsKey = commandPath + METRIC_KEY_SPLIT + instanceId;
             keyTable.put(commandPath, instanceId, metricsKey);
         }
         return metricsKey;
