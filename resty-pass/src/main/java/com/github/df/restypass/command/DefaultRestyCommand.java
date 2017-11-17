@@ -227,7 +227,7 @@ public class DefaultRestyCommand implements RestyCommand {
         if (returnType instanceof ParameterizedTypeImpl) {
             //返回类型是Future
             ParameterizedTypeImpl returnParameterType = (ParameterizedTypeImpl) returnType;
-            if (returnParameterType.getRawType() == Future.class
+            if ((returnParameterType.getRawType() == Future.class || returnParameterType.getRawType() == RestyFuture.class)
                     && returnParameterType.getActualTypeArguments() != null
                     && returnParameterType.getActualTypeArguments().length > 0) {
                 //替换return type: Future<User> -> User
@@ -295,7 +295,7 @@ public class DefaultRestyCommand implements RestyCommand {
         RestyFuture restyFuture = new RestyFuture();
         restyFuture.setRestyCommand(this);
         try {
-            future = requestBuilder.execute(SingletonAsyncErrorHandler.handler);
+            future = requestBuilder.execute();
         } catch (Exception e) {
             future = new ErrorFuture<>(e);
         }
