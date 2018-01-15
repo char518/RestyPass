@@ -3,6 +3,8 @@ package com.github.df.restypass.spring.proxy;
 import com.github.df.restypass.annotation.RestyService;
 import com.github.df.restypass.command.RestyCommandContext;
 import com.github.df.restypass.spring.EnableRestyPass;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -32,6 +34,7 @@ import java.util.Set;
 public class RestyProxyRegister implements ImportBeanDefinitionRegistrar,
         ResourceLoaderAware, BeanClassLoaderAware {
 
+    private static final Logger log = LoggerFactory.getLogger(RestyProxyRegister.class);
     private ResourceLoader resourceLoader;
 
     private ClassLoader classLoader;
@@ -83,7 +86,7 @@ public class RestyProxyRegister implements ImportBeanDefinitionRegistrar,
             beanDefinitionBuilder.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_BY_TYPE);
             registry.registerBeanDefinition(RestyCommandContext.class.getName(), beanDefinitionBuilder.getBeanDefinition());
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            log.error("class not found", e);
         }
     }
 

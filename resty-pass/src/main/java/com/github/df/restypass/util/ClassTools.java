@@ -66,7 +66,7 @@ public class ClassTools {
         try {
             return Class.forName(clz);
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            log.error("no class found:{}", clz, e);
         }
         return null;
     }

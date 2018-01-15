@@ -43,8 +43,7 @@ public class JsonResponseConverter implements ResponseConverter<Object> {
         try {
             return objectMapper.readValue(body, javaType);
         } catch (IOException e) {
-            log.error("JSON转换失败,javaType:{}", javaType);
-            e.printStackTrace();
+            log.error("JSON转换失败,javaType:{}", javaType, e);
         }
         return null;
     }

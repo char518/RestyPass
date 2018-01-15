@@ -246,17 +246,19 @@ public class DefaultCircuitBreaker implements CircuitBreaker {
 
     @Override
     public Set<String> getBrokenServer() {
-        List<String> brokenMetricKeyList = new ArrayList<>();
-        for (Map.Entry<String, CircuitBreakerStatus> statusEntry : statusMap.entrySet()) {
-            if (CircuitBreakerStatus.FORCE_BREAK == statusEntry.getValue() || CircuitBreakerStatus.BREAK == statusEntry.getValue()) {
-                brokenMetricKeyList.add(statusEntry.getKey());
-            }
-        }
-        if (CommonTools.isEmpty(brokenMetricKeyList)) {
-            return Collections.EMPTY_SET;
-        }
-        Set<String> brokenInstanceIdSet = brokenMetricKeyList.stream().map(v -> v.split(METRIC_KEY_SPLIT)[1]).distinct().collect(Collectors.toSet());
-        return brokenInstanceIdSet;
+        // todo: 获取短路的server，需要判断该server是否应该half open
+//        List<String> brokenMetricKeyList = new ArrayList<>();
+//        for (Map.Entry<String, CircuitBreakerStatus> statusEntry : statusMap.entrySet()) {
+//            if (CircuitBreakerStatus.FORCE_BREAK == statusEntry.getValue() || CircuitBreakerStatus.BREAK == statusEntry.getValue()) {
+//                brokenMetricKeyList.add(statusEntry.getKey());
+//            }
+//        }
+//        if (CommonTools.isEmpty(brokenMetricKeyList)) {
+//            return Collections.EMPTY_SET;
+//        }
+//        Set<String> brokenInstanceIdSet = brokenMetricKeyList.stream().map(v -> v.split(METRIC_KEY_SPLIT)[1]).distinct().collect(Collectors.toSet());
+//        return brokenInstanceIdSet;
+        return Collections.EMPTY_SET;
     }
 
     @Override

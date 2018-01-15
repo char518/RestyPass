@@ -77,7 +77,6 @@ public class JsonTools {
             try {
                 return DateFormatTools.pareDate(SIMPLE_FORMAT, jp.getText());
             } catch (ParseException e) {
-                e.printStackTrace();
                 throw new IOException(e.getMessage());
             }
 

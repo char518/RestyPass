@@ -2,6 +2,8 @@ package com.github.df.restypass.util;
 
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.text.ParseException;
 import java.util.Date;
@@ -24,7 +26,7 @@ import java.util.Date;
  */
 @SuppressWarnings("unused")
 public class DateFormatTools {
-
+    private static final Logger log = LoggerFactory.getLogger(DateFormatTools.class);
     /**
      * The constant PATTERN_ISO.
      */
@@ -84,7 +86,7 @@ public class DateFormatTools {
             try {
                 return DEFAULT_ON_SECOND_FORMAT.parse(date);
             } catch (ParseException e) {
-                e.printStackTrace();
+                log.error("failed to parse date:{}", date, e);
             }
         }
         return null;

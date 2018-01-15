@@ -5,6 +5,7 @@ import com.github.df.restypass.lb.server.ServerInstance;
 
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * 负载均衡
@@ -16,8 +17,7 @@ public class RandomLoadBalancer extends AbstractLoadBalancer {
 
     public static final String NAME = "random";
     //TODO 伪随机问题
-    private final Random random = new Random();
-
+    private final ThreadLocalRandom random = ThreadLocalRandom.current();
     @Override
     protected ServerInstance doChoose(List<ServerInstance> instanceList, RestyCommand command) {
 
