@@ -1,5 +1,6 @@
 package com.github.df.restypass.lb.server;
 
+import com.github.df.restypass.util.CommonTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -130,7 +131,14 @@ public abstract class AbstractDiscoveryServerContext implements ServerContext {
         this.updatedInstancesMap = new ConcurrentHashMap<>();
         for (String service : services) {
             try {
-                List<ServerInstance> instances = getServiceInstances(service);
+                List<ServerInstance> instances = Collections.EMPTY_LIST;
+                // 先尝试获取URL配置的服务
+                List<ServerInstance> urlInstanceList = UrlServerContext.getInstance().getServerList(service);
+                if (CommonTools.isNotEmpty(urlInstanceList)) {
+                    instances = UrlServerContext.getInstance().getServerList(service);
+                } else {
+                    instances = getServiceInstances(service);
+                }
                 updatedInstancesMap.put(service, instances);
 
             } catch (Exception ex) {

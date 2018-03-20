@@ -23,11 +23,25 @@ public interface RestyCommandConfig extends Updater<UpdateCommandConfig> {
     String getServiceName();
 
     /**
+     * 获取服务URL
+     *
+     * @return service URL
+     */
+    String[] getUrl();
+
+    /**
      * 设置服务名称
      *
      * @param serviceName the service name
      */
     void setServiceName(String serviceName);
+
+    /**
+     * 设置服务URL
+     *
+     * @param url the service url
+     */
+    void setUrl(String[] url);
 
 
     /**
@@ -183,6 +197,8 @@ public interface RestyCommandConfig extends Updater<UpdateCommandConfig> {
 
         private String serviceName;
 
+        private String[] url;
+
         private boolean circuitBreakEnabled = true;
 
         private boolean forceBreakEnabled = false;
@@ -209,8 +225,18 @@ public interface RestyCommandConfig extends Updater<UpdateCommandConfig> {
         }
 
         @Override
+        public String[] getUrl() {
+            return url;
+        }
+
+        @Override
         public void setServiceName(String serviceName) {
             this.serviceName = serviceName;
+        }
+
+        @Override
+        public void setUrl(String[] url) {
+            this.url = url;
         }
 
 

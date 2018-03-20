@@ -20,6 +20,13 @@ public @interface RestyService {
      */
     String serviceName() default "";
 
+
+    /**
+     * URL
+     */
+    String[] url() default {};
+
+
     /**
      * 降级服务类
      * 优先级低于降级服务Bean：fallbackBean

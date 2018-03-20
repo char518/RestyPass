@@ -8,6 +8,8 @@ import org.apache.commons.lang3.StringUtils;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * RestyService 注解处理器
@@ -26,6 +28,8 @@ public class RestyServiceProcessor implements RestyAnnotationProcessor {
             RestyService restyService = (RestyService) annotation;
             // 设置服务名称
             setServiceName(restyService, properties);
+            // 设置URL
+            setUrl(restyService, properties);
             // 设置重试次数
             setRetry(restyService, properties);
             // 设置降级服务
@@ -44,6 +48,7 @@ public class RestyServiceProcessor implements RestyAnnotationProcessor {
         return properties;
     }
 
+
     /**
      * Sets service name.
      *
@@ -56,6 +61,16 @@ public class RestyServiceProcessor implements RestyAnnotationProcessor {
             throw new IllegalArgumentException("service name can not be null");
         }
         properties.setServiceName(serviceName);
+    }
+
+    protected void setUrl(RestyService restyService, RestyCommandConfig properties) {
+        String[] url = restyService.url();
+        if (url != null && url.length > 0) {
+            List<String> urls = Stream.of(url).filter(StringUtils::isNotEmpty).distinct().collect(Collectors.toList());
+            if (url != null && urls.size() > 0) {
+                properties.setUrl(urls.toArray(new String[urls.size()]));
+            }
+        }
     }
 
     /**

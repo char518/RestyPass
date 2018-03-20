@@ -8,6 +8,7 @@ import com.github.df.restypass.command.update.UpdateCommandConfig;
 import com.github.df.restypass.command.update.Updater;
 import com.github.df.restypass.http.client.HttpClientWrapper;
 import com.github.df.restypass.http.config.AsyncHttpConfigFactory;
+import com.github.df.restypass.lb.server.UrlServerContext;
 import com.github.df.restypass.spring.wrapper.SpringAnnotationWrapper;
 import com.google.common.collect.HashBasedTable;
 import org.apache.commons.lang3.StringUtils;
@@ -178,6 +179,10 @@ public class RestyCommandContext implements Updater<UpdateCommandConfig> {
 
         // 处理resty 注解
         serviceProcessor.processor(restyService, commandProperties);
+
+        if (commandProperties.getUrl() != null && commandProperties.getUrl().length > 0) {
+            UrlServerContext.getInstance().addUrl(commandProperties.getServiceName(), commandProperties.getUrl());
+        }
         return commandProperties;
     }
 
