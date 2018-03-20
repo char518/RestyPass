@@ -129,7 +129,13 @@ public abstract class AbstractDiscoveryServerContext implements ServerContext {
         List<String> services = getServiceNames();
         this.updatedInstancesMap = new ConcurrentHashMap<>();
         for (String service : services) {
-            updatedInstancesMap.put(service, getServiceInstances(service));
+            try {
+                List<ServerInstance> instances = getServiceInstances(service);
+                updatedInstancesMap.put(service, instances);
+
+            } catch (Exception ex) {
+                log.warn("更新server:{}发生错误:{}", service, ex.getMessage(), ex);
+            }
         }
         if (log.isDebugEnabled()) {
             log.debug("刷新server instances:{}", updatedInstancesMap);
