@@ -1,5 +1,6 @@
 package com.github.df.restypass.command;
 
+import com.github.df.restypass.enums.RestyCommandStatus;
 import com.github.df.restypass.exception.execute.ConnectionException;
 import com.github.df.restypass.exception.execute.RestyException;
 import com.github.df.restypass.http.converter.ResponseConverterContext;
@@ -94,7 +95,14 @@ public class RestyFuture<T> implements Future<T> {
             }
             response = FailedResponse.create(new ConnectionException(e));
         }
-        return (T) ResponseConverterContext.DEFAULT.convertResponse(restyCommand, response);
+        T resp = (T) ResponseConverterContext.DEFAULT.convertResponse(restyCommand, response);
+        if (restyCommand.isAsyncReturn() || restyCommand.isAsyncArg()) {
+            if (RestyCommandStatus.FAILED == restyCommand.getStatus()) {
+                throw restyCommand.getFailException();
+            }
+        }
+
+        return resp;
     }
 
 
@@ -113,7 +121,14 @@ public class RestyFuture<T> implements Future<T> {
             }
             response = FailedResponse.create(new ConnectionException(e));
         }
-        return (T) ResponseConverterContext.DEFAULT.convertResponse(restyCommand, response);
+        T resp = (T) ResponseConverterContext.DEFAULT.convertResponse(restyCommand, response);
+        if (restyCommand.isAsyncReturn() || restyCommand.isAsyncArg()) {
+            if (RestyCommandStatus.FAILED == restyCommand.getStatus()) {
+                throw restyCommand.getFailException();
+            }
+        }
+
+        return resp;
     }
 
 

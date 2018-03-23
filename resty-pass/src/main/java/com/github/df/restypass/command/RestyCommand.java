@@ -88,7 +88,6 @@ public interface RestyCommand extends RestyCommandLifeCycle, EventEmit {
     RestyRequestTemplate getRequestTemplate();
 
 
-
     /**
      * 是否是异步命令-基于返回值future
      * 示例接口:Future<User> getUser(String userId);

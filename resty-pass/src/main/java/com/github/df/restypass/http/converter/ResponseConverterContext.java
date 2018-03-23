@@ -70,9 +70,9 @@ public class ResponseConverterContext {
         int statusCode = response.getStatusCode();
         if (200 != statusCode) {
             if (statusCode >= 400 && statusCode < 500) {
-                restyCommand.failed(new RequestException(response.getResponseBody()));
+                restyCommand.failed(new RequestException("Request: " + restyCommand + "; Response: " + response.toString()));
             } else if (statusCode >= 500) {
-                restyCommand.failed(new ServerException(response.getResponseBody()));
+                restyCommand.failed(new ServerException("Response: " + response.toString()));
             }
             return result;
         }

@@ -334,8 +334,8 @@ public class DefaultRestyCommand implements RestyCommand {
     public void failed(RestyException restyException) {
         this.exception = restyException;
         this.status = RestyCommandStatus.FAILED;
-        if (log.isDebugEnabled()) {
-            log.debug("请求失败:{}@{}: {}", this.getPath(), this.instance, Arrays.toString(this.args));
+        if (log.isWarnEnabled()) {
+            log.warn("请求失败:{}@{}: {}", this.getPath(), this.instance, Arrays.toString(this.args));
         }
         this.emit(circuitBreaker.getEventKey(), this);
         throw exception;
