@@ -6,6 +6,8 @@ import com.github.df.restypass.exception.execute.RestyException;
 import com.github.df.restypass.exception.execute.ServerException;
 import com.github.df.restypass.http.pojo.FailedResponse;
 import org.asynchttpclient.Response;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -19,6 +21,7 @@ public class ResponseConverterContext {
 
     public static ResponseConverterContext DEFAULT = new ResponseConverterContext();
 
+    private static final Logger log = LoggerFactory.getLogger(ResponseConverterContext.class);
     /**
      * 转换器列表
      */
@@ -56,12 +59,14 @@ public class ResponseConverterContext {
         Object result = null;
         // response 为null
         if (response == null) {
+            log.warn("response is null,command:{}", restyCommand);
             restyCommand.failed(new ServerException("Failed to get response, it's null"));
             return result;
         }
 
         // response为FailedResponse， [connectException InterruptedException]  status 500
         if (FailedResponse.isFailedResponse(response)) {
+            log.warn("response is failed by exception:{}", FailedResponse.class.cast(response).getException().getMessage(), FailedResponse.class.cast(response).getException());
             restyCommand.failed(FailedResponse.class.cast(response).getException());
             return result;
         }
@@ -72,8 +77,10 @@ public class ResponseConverterContext {
             if (statusCode >= 400 && statusCode < 500) {
                 restyCommand.failed(new RequestException("Request: " + restyCommand + "; Response: " + response.toString()));
             } else if (statusCode >= 500) {
-                restyCommand.failed(new ServerException("Response: " + response.toString()));
+                restyCommand.failed(new ServerException("Request: " + restyCommand + "; Response: " + response.toString()));
             }
+
+            log.warn("request is bad,status code:{},request:{},response:{}", statusCode, restyCommand, response);
             return result;
         }
 
@@ -93,6 +100,8 @@ public class ResponseConverterContext {
         }
         if (!converted) {
             restyCommand.failed(new RestyException("没有合适的解析器,content-type:" + respContentType + ";body:" + response.getResponseBody()));
+            log.warn("没有合适的解析器,content-type:{};body:{}", respContentType, response.getResponseBody());
+
         }
         restyCommand.success();
         return result;

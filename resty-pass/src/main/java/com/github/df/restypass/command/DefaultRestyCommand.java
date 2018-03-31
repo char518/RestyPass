@@ -4,6 +4,7 @@ import com.github.df.restypass.cb.CircuitBreaker;
 import com.github.df.restypass.enums.RestyCommandStatus;
 import com.github.df.restypass.exception.execute.RestyException;
 import com.github.df.restypass.lb.server.ServerInstance;
+import com.github.df.restypass.util.StringBuilderFactory;
 import org.asynchttpclient.*;
 import org.asynchttpclient.uri.Uri;
 import org.slf4j.Logger;
@@ -347,6 +348,22 @@ public class DefaultRestyCommand implements RestyCommand {
         return this.exception;
     }
 
+
+
+    @Override
+    public String toString() {
+        return "DefaultRestyCommand{" +
+                "path='" + path + '\'' +
+                ", httpMethod='" + httpMethod + '\'' +
+                ", serviceClz=" + serviceClz +
+                ", serviceMethod=" + serviceMethod +
+                ", args=" + Arrays.toString(args) +
+                ", serviceName='" + serviceName + '\'' +
+                ", status=" + status +
+                ", exception=" + exception +
+                ", uri=" + uri +
+                '}';
+    }
 
     static class SingletonAsyncErrorHandler extends AsyncCompletionHandlerBase {
 

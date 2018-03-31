@@ -97,7 +97,7 @@ public class RestyFuture<T> implements Future<T> {
         }
         T resp = (T) ResponseConverterContext.DEFAULT.convertResponse(restyCommand, response);
         if (restyCommand.isAsyncReturn() || restyCommand.isAsyncArg()) {
-            if (RestyCommandStatus.FAILED == restyCommand.getStatus()) {
+            if (RestyCommandStatus.FAILED == restyCommand.getStatus() && restyCommand.getFailException() != null) {
                 throw restyCommand.getFailException();
             }
         }
@@ -123,7 +123,7 @@ public class RestyFuture<T> implements Future<T> {
         }
         T resp = (T) ResponseConverterContext.DEFAULT.convertResponse(restyCommand, response);
         if (restyCommand.isAsyncReturn() || restyCommand.isAsyncArg()) {
-            if (RestyCommandStatus.FAILED == restyCommand.getStatus()) {
+            if (RestyCommandStatus.FAILED == restyCommand.getStatus() && restyCommand.getFailException() != null) {
                 throw restyCommand.getFailException();
             }
         }
