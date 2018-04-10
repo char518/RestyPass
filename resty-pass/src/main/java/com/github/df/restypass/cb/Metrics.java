@@ -134,6 +134,14 @@ public class Metrics {
         return null;
     }
 
+    @Override
+    public String toString() {
+        return "Metrics{" +
+                "metricsDeque=" + metricsDeque.getFirst() +
+                ", period=" + period +
+                ", maxSegmentNumber=" + maxSegmentNumber +
+                '}';
+    }
 
     /**
      * 计数器
