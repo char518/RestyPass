@@ -94,7 +94,7 @@ public class Metrics {
         SegmentMetrics newMetrics = new SegmentMetrics(this.period);
         metricsDeque.addFirst(newMetrics);
         if (metricsDeque.size() > this.maxSegmentNumber) {
-            metricsDeque.removeFirst();
+            metricsDeque.removeLast();
         }
         return newMetrics;
     }
