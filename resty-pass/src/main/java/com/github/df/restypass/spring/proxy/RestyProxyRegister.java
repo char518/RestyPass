@@ -11,13 +11,18 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
+import org.springframework.context.EnvironmentAware;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
+import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.ScannedGenericBeanDefinition;
+import org.springframework.core.env.Environment;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.core.type.AnnotatedTypeMetadata;
 import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.util.ClassUtils;
+import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 
 import java.util.HashSet;
@@ -32,12 +37,13 @@ import java.util.Set;
  * @date 2016 /11/22
  */
 public class RestyProxyRegister implements ImportBeanDefinitionRegistrar,
-        ResourceLoaderAware, BeanClassLoaderAware {
+        ResourceLoaderAware, BeanClassLoaderAware, EnvironmentAware {
 
     private static final Logger log = LoggerFactory.getLogger(RestyProxyRegister.class);
     private ResourceLoader resourceLoader;
 
     private ClassLoader classLoader;
+    private Environment environment;
 
     @Override
     public void setBeanClassLoader(ClassLoader classLoader) {
@@ -78,6 +84,8 @@ public class RestyProxyRegister implements ImportBeanDefinitionRegistrar,
                         beanDefinition.setPrimary(true);
                         // 注册bean
                         registry.registerBeanDefinition(component.getBeanClassName(), beanDefinition);
+                        log.info("生成代理类:{}", component.getBeanClassName());
+
                     }
                 }
             }
@@ -98,7 +106,9 @@ public class RestyProxyRegister implements ImportBeanDefinitionRegistrar,
     protected ClassPathScanningCandidateComponentProvider getScanner() {
         ClassPathScanningCandidateComponentProvider scan = new CustomClassPathScanningCandidateComponentProvider(false);
         scan.addIncludeFilter((metadataReader, metadataReaderFactory) -> metadataReader.getClassMetadata().isInterface()
-                && metadataReader.getAnnotationMetadata().hasAnnotation(RestyService.class.getName()));
+                && metadataReader.getAnnotationMetadata().hasAnnotation(RestyService.class.getName())
+                && isProfileMatch(metadataReader.getAnnotationMetadata())
+        );
         return scan;
     }
 
@@ -134,6 +144,11 @@ public class RestyProxyRegister implements ImportBeanDefinitionRegistrar,
         return basePackages;
     }
 
+    @Override
+    public void setEnvironment(Environment environment) {
+        this.environment = environment;
+    }
+
 
     private static class CustomClassPathScanningCandidateComponentProvider extends ClassPathScanningCandidateComponentProvider {
 
@@ -151,6 +166,21 @@ public class RestyProxyRegister implements ImportBeanDefinitionRegistrar,
                 AnnotatedBeanDefinition beanDefinition) {
             return beanDefinition.getMetadata().isInterface() && beanDefinition.getMetadata().isIndependent();
         }
+    }
+
+    private boolean isProfileMatch(AnnotatedTypeMetadata metadata) {
+        if (environment != null) {
+            MultiValueMap<String, Object> attrs = metadata.getAllAnnotationAttributes(Profile.class.getName());
+            if (attrs != null) {
+                for (Object value : attrs.get("value")) {
+                    if (environment.acceptsProfiles(((String[]) value))) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        }
+        return true;
     }
 
 }
