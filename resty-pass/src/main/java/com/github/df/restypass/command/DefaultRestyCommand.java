@@ -193,7 +193,7 @@ public class DefaultRestyCommand implements RestyCommand {
 
     private Uri createUri(ServerInstance serverInstance) {
         return new Uri(serverInstance.getIsHttps() ? HTTPS : HTTP,
-                null,
+                serverInstance.getUserInfo(),
                 serverInstance.getHost(),
                 serverInstance.getPort(),
                 requestTemplate.getRequestPath(args),
@@ -347,7 +347,6 @@ public class DefaultRestyCommand implements RestyCommand {
     public RestyException getFailException() {
         return this.exception;
     }
-
 
 
     @Override

@@ -2,6 +2,7 @@ package com.github.df.restypass.lb.server;
 
 import com.github.df.restypass.util.ClassTools;
 import lombok.Getter;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -59,6 +60,9 @@ public class CloudDiscoveryServerContext extends AbstractDiscoveryServerContext 
         instance.setHost(serviceInstance.getHost());
         instance.setPort(serviceInstance.getPort());
         instance.addPropValue(serviceInstance.getMetadata());
+        if (serviceInstance.getUri() != null && StringUtils.isNotEmpty(serviceInstance.getUri().getUserInfo())) {
+            instance.setUserInfo(serviceInstance.getUri().getUserInfo());
+        }
         instance.ready();
         return instance;
     }

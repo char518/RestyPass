@@ -11,6 +11,7 @@ import lombok.Setter;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,6 +33,13 @@ public class ServerInstance implements EventEmit {
      * 服务名称
      */
     private String serviceName;
+
+
+    /**
+     * user:pasword
+     * @see URL#getUserInfo()
+     */
+    private String userInfo;
 
 
     /**

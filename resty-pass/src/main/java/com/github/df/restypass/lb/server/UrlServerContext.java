@@ -64,6 +64,7 @@ public class UrlServerContext implements ServerContext {
 
         try {
             URL result = new URL(url);
+            instance.setUserInfo(result.getUserInfo());
             instance.setHost(result.getHost());
             instance.setPort(result.getPort() <= 0 ? result.getDefaultPort() : result.getPort());
             instance.setIsHttps("https".equalsIgnoreCase(result.getProtocol()) ? true : false);
