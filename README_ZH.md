@@ -11,7 +11,7 @@
 <dependency>
     <groupId>com.github.darren-fu</groupId>
     <artifactId>resty-pass</artifactId>
-    <version>1.4.8</version>
+    <version>1.5.0</version>
 </dependency>
 ``` 
 

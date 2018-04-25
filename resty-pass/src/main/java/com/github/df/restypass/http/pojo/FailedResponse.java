@@ -2,8 +2,8 @@ package com.github.df.restypass.http.pojo;
 
 import com.github.df.restypass.exception.execute.RestyException;
 import io.netty.handler.codec.http.HttpHeaders;
+import io.netty.handler.codec.http.cookie.Cookie;
 import org.asynchttpclient.Response;
-import org.asynchttpclient.cookie.Cookie;
 import org.asynchttpclient.uri.Uri;
 
 import java.io.InputStream;
@@ -105,12 +105,12 @@ public class FailedResponse implements Response {
     }
 
     @Override
-    public String getHeader(String name) {
+    public String getHeader(CharSequence charSequence) {
         return null;
     }
 
     @Override
-    public List<String> getHeaders(String name) {
+    public List<String> getHeaders(CharSequence charSequence) {
         return null;
     }
 

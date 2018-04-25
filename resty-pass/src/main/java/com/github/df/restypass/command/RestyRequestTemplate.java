@@ -42,7 +42,7 @@ public class RestyRequestTemplate {
     private String methodUrl;
 
     // @RequestMapping中定义的 Header
-    private Map<String, String> headers;
+    private Map<CharSequence, String> headers;
 
     // @RequestMapping中定义的 params
     private Map<String, Object> params;
@@ -64,7 +64,7 @@ public class RestyRequestTemplate {
      *
      * @return the headers
      */
-    public Map<String, String> getRequestHeaders(Object[] args) {
+    public Map<CharSequence, String> getRequestHeaders(Object[] args) {
         if (CommonTools.isEmpty(headers)) {
             headers = new HashMap<>();
         }
