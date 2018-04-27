@@ -25,7 +25,7 @@ import java.util.regex.Pattern;
 @Data
 public class RestyRequestTemplate {
 
-    private static final Pattern pathVariableReg = Pattern.compile("\\{.+?\\}");
+    private static final Pattern PATH_VARIABLE_REG = Pattern.compile("\\{.+?\\}");
 
     private Method method;
 
@@ -66,7 +66,7 @@ public class RestyRequestTemplate {
      */
     public Map<CharSequence, String> getRequestHeaders(Object[] args) {
         if (CommonTools.isEmpty(headers)) {
-            headers = new HashMap<>();
+            headers = new HashMap<>(16);
         }
         if (!headers.containsKey(RestyConst.CONTENT_TYPE)) {
             headers.put(RestyConst.CONTENT_TYPE, RestyConst.APPLICATION_JSON);
@@ -87,7 +87,7 @@ public class RestyRequestTemplate {
      */
     public void addHeader(String head, String value) {
         if (headers == null) {
-            headers = new HashMap();
+            headers = new HashMap(16);
         }
         headers.put(head, value);
     }
@@ -100,7 +100,7 @@ public class RestyRequestTemplate {
      */
     public void addParam(String param, String value) {
         if (params == null) {
-            params = new HashMap();
+            params = new HashMap(16);
         }
         params.put(param, value);
     }
@@ -163,7 +163,7 @@ public class RestyRequestTemplate {
     public String getRequestPath(Object[] args) {
         if (this.pathVariables != null && this.pathVariables.size() > 0) {
             StringBuffer sb = new StringBuffer(64);
-            Matcher matcher = pathVariableReg.matcher(this.path);
+            Matcher matcher = PATH_VARIABLE_REG.matcher(this.path);
             while (matcher.find()) {
                 String pathVariable = findPathVariable(matcher.group(), args);
                 matcher.appendReplacement(sb, ObjectUtils.defaultIfNull(pathVariable, ""));
@@ -266,7 +266,7 @@ public class RestyRequestTemplate {
             }
 
             // body的参数数量多个
-            Map<String, Object> bodyMap = new HashMap<>();
+            Map<String, Object> bodyMap = new HashMap<>(8);
             for (RequestBodyData bodyData : this.requestBody) {
                 bodyMap.put(bodyData.getName(), args[bodyData.getIndex()]);
             }

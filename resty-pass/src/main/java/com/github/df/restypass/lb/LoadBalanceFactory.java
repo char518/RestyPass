@@ -12,7 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class LoadBalanceFactory {
     private static final Logger log = LoggerFactory.getLogger(LoadBalanceFactory.class);
 
-    private static final ConcurrentHashMap<String, LoadBalancer> serviceLoadBalancerMap = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String, LoadBalancer> SERVICE_LOAD_BALANCER_MAP = new ConcurrentHashMap<>();
 
 
     /**
@@ -24,11 +24,11 @@ public class LoadBalanceFactory {
      */
     public static LoadBalancer createLoadBalancerForService(String serviceName, Class<? extends LoadBalancer> loadBalancerClz) {
 
-        LoadBalancer balancer = serviceLoadBalancerMap.get(serviceName);
+        LoadBalancer balancer = SERVICE_LOAD_BALANCER_MAP.get(serviceName);
         if (balancer == null) {
             LoadBalancer newLoadBalancer = createLoadBalancer(loadBalancerClz);
-            serviceLoadBalancerMap.putIfAbsent(serviceName, newLoadBalancer);
-            balancer = serviceLoadBalancerMap.get(serviceName);
+            SERVICE_LOAD_BALANCER_MAP.putIfAbsent(serviceName, newLoadBalancer);
+            balancer = SERVICE_LOAD_BALANCER_MAP.get(serviceName);
         }
 
         return balancer;

@@ -52,9 +52,9 @@ public interface RestyCommandLifeCycle {
     /**
      * RestyCommand执行失败
      *
-     * @param RestyException the resty exception
+     * @param restyException the resty exception
      */
-    void failed(RestyException RestyException);
+    void failed(RestyException restyException);
 
 
     /**

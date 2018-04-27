@@ -8,15 +8,15 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 /**
  * SpringCloud服务发现抽象容器
- * Created by darrenfu on 17-8-17.
+ *
+ * @author darrenfu
+ * @date 17-8-17
  */
 public abstract class AbstractDiscoveryServerContext implements ServerContext {
 
@@ -43,6 +43,9 @@ public abstract class AbstractDiscoveryServerContext implements ServerContext {
      */
     private AtomicBoolean taskStarted = new AtomicBoolean(false);
 
+    /**
+     * Instantiates a new Abstract discovery server context.
+     */
     public AbstractDiscoveryServerContext() {
         startUpdateTask();
     }
@@ -105,9 +108,18 @@ public abstract class AbstractDiscoveryServerContext implements ServerContext {
     /**
      * 定时任务
      */
+    @SuppressWarnings("AlibabaThreadPoolCreation")
     private void startUpdateTask() {
+        ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(1, new ThreadFactory() {
+            private int counter = 0;
+
+            @Override
+            public Thread newThread(Runnable r) {
+                return new Thread(r, "server-discover-thread-" + counter++);
+            }
+        });
         if (taskStarted.compareAndSet(false, true)) {
-            Executors.newSingleThreadScheduledExecutor().scheduleWithFixedDelay(() -> {
+            executor.scheduleWithFixedDelay(() -> {
                 try {
                     if (isDiscoveryEnabled()) {
                         updated.set(false);
@@ -128,7 +140,7 @@ public abstract class AbstractDiscoveryServerContext implements ServerContext {
      */
     protected void updateServer() {
         List<String> services = getServiceNames();
-        this.updatedInstancesMap = new ConcurrentHashMap<>();
+        this.updatedInstancesMap = new ConcurrentHashMap<>(32);
         for (String service : services) {
             try {
                 List<ServerInstance> instances = Collections.EMPTY_LIST;
@@ -151,10 +163,26 @@ public abstract class AbstractDiscoveryServerContext implements ServerContext {
     }
 
 
+    /**
+     * Is discovery enabled boolean.
+     *
+     * @return the boolean
+     */
     protected abstract boolean isDiscoveryEnabled();
 
+    /**
+     * Gets service names.
+     *
+     * @return the service names
+     */
     protected abstract List<String> getServiceNames();
 
+    /**
+     * Gets service instances.
+     *
+     * @param serviceName the service name
+     * @return the service instances
+     */
     protected abstract List<ServerInstance> getServiceInstances(String serviceName);
 
 

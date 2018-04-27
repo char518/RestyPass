@@ -26,6 +26,7 @@ public interface CommandExecutor {
      * @param lb           the lb
      * @param restyCommand the resty command
      * @return the t
+     * @throws RestyException the resty exception
      */
     Object execute(LoadBalancer lb, RestyCommand restyCommand) throws RestyException;
 

@@ -192,7 +192,7 @@ public class ServerInstance implements EventEmit {
      */
     public ServerInstance addPropValue(String prop, String value) {
         if (props == null) {
-            props = new HashMap();
+            props = new HashMap(16);
         }
         props.put(prop, value);
         return this;
@@ -209,7 +209,7 @@ public class ServerInstance implements EventEmit {
             return this;
         }
         if (props == null) {
-            props = new HashMap();
+            props = new HashMap(18);
         }
         props.putAll(propMap);
         return this;

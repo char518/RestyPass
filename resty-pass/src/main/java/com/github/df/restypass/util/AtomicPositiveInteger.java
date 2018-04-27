@@ -122,30 +122,37 @@ public class AtomicPositiveInteger extends Number {
         return i.weakCompareAndSet(expect, update);
     }
 
+    @Override
     public byte byteValue() {
         return i.byteValue();
     }
 
+    @Override
     public short shortValue() {
         return i.shortValue();
     }
 
+    @Override
     public int intValue() {
         return i.intValue();
     }
 
+    @Override
     public long longValue() {
         return i.longValue();
     }
 
+    @Override
     public float floatValue() {
         return i.floatValue();
     }
 
+    @Override
     public double doubleValue() {
         return i.doubleValue();
     }
 
+    @Override
     public String toString() {
         return i.toString();
     }
@@ -160,8 +167,12 @@ public class AtomicPositiveInteger extends Number {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (!(obj instanceof AtomicPositiveInteger)) return false;
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof AtomicPositiveInteger)) {
+            return false;
+        }
         AtomicPositiveInteger other = (AtomicPositiveInteger) obj;
         return i.intValue() == other.i.intValue();
     }

@@ -196,7 +196,7 @@ public class StreamTools {
      * @return Predicate<T>  predicate
      */
     public static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor) {
-        Map<Object, String> seen = new ConcurrentHashMap<>();
+        Map<Object, String> seen = new ConcurrentHashMap<>(8);
         return t -> seen.put(keyExtractor.apply(t), "") == null;
     }
 

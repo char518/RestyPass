@@ -4,12 +4,10 @@ import com.github.df.restypass.command.RestyFuture;
 import com.github.df.restypass.spring.EnableRestyPass;
 import com.github.df.restypass.testclient.entity.User;
 import com.github.df.restypass.testclient.service.ProxyService;
-import com.github.df.restypass.util.PerformanceTools;
 import org.junit.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -116,13 +114,5 @@ public class TestClientApplication {
         return "OK";
     }
 
-    /**
-     * Result string.
-     *
-     * @return the string
-     */
-    @RequestMapping(value = "/result")
-    public String result() {
-        return PerformanceTools.getPerformance().toString();
-    }
+
 }

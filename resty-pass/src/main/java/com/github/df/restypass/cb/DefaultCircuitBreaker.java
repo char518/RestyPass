@@ -13,10 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArraySet;
-import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.*;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
@@ -128,8 +125,8 @@ public class DefaultCircuitBreaker implements CircuitBreaker {
             try {
                 if (!started) {
                     this.eventKey = KEY_PREFIX + UUID.randomUUID().toString().replace("-", "").toLowerCase();
-                    this.segmentMap = new ConcurrentHashMap<>();
-                    this.statusMap = new ConcurrentHashMap<>();
+                    this.segmentMap = new ConcurrentHashMap<>(64);
+                    this.statusMap = new ConcurrentHashMap<>(64);
                     this.brokenServerSet = new CopyOnWriteArraySet<>();
                     this.commandQueue = new LinkedBlockingQueue<>();
                     this.halfOpenLockMap = new ConcurrentHashMap<>(64);
@@ -187,9 +184,11 @@ public class DefaultCircuitBreaker implements CircuitBreaker {
         // 获取计数器
         Metrics.SegmentMetrics segmentMetrics = metrics.getMetrics();
         // 计数器中失败数量和比例超过阀值，则触发短路判断
-        if (segmentMetrics.getContinuousFailCount() >= continuousFailCount // 连续失败次数达到阀值
-                // 失败比例以及失败数量达到阀值
-                || (segmentMetrics.failCount() >= breakFailCount && segmentMetrics.failPercentage() >= breakFailPercentage)) {
+        // 连续失败次数达到阀值
+        boolean isOverContinueFailCount = segmentMetrics.getContinuousFailCount() >= continuousFailCount;
+        boolean isOverFileThreshold = segmentMetrics.failCount() >= breakFailCount && segmentMetrics.failPercentage() >= breakFailPercentage;
+        // 失败比例以及失败数量达到阀值
+        if (isOverContinueFailCount || isOverFileThreshold) {
             CircuitBreakerStatus breakerStatus = cbStatus;
             shouldPass = false;
             if (breakerStatus == null || breakerStatus == CircuitBreakerStatus.OPEN) {
@@ -296,8 +295,20 @@ public class DefaultCircuitBreaker implements CircuitBreaker {
     /**
      * 消费队列 统计已完成的command信息，更新 segment
      */
+    @SuppressWarnings("AlibabaThreadPoolCreation")
     private void startTask() {
-        Executors.newSingleThreadExecutor().submit(() -> {
+
+        ThreadPoolExecutor executor = new ThreadPoolExecutor(1, 1,
+                0L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<>(), new ThreadFactory() {
+            private int counter = 0;
+
+            @Override
+            public Thread newThread(Runnable r) {
+                return new Thread(r, "resty-metrics-thread-" + counter++);
+            }
+        });
+        executor.submit(() -> {
             log.info("启动RestyCommand统计线程:" + this.eventKey);
             while (true) {
                 try {

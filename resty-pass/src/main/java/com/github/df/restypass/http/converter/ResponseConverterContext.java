@@ -17,6 +17,7 @@ import java.util.List;
  * 响应解析
  * Created by darrenfu on 17-7-20.
  */
+@SuppressWarnings("AlibabaUndefineMagicConstant")
 public class ResponseConverterContext {
 
     public static ResponseConverterContext DEFAULT = new ResponseConverterContext();

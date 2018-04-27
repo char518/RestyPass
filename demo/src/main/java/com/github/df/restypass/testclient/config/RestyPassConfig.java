@@ -60,7 +60,7 @@ public class RestyPassConfig {
      * @return the command filter
      */
     @Bean
-    public CommandFilter CustomCommandFilter() {
+    public CommandFilter customCommandFilter() {
         return new CustomCommandFilter();
     }
 
