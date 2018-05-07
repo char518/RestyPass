@@ -129,7 +129,11 @@ public abstract class AbstractDiscoveryServerContext implements ServerContext {
     protected void updateServer() {
         List<String> services = getServiceNames();
         this.updatedInstancesMap = new ConcurrentHashMap<>();
-        for (String service : services) {
+        List<String> serviceList = new ArrayList<>();
+        serviceList.addAll(services);
+        serviceList.addAll(UrlServerContext.getInstance().getAllServiceName());
+        serviceList = serviceList.stream().distinct().collect(Collectors.toList());
+        for (String service : serviceList) {
             try {
                 List<ServerInstance> instances = Collections.EMPTY_LIST;
                 // 先尝试获取URL配置的服务
