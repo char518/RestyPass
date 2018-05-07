@@ -177,7 +177,7 @@ public class RestyProxyBeanFactory implements FactoryBean<Object>, InitializingB
             t = DefaultRestyPassFactory.getDefaultBean(clz);
             log.info("{}使用默认配置:{}", clz.getSimpleName(), t.getClass());
             if (t instanceof ApplicationContextAware) {
-                ApplicationContextAware contextAware = (ApplicationContextAware) serverContext;
+                ApplicationContextAware contextAware = (ApplicationContextAware) t;
                 contextAware.setApplicationContext(this.applicationContext);
             }
         }
