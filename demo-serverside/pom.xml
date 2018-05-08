@@ -126,6 +126,9 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>com.github.df.restypass.testserver.TestServerApplication9201</mainClass>
+                </configuration>
                 <executions>
                     <execution>
                         <goals>
