@@ -9,7 +9,7 @@ automatically proxy client HTTP requests based on interfaces and annotations and
 <dependency>
     <groupId>com.github.darren-fu</groupId>
     <artifactId>resty-pass</artifactId>
-    <version>1.5.0</version>
+    <version>1.5.1</version>
 </dependency>
 ``` 
 
