@@ -14,14 +14,39 @@ import java.util.List;
  */
 public interface RestyPassFactory {
 
+    /**
+     * Gets resty command context.
+     *
+     * @return the resty command context
+     */
     RestyCommandContext getRestyCommandContext();
 
+    /**
+     * Gets server context.
+     *
+     * @return the server context
+     */
     ServerContext getServerContext();
 
+    /**
+     * Gets command executor.
+     *
+     * @return the command executor
+     */
     CommandExecutor getCommandExecutor();
 
+    /**
+     * Gets fallback executor.
+     *
+     * @return the fallback executor
+     */
 //    LoadBalancer getDefaultLoadBalancer();
     FallbackExecutor getFallbackExecutor();
 
+    /**
+     * Gets command filter.
+     *
+     * @return the command filter
+     */
     List<CommandFilter> getCommandFilter();
 }

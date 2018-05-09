@@ -59,7 +59,6 @@ public class RestyProxyRegister implements ImportBeanDefinitionRegistrar,
     public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
         try {
             RestyCommandContext commandContext = RestyCommandContext.getInstance();
-//            Map<String, Object> attrs = importingClassMetadata.getAnnotationAttributes(EnableRestyPass.class.getName());
 
             // bean搜索器
             ClassPathScanningCandidateComponentProvider scanner = getScanner();

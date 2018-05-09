@@ -20,6 +20,7 @@ import static java.lang.String.format;
  * base on SpringMvcContract
  * Created by darrenfu on 17-6-19.
  */
+@SuppressWarnings("AlibabaUndefineMagicConstant")
 public class RequestMappingProcessor implements SpringAnnotationProcessor {
 
     private ResourceLoader resourceLoader = new DefaultResourceLoader();

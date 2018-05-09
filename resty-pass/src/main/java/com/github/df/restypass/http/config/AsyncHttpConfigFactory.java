@@ -7,7 +7,9 @@ import org.asynchttpclient.netty.channel.DefaultChannelPool;
 
 /**
  * HttpClient config 工厂类
- * Created by darrenfu on 17-6-19.
+ *
+ * @author darrenfu
+ * @date 17-6-19
  */
 public class AsyncHttpConfigFactory {
 

@@ -143,8 +143,8 @@ public class SpringAnnotationWrapper {
 
             // 处理RequestBody和无注解参数
             RequestBody requestBody = findMergedAnnotation(parameter, RequestBody.class);
-            if ((requestBody != null || parameter.getAnnotations().length == 0)
-                    && parameter.getType() != RestyFuture.class) {
+            boolean isNoAnnotationOnParam = requestBody != null || parameter.getAnnotations().length == 0;
+            if (isNoAnnotationOnParam && parameter.getType() != RestyFuture.class) {
                 RequestBodyData requestBodyData = new RequestBodyData();
                 requestBodyData.setIndex(i);
                 requestBodyData.setName(parameter.getName());

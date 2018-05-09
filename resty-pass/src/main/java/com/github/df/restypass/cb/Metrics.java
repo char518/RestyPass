@@ -248,7 +248,7 @@ public class Metrics {
             lock.lock();
             try {
                 // 上次请求是失败请求
-                if (lastFail == last) {
+                if (lastFail != null && lastFail.equals(last)) {
                     continuousFailCount++;
                 }
                 lastFail = last = System.currentTimeMillis();

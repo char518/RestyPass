@@ -11,6 +11,7 @@ import java.nio.charset.Charset;
  *
  * @param <T> the type parameter
  */
+@SuppressWarnings("AlibabaUndefineMagicConstant")
 public interface ResponseConverter<T> {
 
     /**

@@ -12,7 +12,9 @@ import java.lang.reflect.Type;
 
 /**
  * Json类型响应解析类
- * Created by darrenfu on 17-7-19.
+ *
+ * @author darrenfu
+ * @date 17-7-19
  */
 public class JsonResponseConverter implements ResponseConverter<Object> {
 
@@ -20,6 +22,7 @@ public class JsonResponseConverter implements ResponseConverter<Object> {
 
     private static final String APPLICATION_JSON = "application/json";
 
+    private static final String VOID = "void";
     private ObjectMapper objectMapper;
 
     public JsonResponseConverter() {
@@ -31,7 +34,7 @@ public class JsonResponseConverter implements ResponseConverter<Object> {
         if (contentType == null) {
             return false;
         }
-        if (contentType.startsWith(APPLICATION_JSON) && !type.getTypeName().equals("void")) {
+        if (contentType.startsWith(APPLICATION_JSON) && !VOID.equals(type.getTypeName())) {
             return true;
         }
         return false;

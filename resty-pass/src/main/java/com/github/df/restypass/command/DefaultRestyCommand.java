@@ -220,6 +220,7 @@ public class DefaultRestyCommand implements RestyCommand {
      *
      * @return 是异步：true, 不是异步请求：false
      */
+    @SuppressWarnings("AlibabaAvoidComplexCondition")
     private boolean isAsyncCommand() {
         Type returnType = this.getReturnType();
         this.asyncFutureReturn = false;
@@ -228,7 +229,8 @@ public class DefaultRestyCommand implements RestyCommand {
         if (returnType instanceof ParameterizedTypeImpl) {
             //返回类型是Future
             ParameterizedTypeImpl returnParameterType = (ParameterizedTypeImpl) returnType;
-            if ((returnParameterType.getRawType() == Future.class || returnParameterType.getRawType() == RestyFuture.class)
+            Class<?> rawType = returnParameterType.getRawType();
+            if ((rawType == Future.class || rawType == RestyFuture.class)
                     && returnParameterType.getActualTypeArguments() != null
                     && returnParameterType.getActualTypeArguments().length > 0) {
                 //替换return type: Future<User> -> User
