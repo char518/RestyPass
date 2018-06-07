@@ -29,6 +29,7 @@ public class AsyncHttpConfigFactory {
                 3000);
 
         return new DefaultAsyncHttpClientConfig.Builder()
+                .setUseNativeTransport(System.getProperty("os.name").contains("linux"))
                 .setConnectTimeout(connectTimeout)
                 .setRequestTimeout(requestTimeout)
                 .setMaxConnectionsPerHost(10000)
